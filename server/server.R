@@ -19,6 +19,8 @@
 #   POST /api/callable            {"bond":{...},"mbs":{"psaPct":100,...}} -> callable bond and MBS (II-8)
 #   POST /api/prdc                {"note":{...},"mc":{"paths":3000,"seed":123}} -> PRDC note (II-9)
 #   POST /api/parallel            {"batch":{"count":10000,"maxThreads":8}} -> parallel valuation timing (III-1)
+#   GET  /api/cnn/jgb-summary     -> the 1D-CNN experiment: metrics, errors, kernels (chapter 11.4)
+#   POST /api/cnn/jgb-forecast    {"month":"202101","bond":{"remainingYears":10,"couponPct":1}} -> forecast curves, bond value and P&L by rmql
 #   POST /api/prdc-risk           {"market":{...},"mc":{...},"threads":{...}} -> PRDC risk: AD vs bump, threads (Part III)
 #   POST /api/prdc-risk/job       {"scenarios":[{"id":1,"spot":150,"volPct":12},...]} -> one job of the distributed grid
 #   GET  /api/asw/offers          -> the ASW offer sheet (Curie demo data)
@@ -49,6 +51,7 @@ source(file.path(script_dir, "R", "parallel_model.R"))
 source(file.path(script_dir, "R", "prdc_risk_model.R"))
 source(file.path(script_dir, "R", "server_info.R"))
 source(file.path(script_dir, "R", "jgb_curve_model.R"))
+source(file.path(script_dir, "R", "cnn_model.R"))
 # the demo data do not change while the server runs
 ASW_LIST <- asw_list()
 ASW_REPORT <- asw_report()
@@ -283,6 +286,28 @@ handle <- function(req) {
     unknown <- setdiff(names(body), c("batch"))
     if (length(unknown)) return(json_response(400, list(error = paste("Unknown fields:", paste(unknown, collapse = ", ")))))
     result <- tryCatch(parallel_compute(body),
+                       tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
+                       error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+    if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  # The 1D-CNN forecast of the JGB curve and a bond's profit and loss (chapter 11.4)
+  if (identical(path, "/api/cnn/jgb-summary")) {
+    if (method != "GET") return(json_response(405, list(error = "Use GET.")))
+    result <- tryCatch(cnn_summary(), error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  if (identical(path, "/api/cnn/jgb-forecast")) {
+    if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body such as {\"month\":\"202101\"}.")))
+    body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
+    if (!is.list(body)) return(json_response(400, list(error = "The body must be a JSON object.")))
+    result <- tryCatch(cnn_forecast(body),
                        tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
                        error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
     if (inherits(result, "bad")) return(json_response(400, unclass(result)))

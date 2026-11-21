@@ -32,6 +32,10 @@ const PATHS: Record<string, ReactNode> = {
   parallel: <><path d="M5 4v16M10 4v16M15 4v16M20 4v16" /><path d="M3.5 9h3M8.5 14h3M13.5 7h3M18.5 16h3" /></>,
   // distributed computing: nodes of a network
   network: <><rect x="9.5" y="3" width="5" height="5" rx="1" /><rect x="3" y="16" width="5" height="5" rx="1" /><rect x="16" y="16" width="5" height="5" rx="1" /><path d="M12 8v4M5.5 16v-4h13v4" /></>,
+  // CNN: a kernel sliding over a row of cells
+  convolution: <><path d="M3.5 17.5h17M3.5 13.5h17M3.5 9.5h17" /><rect x="7.5" y="6.5" width="7" height="14" rx="1.2" /><path d="M5 4.5l2.5 2M16.5 4.5l-2 2" /></>,
+  // CNN as a surrogate model: a small network replacing a box
+  surrogate: <><circle cx="5" cy="7" r="1.8" /><circle cx="5" cy="17" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" /><path d="M6.6 7.8L10.4 11.2M6.6 16.2L10.4 12.8M13.8 12h3.4" /></>,
   // automatic differentiation: a partial derivative
   derivative: <><path d="M15.5 6.5C14 4 9.5 4 8.5 7c-.6 1.8.8 3 3 3 3.5 0 5 2.5 4 5.5-1 3.2-5.5 4.5-8 2" /><circle cx="11" cy="15" r="2.5" /></>,
   // PRDC: a currency coin with an arrow

@@ -1,10 +1,11 @@
 import { TOC, type Chapter } from "./toc";
 import type { IconName } from "../components/icons";
 
-// The chapters as the reader sees them: the introduction (no number), then one numbered list, 1 to 11.
+// The chapters as the reader sees them: the introduction (no number), then one numbered list, 1 to 13.
 // Chapters 1 to 8 are Coral Book's II-1 to II-8. Coral Book's Part III is gathered into three chapters: 9 parallel
-// computing (III-1), 10 distributed computing (III-2, III-3) and 11 automatic differentiation (III-1.7, III-4 to
-// III-7). The PRDC page (Coral Book II-9) is part of chapter 11 (exotic autodiff), accessible from its top link.
+// computing (III-1), 10 distributed computing (III-2, III-3), two chapters of Carmine Studio's own on convolutional
+// networks (11, 12: no source in Coral Book) and 13 automatic differentiation (III-1.7, III-4 to III-7). The PRDC page
+// (Coral Book II-9) is part of chapter 13 (exotic autodiff), accessible from its top link.
 // Coral Book's numbers stay as the sources (ids, the contents page's references, each page's note).
 
 export interface NumberedChapter extends Chapter {
@@ -26,7 +27,9 @@ const CHAPTER_ICONS: Record<number, IconName> = {
   8: "callback",
   9: "parallel",
   10: "network",
-  11: "derivative",
+  11: "convolution",
+  12: "surrogate",
+  13: "derivative",
 };
 
 const all = new Map(TOC.flatMap((p) => p.chapters).map((c) => [c.id, c]));
@@ -60,7 +63,11 @@ export const CHAPTERS_LIST: NumberedChapter[] = [
     "債券の一括評価の測定や、モンテカルロ・シミュレーションのスレッド数を変えて並列計算の効果を測定・操作できます"),
   merge(10, "分散計算", "/enterprise/distributed-jobs", ["III-2", "III-3"],
     "シナリオ格子をジョブに分割して計算サーバーへ送り、集約する分散計算の流れを操作できます"),
-  merge(11, "エキゾチック自動微分", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7", "II-9"],
+  merge(11, "CNN の基礎と実践", "/enterprise/cnn-fundamentals", ["CNN-1"],
+    "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまでを操作できます"),
+  merge(12, "CNN の金融モデル応用", "/enterprise/cnn-applications", ["CNN-2"],
+    "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説します（画面での計算はありません）"),
+  merge(13, "エキゾチック自動微分", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7", "II-9"],
     "PRDCの高次元リスク感応度を自動微分（AAD）で一度に求め、有限差分と比べる計算や、パスごとの自動微分モンテカルロを操作できます。PRDCの評価は章の冒頭リンクから操作できます"),
 ];
 

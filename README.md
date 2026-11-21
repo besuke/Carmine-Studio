@@ -1,6 +1,6 @@
 # Carmine Studio『エンタープライズ金融モデル』
 
-金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. 並列計算」「10. 分散計算」「11. 自動微分」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱います。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
+金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. 並列計算」「10. 分散計算」「13. 自動微分」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱い、「11. CNN の基礎と実践」「12. CNN の金融モデル応用」では、畳み込みニューラルネットワークの式と、国債カーブの翌月予測の実験、重いモデルの近似への応用を扱います（この 2 章は Carmine Studio の独自の章で、Coral Book に対応する章はありません）。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
 
 ## 三部作
 
@@ -19,8 +19,8 @@
 | オプション | 第II部 第4章 ブラックモデル | 「ブラックモデル」（`#/black-model`） | — |
 | 信用リスク | 第II部 第5章 信用リスクとCDS | 「信用リスクとCDS」（`#/credit-cds`） | — |
 | 金利モデルと早期償還 | 第II部 第6〜8章 | `#/irs-calibration`、`#/rate-models`、`#/early-redemption` | — |
-| PRDC | 第II部 第9章 | 「PRDC」（`#/prdc`）、「11. 自動微分」の PRDC の節 | PRDC のクーポンの分解（`lean/LagrangeAcademy/PrdcCoupon.lean`） |
-| 並列・分散・自動微分 | — | 「 9. 並列計算」（`#/enterprise/parallel-computing`）、「10. 分散計算」（`#/enterprise/distributed-jobs`）、「11. 自動微分」（`#/enterprise/automatic-differentiation`） | — |
+| PRDC | 第II部 第9章 | 「PRDC」（`#/prdc`）、「13. 自動微分」の PRDC の節 | PRDC のクーポンの分解（`lean/LagrangeAcademy/PrdcCoupon.lean`） |
+| 並列・分散・自動微分 | — | 「 9. 並列計算」（`#/enterprise/parallel-computing`）、「10. 分散計算」（`#/enterprise/distributed-jobs`）、「11. CNN の基礎と実践」（`#/enterprise/cnn-fundamentals`）、「12. CNN の金融モデル応用」（`#/enterprise/cnn-applications`）、「13. 自動微分」（`#/enterprise/automatic-differentiation`） | — |
 | 計算の保証 | 各章の計算例 | 照合の記録（`server/tests/reconciliation/`） | 第1章 計算と証明、第7章 実数と数値計算 |
 
 画面のパスは <http://127.0.0.1:8081/> に続けて開きます（例：<http://127.0.0.1:8081/#/yield-curve-ois>）。目次ページにも同じ表があり、Coral Book と Crimson Proof の章へリンクしています。
@@ -38,7 +38,7 @@
 
 | 画面 | 内容 | URL（開発時） |
 |---|---|---|
-| 目次と対応状況 | 序論と全11章について、操作できること、rmql で計算できる範囲、追加実装が必要な箇所（`ui/src/book/toc.ts`） | http://127.0.0.1:8081/#/ |
+| 目次と対応状況 | 序論と全13章について、操作できること、rmql で計算できる範囲、追加実装が必要な箇所（`ui/src/book/toc.ts`） | http://127.0.0.1:8081/#/ |
 | 序論 | Coral Book で手元の R を使って再現した金融モデルを、複数の利用者がブラウザから使える形にする設計の考え方（役割分担、Rust、並列・分散計算、非同期の画面） | `#/introduction` |
 |  1. 確定キャッシュフロー | TONAR のパー・スポット・フォワード、順・逆イールドの模式図、40年債のキャッシュフロー、単利→単価→複利利回り、フラットイールド、Zスプレッド、BPV・デュレーション・コンベクシティ、利回りの数値解法（II-1.1〜1.8。GaussQuant・原稿の結果に照合）。取引日・発行日・償還日を変えられる（`bond.tradeDate`・`issueDate`・`maturityDate`、既定は原稿の例。Infrago Quantlet から移した） | `#/deterministic-cashflow` |
 |  2. 金利カーブ | ゼロ金利ノードと平行シフトを操作して、ZeroCurve・DiscountCurve・シフト後のカーブを描く（II-2.2、2.3.1、2.5.2〜2.5.3。GaussQuant と差 0）。財務省の国債金利（月末、1990年1月〜）から作ったカーブを、年月スライダーと再生で切り替える。ノードのシミュレーション（1つのノードのゼロ金利だけを bp 動かし、割引係数とゼロクーポン債の価格の変化を見る。`POST /api/curves/zero` の任意の入力 `bump`。Infrago Quantlet から移した） | `#/yield-curves` |
@@ -51,11 +51,13 @@
 |  8. 早期償還モデル | Hull–White のコール債（Bullet・Callable・コール権の価値、コール日ごとの判断、ボラティリティと格子の検証）、MBS のプリペイメント（シナリオ別の CPR と加重平均残存年数、金利経路、PSA 別の静的 OAS）（II-8.1〜8.8。原稿の結果に照合）。コール判断（各コール日の、継続価値とコール価格の比べと境界）は rmql の `compute_hull_white_callable_bond_decisions`（0.4.0 から。以前は原稿の独自の R 関数で求めていたが、同じ結果を rmql が返す）で計算する | `#/early-redemption` |
 |  9. 並列計算 | Coral Book III-1 の本文に、6シナリオの逐次・並列の例、債券の件数とスレッド数を選んだ一括評価の測定、PRDC のモンテカルロのスレッド比較を組み込んだ章（結果はスレッド数によらず同じ） | `#/enterprise/parallel-computing` |
 | 10. 分散計算 | Coral Book III-2・III-3 の本文に、45シナリオをジョブに分けてブラウザから R API へ送り、集約する画面を組み込んだ章 | `#/enterprise/distributed-jobs` |
-| 11. 自動微分 | Coral Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
-| 11.1 PRDC | クーポンのペイオフ、FX のサンプルパス、現在価値（閉じた式とモンテカルロ）、期待クーポンの期間構造とフロア・キャップの確率、クーポンの分布、FX スポット・ボラ感応度（II-9.1〜9.6。原稿の結果に照合） | `#/prdc` |
+| 11. CNN の基礎と実践 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ヨーロピアン・オプションの曲面への応用（解説）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`。Coral Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
+| 12. CNN の金融モデル応用 | Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較（解説のみ） | `#/enterprise/cnn-applications` |
+| 13. 自動微分 | Coral Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
+| 13.1 PRDC | クーポンのペイオフ、FX のサンプルパス、現在価値（閉じた式とモンテカルロ）、期待クーポンの期間構造とフロア・キャップの確率、クーポンの分布、FX スポット・ボラ感応度（II-9.1〜9.6。原稿の結果に照合） | `#/prdc` |
 | サーバー接続 | rmql Compute Server（R の HTTP API）との接続の状態、往復の時間、利用者が開くアドレス、API の一覧。右上の「rmql Compute Server：接続中／未接続」からも開く | `#/server` |
 
-メニューと目次の番号は、主章が 1.〜11.、章の下のページが「2.1」「11.1」です（序論とサーバー接続は番号なし）。本文の見出しも同じ番号です。上の帯は、左に二段の文字「Carmine Studio」「エンタープライズ金融モデル」です。オファーシート（POC と ASW）は Infrago Quant に移したので、メニューと目次から外しました（`ui/src/asw/` のコードと API は残してあります）。
+メニューと目次の番号は、主章が 1.〜13.、章の下のページが「2.1」「13.1」です（序論とサーバー接続は番号なし）。本文の見出しも同じ番号です。上の帯は、左に二段の文字「Carmine Studio」「エンタープライズ金融モデル」です。オファーシート（POC と ASW）は Infrago Quant に移したので、メニューと目次から外しました（`ui/src/asw/` のコードと API は残してあります）。
 
 ## 構成
 
@@ -201,6 +203,15 @@ New-NetFirewallRule -DisplayName "Carmine Studio (TCP 8081)" -Direction Inbound 
 
 ## API
 
+`GET /api/cnn/jgb-summary` と `POST /api/cnn/jgb-forecast`（第 11 章）
+
+```json
+{ "month": "202101", "bond": { "remainingYears": 10, "couponPct": 1, "faceAmount": 100 } }
+```
+
+- `jgb-summary` は、オフラインで学習した 1D-CNN の実験の結果（設定、数値勾配チェック、期間別・年限別の RMSE と MAE、過去 24 か月の RMSE の推移、カーネル）を返します。
+- `jgb-forecast` は、`month`（予測の起点、`YYYYMM`。2001 年 1 月〜2026 年 9 月）の翌月について、実績・1D-CNN・リッジ回帰・ランダムウォークの 4 つのカーブで、債券（残存 2〜20 年の整数、クーポン 0〜10%、額面）を rmql で評価し、価値と損益を返します。範囲外の値は HTTP 400 です。応答に `response.request_id` を含みます。
+
 `POST /api/scenario`
 
 ```json
@@ -256,7 +267,7 @@ npm run golden
 
 ```powershell
 cd ui
-npm test      # Vitest。2026-11-20、rmql 0.4.0 で 16 ファイル・63 件がすべて合格
+npm test      # Vitest。2026-11-22、17 ファイル・67 件がすべて合格（2026-11-20 は rmql 0.4.0 で 16 ファイル・63 件）
 ```
 
 テストは R API を `127.0.0.1:8788` で起動し（`ui/tests/globalSetup.ts`）、`{"bumpTenor":"5Y","bumpBp":1}` と `{"bumpTenor":"5Y","bumpBp":0}` を送って、照合済みJSONと比べます。ASW は `ui/tests/asw.api.test.ts` と `ui/tests/asw.poc.test.ts` が全オファーを Curie の旧デモの結果（`server/data/asw_demo/curie_reference.json`）と比べます（ASW・円換算 ASW・JGBスプレッド・ベーシス 1e-6 bp、利回り 1e-10 %、価格 1e-10、CCS 校正の残差 1e-6 円。結果は `ui/test-results/asw-report.json`・`asw-poc-report.json`）。終わるとAPIを止めます。動いているAPIを使う場合は `LFL_TEST_API_URL=http://127.0.0.1:8787` を指定します。各項目の最大差は `ui/test-results/regression-report.json` に書き出します。
@@ -300,8 +311,10 @@ server/                      R API と計算
   server.R                   R API（httpuv）
   R/tona_ois_model.R         円OIS：入力・規約と rmql の呼び出し
   R/asw_model.R              ASW：オファーと属性の結合、検証、rmql の呼び出し
+  R/cnn_model.R              第 11 章：保存した 1D-CNN の結果の読み出しと、債券の評価（rmql）
+  data/cnn/                  1D-CNN の実験の結果（jgb_1d_cnn_results.json。scripts/cnn/ が作る）
   data/asw_demo/             ASW のデモデータ（Curie から複製、架空）
-  scripts/                   データ取得・複製のスクリプト（asw/・futures/・jgb/・capm/）
+  scripts/                   データ取得・複製のスクリプト（asw/・futures/・jgb/・capm/）と、1D-CNN の学習（cnn/）
   tests/golden/              照合済みの基準 JSON（generate_golden.R が作る）
   tests/reconciliation/      GaussQuant と rmql の照合（asw/ は Curie の旧デモとの照合）
 docs/port/                   Coral Book 第III部の移植ツールと記録

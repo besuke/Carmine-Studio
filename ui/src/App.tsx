@@ -9,10 +9,12 @@ import RateModels from "./content/rate-models.mdx";
 import EarlyRedemption from "./content/early-redemption.mdx";
 import Prdc from "./content/prdc.mdx";
 import Introduction from "./content/introduction.mdx";
-// Coral Book's Part III, gathered into chapters 9 to 11 (scripts/port/merge_part3.py)
+// Coral Book's Part III, gathered into chapters 9, 10 and 13 (scripts/port/merge_part3.py); chapters 11 and 12 are Carmine Studio's own
 import ParallelComputing from "./content/chapters/parallel-computing.mdx";
 import DistributedComputing from "./content/chapters/distributed-computing.mdx";
 import AutomaticDifferentiation from "./content/chapters/automatic-differentiation.mdx";
+import CnnFundamentals from "./content/chapters/cnn-fundamentals.mdx";
+import CnnApplications from "./content/chapters/cnn-applications.mdx";
 import { CurveProvider } from "./components/curves";
 import { CHAPTERS_LIST, ROUTE_ALIASES } from "./book/chapters";
 import { useEffect, useState } from "react";
@@ -33,6 +35,16 @@ const CHAPTERS: Record<string, () => React.ReactNode> = {
   "/enterprise/distributed-jobs": () => (
     <article className="prose ported">
       <DistributedComputing />
+    </article>
+  ),
+  "/enterprise/cnn-fundamentals": () => (
+    <article className="prose ported">
+      <CnnFundamentals />
+    </article>
+  ),
+  "/enterprise/cnn-applications": () => (
+    <article className="prose ported">
+      <CnnApplications />
     </article>
   ),
   "/enterprise/automatic-differentiation": () => (
