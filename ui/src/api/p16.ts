@@ -62,10 +62,10 @@ export interface MscbResponse extends BondResponseBase {
 }
 
 export interface P16Summary {
-  lookback_convergence: { meta: P16Meta; every_step: Record<"call" | "put", { continuous: number; steps: number[]; tree: number[]; error: number[] }>; monthly: Record<string, unknown> };
+  lookback_convergence: { meta: P16Meta; every_step: Record<"call" | "put", { continuous: number; steps: number[]; tree: number[]; error: number[]; error_times_sqrt_steps: number[]; extrapolated: number[]; extrapolated_error: number[] }>; monthly: Record<"call" | "put", { tree_1200: number; tree_2400: number; extrapolated: number; monte_carlo: number; monte_carlo_standard_error: number; monte_carlo_pairs: number; difference_in_standard_errors: number }> };
   convertible_curve: { meta: P16Meta; spots: number[]; conversion_value: number[]; straight_bond: number[]; convertible: { value: number[]; delta: number[] }; convertible_with_call: { value: number[]; delta: number[] } };
-  mscb_reset_closed_form: { meta: P16Meta; closed_form_table: { alpha: number; lower_price: number; upper_price: number | null; closed_form: number; steps: number[]; lattice: number[]; relative_error: number[] }[]; immediate_conversion: Record<string, unknown> };
-  mscb_carried_grid: { meta: P16Meta; convergence: { price_nodes: number[]; grid: number[]; scaled: number; relative_difference: number[] }; timing: Record<string, number | boolean>[]; greeks: Record<string, unknown> };
+  mscb_reset_closed_form: { meta: P16Meta; closed_form_table: { alpha: number; lower_price: number; upper_price: number | null; closed_form: number; steps: number[]; lattice: number[]; relative_error: number[] }[]; immediate_conversion: { price_ratio: number; lower_price: number; face_over_ratio: number; spots: number[]; value: number[]; threshold_spot: number } };
+  mscb_carried_grid: { meta: P16Meta; convergence: { price_nodes: number[]; grid: number[]; scaled: number; relative_difference: number[] }; closed_form_both: { closed_form: number; scaled_steps: number; scaled: number; grid_steps: number; grid_price_nodes: number; grid: number; scaled_relative_error: number; grid_relative_error: number }; timing: { steps: number; greeks: boolean; scaled_seconds: number; grid_40_seconds: number; grid_80_seconds: number }[]; greeks: { steps: number; price_nodes: number; grid: ConvertibleGreeks; scaled: ConvertibleGreeks } };
   limits: Record<string, unknown>;
   engine: string;
   response: ResponseStamp;
