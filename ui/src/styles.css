@@ -1,63 +1,45 @@
 :root {
+  /* Default: a Bloomberg-terminal-like black theme. The light theme is :root[data-theme="light"] (the header's switch). */
+  color-scheme: dark;
+  --page: #05070a;
+  --surface-1: #0e1116;
+  --surface-2: #181d26;
+  --text-primary: #f0f3f7;
+  --text-secondary: #a6b0bf;
+  --text-muted: #8a95a6;
+  --grid: #232933;
+  --axis: #3a4352;
+  --series-1: #4ea8ff; /* cyan blue */
+  --series-2: #ff9f1c; /* amber */
+  --series-3: #00d26a; /* terminal green */
+  --accent: #ff5c7a; /* carmine, lightened for a black ground */
+  --brand: #ff9f1c;
+  --changed-bg: #2a2110;
+  --critical: #ff5c5c;
+  --delta-good: #00d26a;
+  --radius: 8px;
+  font-family: "Noto Sans JP", "Yu Gothic UI", "Hiragino Sans", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+}
+:root[data-theme="light"] {
   color-scheme: light;
   --page: #f9f9f7;
   --surface-1: #fcfcfb;
   --surface-2: #f0efec;
   --text-primary: #0b0b0b;
   --text-secondary: #52514e;
-  --text-muted: #898781;
+  --text-muted: #6b6963;
   --grid: #e1e0d9;
   --axis: #c3c2b7;
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
-  --accent: #b3123b; /* carmine: Carmine-Studio's accent (Coral-Book coral, Crimson Proof crimson) */
+  --accent: #b3123b;
+  --brand: #b3123b;
   --changed-bg: #fdf0ea;
   --critical: #d03b3b;
   --delta-good: #006300;
-  --radius: 8px;
-  font-family: "Noto Sans JP", "Yu Gothic UI", "Hiragino Sans", system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.75;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --page: #0d0d0d;
-    --surface-1: #1a1a19;
-    --surface-2: #383835;
-    --text-primary: #f0efec;
-    --text-secondary: #c3c2b7;
-    --text-muted: #898781;
-    --grid: #2c2c2a;
-    --axis: #383835;
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --accent: #ff6f8a;
-    --changed-bg: #3a2418;
-    --critical: #e66767;
-    --delta-good: #0ca30c;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --page: #0d0d0d;
-  --surface-1: #1a1a19;
-  --surface-2: #383835;
-  --text-primary: #f0efec;
-  --text-secondary: #c3c2b7;
-  --text-muted: #898781;
-  --grid: #2c2c2a;
-  --axis: #383835;
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --series-3: #199e70;
-  --accent: #ff6f8a;
-  --changed-bg: #3a2418;
-  --critical: #e66767;
-    --delta-good: #0ca30c;
 }
 
 * { box-sizing: border-box; }
@@ -67,7 +49,7 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 .site-header { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: center; border-top: 3px solid var(--accent); padding: 0.55rem 20px; border-bottom: 1px solid var(--grid); background: var(--surface-1); }
 .site-header .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
 .site-header .brand-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
-.site-header .brand-name { font-weight: 700; font-size: 2rem; letter-spacing: -0.015em; color: var(--accent); white-space: nowrap; }
+.site-header .brand-name { font-weight: 700; font-size: 2rem; letter-spacing: -0.015em; color: var(--brand); white-space: nowrap; }
 .site-header .brand-sub { font-size: 0.875rem; letter-spacing: 0.06em; color: var(--text-secondary); white-space: nowrap; }
 @media (max-width: 520px) {
   .site-header { padding: 0.35rem 12px; }
@@ -125,7 +107,7 @@ table.kv th { color: var(--text-secondary); font-weight: 600; width: 32%; }
 .marker { stroke: var(--axis); stroke-width: 1; stroke-dasharray: 2 3; }
 .crosshair { stroke: var(--text-muted); stroke-width: 1; }
 .dot { stroke: var(--surface-1); stroke-width: 2; }
-.tooltip { position: absolute; pointer-events: none; background: var(--surface-1); border: 1px solid var(--axis); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.8rem; min-width: 200px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.12); }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface-1); border: 1px solid var(--axis); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.8rem; min-width: 200px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.5); }
 .tooltip-date { color: var(--text-secondary); margin-bottom: 0.2rem; }
 .tooltip-row { display: grid; grid-template-columns: 10px 1fr auto; gap: 0.4rem; align-items: center; }
 .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
@@ -427,6 +409,20 @@ table.data.check { max-width: 760px; }
    selected tabs (buttons with aria-pressed) and the slider's thumb wear the carmine accent; a pressed control sinks
    and its shadow shallows. Charts and tables stay on white, so numbers and legends read clearly. */
 :root {
+  --aqua-top: #232933;
+  --aqua-bottom: #141920;
+  --aqua-border: #3a4352;
+  --aqua-gloss: linear-gradient(to bottom, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 49%, rgba(255, 255, 255, 0) 50%);
+  --aqua-carmine: linear-gradient(to bottom, #ff7a93 0%, #e0446a 55%, #c9254d 100%);
+  --aqua-carmine-border: #8f1c3a;
+  --aqua-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --aqua-shadow-pressed: 0 0 1px rgba(0, 0, 0, 0.6);
+  --aqua-field: #0a0d12;
+  --aqua-track: linear-gradient(to bottom, #0a0d12, #232933);
+  --plot-surface: var(--surface-1);
+  --focus-ring: rgba(255, 92, 122, 0.4);
+}
+:root[data-theme="light"] {
   --aqua-top: #ffffff;
   --aqua-bottom: #e2e2e7;
   --aqua-border: #a7a7b0;
@@ -438,26 +434,7 @@ table.data.check { max-width: 760px; }
   --aqua-field: #ffffff;
   --aqua-track: linear-gradient(to bottom, #b9b9c1, #e8e8ed);
   --plot-surface: #ffffff;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --aqua-top: #55555c;
-    --aqua-bottom: #2e2e33;
-    --aqua-border: #6a6a73;
-    --aqua-gloss: linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 49%, rgba(255, 255, 255, 0) 50%);
-    --aqua-field: #1f1f22;
-    --aqua-track: linear-gradient(to bottom, #232327, #45454b);
-    --plot-surface: var(--surface-1);
-  }
-}
-:root[data-theme="dark"] {
-  --aqua-top: #55555c;
-  --aqua-bottom: #2e2e33;
-  --aqua-border: #6a6a73;
-  --aqua-gloss: linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 49%, rgba(255, 255, 255, 0) 50%);
-  --aqua-field: #1f1f22;
-  --aqua-track: linear-gradient(to bottom, #232327, #45454b);
-  --plot-surface: var(--surface-1);
+  --focus-ring: rgba(179, 18, 59, 0.3);
 }
 
 button {
@@ -495,7 +472,7 @@ select, .controls select {
 }
 input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(179, 18, 59, 0.3), var(--aqua-shadow);
+  box-shadow: 0 0 0 3px var(--focus-ring), var(--aqua-shadow);
 }
 
 /* the slider: a grooved track and a glossy carmine thumb */
@@ -526,7 +503,7 @@ input[type="range"]::-moz-range-thumb {
 }
 input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 1px rgba(0, 0, 0, 0.4); }
 input[type="range"]:focus-visible { box-shadow: none; }
-input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(179, 18, 59, 0.3), 0 1px 3px rgba(0, 0, 0, 0.35); }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--focus-ring), 0 1px 3px rgba(0, 0, 0, 0.35); }
 
 /* the control bars and the month player */
 .controls { background: linear-gradient(to bottom, var(--surface-1), var(--surface-2)); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06); }
@@ -556,3 +533,14 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
 .toc-children li { margin: 0.15rem 0; }
 table.data tr.changed > th, table.data tr.changed > td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .controls input.date-input { width: 10.5rem; text-align: left; }
+
+/* terminal look: tabular figures everywhere numbers sit; the theme switch in the header */
+table, .tile-value, .tooltip, .server-facts dd, .num, td, th { font-variant-numeric: tabular-nums; }
+.site-header { margin: 0; }
+.site-header .header-spacer { flex: 1; }
+.theme-toggle { font-size: 0.8rem; padding: 0.25rem 0.8rem; white-space: nowrap; }
+.sidebar-group { margin-top: 0.6rem; }
+.sidebar-group > .sidebar-part { margin-top: 0.4rem; }
+.prose table:not(.data):not(.kv) { border-collapse: collapse; margin: 1rem 0; background: var(--surface-1); }
+.prose table:not(.data):not(.kv) th, .prose table:not(.data):not(.kv) td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+.prose table:not(.data):not(.kv) thead th { color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--axis); }

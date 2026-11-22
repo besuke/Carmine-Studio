@@ -14,22 +14,22 @@ const UST_TICKS = [1, 2, 5, 10, 20, 30];
 const YEAR_TICKS = [1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025];
 
 const JGB_TS_TENORS: { tenor: number; label: string; color: string }[] = [
-  { tenor: 1, label: "1年", color: "#2563eb" },
-  { tenor: 2, label: "2年", color: "#0891b2" },
-  { tenor: 5, label: "5年", color: "#16a34a" },
-  { tenor: 10, label: "10年", color: "#b5122b" },
-  { tenor: 20, label: "20年", color: "#d97706" },
-  { tenor: 30, label: "30年", color: "#7c3aed" },
-  { tenor: 40, label: "40年", color: "#475569" },
+  { tenor: 1, label: "1年", color: "#4ea8ff" },
+  { tenor: 2, label: "2年", color: "#22d3ee" },
+  { tenor: 5, label: "5年", color: "#00d26a" },
+  { tenor: 10, label: "10年", color: "#ff5c7a" },
+  { tenor: 20, label: "20年", color: "#ff9f1c" },
+  { tenor: 30, label: "30年", color: "#b794f6" },
+  { tenor: 40, label: "40年", color: "#a6b0bf" },
 ];
 
 const UST_TS_TENORS: { tenor: number; label: string; color: string }[] = [
-  { tenor: 1, label: "1年", color: "#2563eb" },
-  { tenor: 2, label: "2年", color: "#0891b2" },
-  { tenor: 5, label: "5年", color: "#16a34a" },
-  { tenor: 10, label: "10年", color: "#b5122b" },
-  { tenor: 20, label: "20年", color: "#d97706" },
-  { tenor: 30, label: "30年", color: "#7c3aed" },
+  { tenor: 1, label: "1年", color: "#4ea8ff" },
+  { tenor: 2, label: "2年", color: "#22d3ee" },
+  { tenor: 5, label: "5年", color: "#00d26a" },
+  { tenor: 10, label: "10年", color: "#ff5c7a" },
+  { tenor: 20, label: "20年", color: "#ff9f1c" },
+  { tenor: 30, label: "30年", color: "#b794f6" },
 ];
 
 const ym = (m: string) => `${m.slice(0, 4)}年${m.slice(4)}月`;

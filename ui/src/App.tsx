@@ -125,6 +125,44 @@ const CHAPTERS: Record<string, () => React.ReactNode> = {
   ),
 };
 
+/** The side menu's four groups (by what the reader computes), over the chapters of book/chapters.ts, in the order shown. */
+const SIDEBAR_GROUPS: { title: string; routes: string[] }[] = [
+  { title: "金利カーブ・債券", routes: ["/deterministic-cashflow", "/yield-curves", "/yield-curve-ois", "/credit-cds"] },
+  { title: "株・オプション・CB", routes: ["/black-model", "/enterprise/lookback-convertible"] },
+  { title: "金利モデル・仕組み債", routes: ["/irs-calibration", "/rate-models", "/early-redemption", "/prdc", "/enterprise/mbs-prdc"] },
+  { title: "計算基盤・ML・自動微分", routes: ["/enterprise/parallel-computing", "/enterprise/distributed-jobs", "/enterprise/cnn-fundamentals", "/enterprise/cnn-applications", "/enterprise/automatic-differentiation"] },
+];
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    try {
+      return localStorage.getItem("carmine-theme") === "light" ? "light" : "dark";
+    } catch {
+      return "dark";
+    }
+  });
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+  const next = theme === "dark" ? "light" : "dark";
+  return (
+    <button
+      type="button"
+      className="theme-toggle"
+      data-testid="theme-toggle"
+      onClick={() => {
+        try {
+          localStorage.setItem("carmine-theme", next);
+        } catch {}
+        setTheme(next);
+      }}
+      title={next === "light" ? "ライトテーマに切り替える" : "ダークテーマに切り替える"}
+    >
+      {theme === "dark" ? "ライト" : "ダーク"}
+    </button>
+  );
+}
+
 function Sidebar({
   route,
   collapsed,
@@ -156,27 +194,29 @@ function Sidebar({
         <Icon name="server" />
         <span className="sidebar-label">サーバー接続</span>
       </a>
-      <div className="sidebar-part">機能</div>
-      <ul className="chapter-list">
-        <li>
-          <a href={href("/introduction")} className={route === "/introduction" ? "active" : undefined} title="序論">
-            <Icon name="book" />
-            <span className="sidebar-label">序論</span>
-          </a>
-        </li>
-        {CHAPTERS_LIST.map((ch) => (
-          <li key={ch.id}>
-            <a
-              href={href(ch.route!)}
-              className={route === ch.route ? "active" : undefined}
-              title={ch.menu ?? ch.title}
-            >
-              <Icon name={ch.icon} />
-              <span className="sidebar-label">{ch.menu ?? ch.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <a href={href("/introduction")} className={route === "/introduction" ? "active" : undefined} title="序論">
+        <Icon name="book" />
+        <span className="sidebar-label">序論</span>
+      </a>
+      {SIDEBAR_GROUPS.map((g) => (
+        <div className="sidebar-group" key={g.title} data-testid="sidebar-group">
+          <div className="sidebar-part">{g.title}</div>
+          <ul className="chapter-list">
+            {g.routes.map((r) => {
+              const ch = CHAPTERS_LIST.find((c) => c.route === r);
+              if (!ch) return null;
+              return (
+                <li key={ch.id}>
+                  <a href={href(ch.route!)} className={route === ch.route ? "active" : undefined} title={ch.menu ?? ch.title}>
+                    <Icon name={ch.icon} />
+                    <span className="sidebar-label">{ch.menu ?? ch.title}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </nav>
   );
 }
@@ -224,6 +264,8 @@ export function App() {
           </span>
         </a>
         <ServerIndicator />
+        <span className="header-spacer" />
+        <ThemeToggle />
       </header>
       <div className={`layout ${collapsed ? "sidebar-collapsed" : ""}`}>
         <Sidebar route={route} collapsed={collapsed} onToggle={toggleCollapsed} />

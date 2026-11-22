@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import mdx from "@mdx-js/rollup";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 
 // The R API (server/server.R) listens on 127.0.0.1:8787. The page calls /api/* on its own origin,
@@ -12,7 +13,7 @@ const proxy = { "/api": { target: apiTarget, changeOrigin: false } };
 
 export default defineConfig({
   plugins: [
-    { enforce: "pre", ...mdx({ remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] }) },
+    { enforce: "pre", ...mdx({ remarkPlugins: [remarkMath, [remarkGfm, { singleTilde: false }]], rehypePlugins: [rehypeKatex] }) },
     react({ include: /\.(mdx|tsx|ts)$/ }),
   ],
   server: { host: "127.0.0.1", port: 8081, strictPort: true, proxy },
