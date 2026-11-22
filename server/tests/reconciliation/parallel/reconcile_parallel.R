@@ -22,7 +22,7 @@ source(file.path(lab, "server/R/parallel_model.R"))
 api <- parallel_compute(list(batch = list(count = 2000, maxThreads = 8)))
 
 # ---- the manuscript's code, read from the qmd ----------------------------------------------------------------------
-qmd <- "C:/AnalyticFin/Projects/coral-book/part3_enterprise_riemann/ch01_computational_evolution_parallel.qmd"
+qmd <- "C:/AnalyticFin/Projects/Coral-Book/part3_enterprise_riemann/ch01_computational_evolution_parallel.qmd"
 lines <- readLines(qmd, encoding = "UTF-8")
 chunk_code <- function(label) {
   start <- grep(sprintf("^#\\| label: %s$", label), lines)

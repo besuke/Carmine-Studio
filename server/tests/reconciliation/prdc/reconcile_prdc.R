@@ -24,7 +24,7 @@ api <- prdc_compute(list())
 n <- api$note
 
 # ---- the manuscript's code, read from the qmd and run as it is (tables printed by it are discarded) ----------------
-qmd <- "C:/AnalyticFin/Projects/coral-book/part2_quantive_riemann/ch09_exotic_derivatives_prdc.qmd"
+qmd <- "C:/AnalyticFin/Projects/Coral-Book/part2_quantive_riemann/ch09_exotic_derivatives_prdc.qmd"
 lines <- readLines(qmd, encoding = "UTF-8")
 chunk_code <- function(label) {
   start <- grep(sprintf("^```\\{r %s\\}$", label), lines)

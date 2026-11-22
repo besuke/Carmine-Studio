@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { href } from "./router";
 
-export const CORAL_BOOK_REPO = "https://github.com/besuke/coral-book";
+export const CORAL_BOOK_REPO = "https://github.com/besuke/Coral-Book";
 export const CRIMSON_PROOF_REPO = "https://github.com/besuke/Crimson";
 export const CARMINE_STUDIO_REPO = "https://github.com/besuke/Carmine-Studio";
 
@@ -78,7 +78,7 @@ export function Trilogy() {
               <tr>
                 <th scope="row">Coral-Book『金融工学の応用基礎』</th>
                 <td className="wrap">理論と数式を読み、手元のコードで計算を再現する</td>
-                <td><Ext to={CORAL_BOOK_REPO}>besuke/coral-book</Ext></td>
+                <td><Ext to={CORAL_BOOK_REPO}>besuke/Coral-Book</Ext></td>
               </tr>
               <tr>
                 <th scope="row">Carmine-Studio『エンタープライズ金融モデル』</th>

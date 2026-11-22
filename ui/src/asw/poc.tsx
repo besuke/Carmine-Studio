@@ -556,7 +556,7 @@ function Limits() {
         ベーシスの補間を加えても、CCSの期間構造全体を校正したモデルではない。MtMリセット型CCS、FXスポットの受渡日とASW開始日がずれる場合のFXスワップ調整、取引費用、
         クオント調整、信用・資本・資金調達の調整は含まない。
       </p>
-      <p className="muted">参考資料：<code>coral-book/docs/CURIE_Mockup_Overview.pdf</code>（全体像）、<code>coral-book/docs/asw_offer_sheet_spec.qmd</code>（ASW・オファーシートの仕様）、Curie の <code>docs/development_plan.md</code>、<code>docs/spec_differences.md</code>。</p>
+      <p className="muted">参考資料：<code>Coral-Book/docs/CURIE_Mockup_Overview.pdf</code>（全体像）、<code>Coral-Book/docs/asw_offer_sheet_spec.qmd</code>（ASW・オファーシートの仕様）、Curie の <code>docs/development_plan.md</code>、<code>docs/spec_differences.md</code>。</p>
     </Section>
   );
 }

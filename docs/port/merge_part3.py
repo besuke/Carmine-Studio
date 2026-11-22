@@ -4,7 +4,7 @@ The text comes from Coral Book's manuscripts through port_part3.convert (the Jap
 definitions and notes as written; R code as static blocks). The computations that can be operated (the former pages
 #/parallel and #/prdc-risk) are placed in the sections they belong to, with the explanations they had there.
 
-    python docs/port/merge_part3.py     (Coral Book in ../coral-book)
+    python docs/port/merge_part3.py     (Coral Book in ../Coral-Book)
 
 Writes ui/src/content/chapters/{parallel-computing,distributed-computing,automatic-differentiation}.mdx.
 """
@@ -18,7 +18,7 @@ from port_part3 import SRC, convert  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 OUT = os.path.join(ROOT, "ui", "src", "content", "chapters")
-REPO = "https://github.com/besuke/coral-book/blob/main/part3_enterprise_riemann"
+REPO = "https://github.com/besuke/Coral-Book/blob/main/part3_enterprise_riemann"
 FILES = {
     "III-1": "ch01_computational_evolution_parallel.qmd", "III-2": "ch02_distributed_computing_jobtask.qmd",
     "III-3": "ch03_enterprise_financial_computing.qmd", "III-4": "ch04_automatic_differentiation.qmd",

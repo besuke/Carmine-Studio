@@ -41,7 +41,7 @@ per_year_bump <- function(side) vapply(seq_along(PR_TIMES), \(j) {
 }, 0)
 
 # ---- the manuscript's torch code (III-7.1–7.3), read from the qmd ----------------------------------------------
-qmd <- "C:/AnalyticFin/Projects/coral-book/part3_enterprise_riemann/ch07_prdc_autodiff.qmd"
+qmd <- "C:/AnalyticFin/Projects/Coral-Book/part3_enterprise_riemann/ch07_prdc_autodiff.qmd"
 lines <- readLines(qmd, encoding = "UTF-8")
 chunk_code <- function(label) {
   start <- grep(sprintf("^#\\| label: %s$", label), lines)

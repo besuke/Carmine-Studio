@@ -9,9 +9,9 @@ import io
 import os
 import re
 
-SRC = r"C:\AnalyticFin\Projects\coral-book\part3_enterprise_riemann"
+SRC = r"C:\AnalyticFin\Projects\Coral-Book\part3_enterprise_riemann"
 DST = r"C:\AnalyticFin\Projects\Carmine-Studio\ui\src\content\enterprise"
-REPO = "https://github.com/besuke/coral-book/blob/main/part3_enterprise_riemann"
+REPO = "https://github.com/besuke/Coral-Book/blob/main/part3_enterprise_riemann"
 
 CHAPTERS = [
     ("ch01_computational_evolution_parallel.qmd", "parallel-computing", [("並列計算", "/parallel")]),

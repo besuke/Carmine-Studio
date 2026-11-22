@@ -1,9 +1,9 @@
 # 第III部の本文の移植（Coral Book から Carmine Studio へ）
 
 - 移植日：2026-11-15（ユーザーの指示「Coral Book の Part III の日本語本文を Carmine Studio に移植する」）
-- 元の原稿：Coral Book（`../coral-book`、旧 LagrangeFinance）の `part3_enterprise_riemann/ch01〜ch07`。原稿は Coral Book に残し、Coral Book の目次からは外した
+- 元の原稿：Coral Book（`../Coral-Book`、旧 LagrangeFinance）の `part3_enterprise_riemann/ch01〜ch07`。原稿は Coral Book に残し、Coral Book の目次からは外した
 - 移植先：`ui/src/content/enterprise/*.mdx`（ルート `#/enterprise/...`）。目次の第III部の各章から開き、各章の計算画面へのリンクをサブ項目と冒頭の注記に置いた
-- 変換：`docs/port/port_part3.py`（`python docs/port/port_part3.py`。Coral Book が `../coral-book` にあること）。日本語本文・見出し・数式・定義・注記・参照は原文のまま。R のチャンクは静的なコードとして載せ（チャンクの設定行 `#|` は除く）、この画面では実行しない。数式とコードの外の `{` `}` `<` だけを MDX のためにエスケープした
+- 変換：`docs/port/port_part3.py`（`python docs/port/port_part3.py`。Coral Book が `../Coral-Book` にあること）。日本語本文・見出し・数式・定義・注記・参照は原文のまま。R のチャンクは静的なコードとして載せ（チャンクの設定行 `#|` は除く）、この画面では実行しない。数式とコードの外の `{` `}` `<` だけを MDX のためにエスケープした
 - 確認：7 章とも目次から開き、日本語、数式（KaTeX のエラー 0、ディスプレイ数式の数は原稿の `$$` ブロックと一致）、見出し（原稿と同数）、章内のリンク（計算画面と Coral Book の原稿）を確かめた
 
 ## 章ごとの対応と、追加したい計算

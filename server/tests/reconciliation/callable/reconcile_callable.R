@@ -21,7 +21,7 @@ source(file.path(lab, "server/R/callable_model.R"))
 api <- callable_compute(list())
 
 # ---- the manuscript's R functions, taken from the manuscript itself -------------------------------------------------
-qmd <- "C:/AnalyticFin/Projects/coral-book/part2_quantive_riemann/ch08_early_redemption_models.qmd"
+qmd <- "C:/AnalyticFin/Projects/Coral-Book/part2_quantive_riemann/ch08_early_redemption_models.qmd"
 lines <- readLines(qmd, encoding = "UTF-8")
 chunk_code <- function(label) {
   start <- grep(sprintf("^#\\| label: %s$", label), lines)

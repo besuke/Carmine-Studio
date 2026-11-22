@@ -31,6 +31,12 @@ suppressPackageStartupMessages({
   library(jsonlite)
 })
 
+# The chapters on lookback options, convertible bonds and MSCB (13) use rmql 0.5.0 (P16).
+if (utils::packageVersion("rmql") < "0.5.0") {
+  stop("rmql 0.5.0 以上が必要です（現在 ", as.character(utils::packageVersion("rmql")), "）。",
+       "../RiemannQL/docs/client_guide.md の手順で入れ直してください（入れ替える前に、この R API を止めます）。", call. = FALSE)
+}
+
 script_dir <- local({
   arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
   if (length(arg)) dirname(normalizePath(sub("^--file=", "", arg[1L]), winslash = "/")) else getwd()
