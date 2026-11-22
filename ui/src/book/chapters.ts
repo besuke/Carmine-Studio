@@ -1,11 +1,12 @@
 import { TOC, type Chapter } from "./toc";
 import type { IconName } from "../components/icons";
 
-// The chapters as the reader sees them: the introduction (no number), then one numbered list, 1 to 13.
+// The chapters as the reader sees them: the introduction (no number), then one numbered list, 1 to 15.
 // Chapters 1 to 8 are Coral-Book's II-1 to II-8. Coral-Book's Part III is gathered into three chapters: 9 parallel
 // computing (III-1), 10 distributed computing (III-2, III-3), two chapters of Carmine-Studio's own on convolutional
-// networks (11, 12: no source in Coral-Book) and 13 automatic differentiation (III-1.7, III-4 to III-7). The PRDC page
-// (Coral-Book II-9) is part of chapter 13 (exotic autodiff), accessible from its top link.
+// networks (11, 12: no source in Coral-Book), two of Carmine-Studio's own on state and dimension reduction (13 lookback
+// options, convertible bonds and MSCB; 14 MBS and PRDC) and 15 automatic differentiation (III-1.7, III-4 to III-7).
+// The PRDC page (Coral-Book II-9, #/prdc) is 14.1, the subject that chapter 15 goes on with.
 // Coral-Book's numbers stay as the sources (ids, the contents page's references, each page's note).
 
 export interface NumberedChapter extends Chapter {
@@ -29,7 +30,9 @@ const CHAPTER_ICONS: Record<number, IconName> = {
   10: "network",
   11: "convolution",
   12: "surrogate",
-  13: "derivative",
+  13: "lookback",
+  14: "mbs",
+  15: "derivative",
 };
 
 const all = new Map(TOC.flatMap((p) => p.chapters).map((c) => [c.id, c]));
@@ -67,8 +70,12 @@ export const CHAPTERS_LIST: NumberedChapter[] = [
     "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまでを操作できます"),
   merge(12, "CNN の金融モデル応用", "/enterprise/cnn-applications", ["CNN-2"],
     "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説します（画面での計算はありません）"),
-  merge(13, "エキゾチック自動微分", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7", "II-9"],
-    "PRDCの高次元リスク感応度を自動微分（AAD）で一度に求め、有限差分と比べる計算や、パスごとの自動微分モンテカルロを操作できます。PRDCの評価は章の冒頭リンクから操作できます"),
+  merge(13, "ルックバック・転換社債・MSCB", "/enterprise/lookback-convertible", ["LC-1"],
+    "明日からの価値のために、今日までの何を覚えておくか：ルックバックの最小値、転換価額（リセット）を持ち越す状態として、次元を縮約して評価する計算を扱います"),
+  merge(14, "MBS・PRDC", "/enterprise/mbs-prdc", ["MP-1", "II-9"],
+    "縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を、経路ごとに持ち越して評価します。PRDC の評価は、この章の 14.1 から操作できます"),
+  merge(15, "エキゾチック自動微分", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7"],
+    "14 章の PRDC の高次元リスク感応度を自動微分（AAD）で一度に求め、有限差分と比べる計算や、パスごとの自動微分モンテカルロを操作できます"),
 ];
 
 /** Old URLs of the gathered pages, and where they lead now: the chapter's route and a section id. */

@@ -36,6 +36,10 @@ const PATHS: Record<string, ReactNode> = {
   convolution: <><path d="M3.5 17.5h17M3.5 13.5h17M3.5 9.5h17" /><rect x="7.5" y="6.5" width="7" height="14" rx="1.2" /><path d="M5 4.5l2.5 2M16.5 4.5l-2 2" /></>,
   // CNN as a surrogate model: a small network replacing a box
   surrogate: <><circle cx="5" cy="7" r="1.8" /><circle cx="5" cy="17" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" /><path d="M6.6 7.8L10.4 11.2M6.6 16.2L10.4 12.8M13.8 12h3.4" /></>,
+  // lookback: a price path above its running minimum
+  lookback: <><path d="M3.5 6.5l4 5 3-2.5 3.5 6 3-3.5 3 2.5" /><path d="M3.5 19.5h17" /><circle cx="14" cy="15.5" r="1.3" /></>,
+  // MBS: a balance paid down month by month
+  mbs: <><path d="M5.5 20V7.5M10 20v-9M14.5 20v-6M19 20v-3" /><path d="M3.5 20.5h17" /></>,
   // automatic differentiation: a partial derivative
   derivative: <><path d="M15.5 6.5C14 4 9.5 4 8.5 7c-.6 1.8.8 3 3 3 3.5 0 5 2.5 4 5.5-1 3.2-5.5 4.5-8 2" /><circle cx="11" cy="15" r="2.5" /></>,
   // PRDC: a currency coin with an arrow

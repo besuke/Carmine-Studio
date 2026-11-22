@@ -9,12 +9,14 @@ import RateModels from "./content/rate-models.mdx";
 import EarlyRedemption from "./content/early-redemption.mdx";
 import Prdc from "./content/prdc.mdx";
 import Introduction from "./content/introduction.mdx";
-// Coral-Book's Part III, gathered into chapters 9, 10 and 13 (scripts/port/merge_part3.py); chapters 11 and 12 are Carmine-Studio's own
+// Coral-Book's Part III, gathered into chapters 9, 10 and 15 (scripts/port/merge_part3.py); chapters 11 to 14 are Carmine-Studio's own
 import ParallelComputing from "./content/chapters/parallel-computing.mdx";
 import DistributedComputing from "./content/chapters/distributed-computing.mdx";
 import AutomaticDifferentiation from "./content/chapters/automatic-differentiation.mdx";
 import CnnFundamentals from "./content/chapters/cnn-fundamentals.mdx";
 import CnnApplications from "./content/chapters/cnn-applications.mdx";
+import LookbackConvertible from "./content/chapters/lookback-convertible.mdx";
+import MbsPrdc from "./content/chapters/mbs-prdc.mdx";
 import { CurveProvider } from "./components/curves";
 import { CHAPTERS_LIST, ROUTE_ALIASES } from "./book/chapters";
 import { useEffect, useState } from "react";
@@ -45,6 +47,16 @@ const CHAPTERS: Record<string, () => React.ReactNode> = {
   "/enterprise/cnn-applications": () => (
     <article className="prose ported">
       <CnnApplications />
+    </article>
+  ),
+  "/enterprise/lookback-convertible": () => (
+    <article className="prose ported">
+      <LookbackConvertible />
+    </article>
+  ),
+  "/enterprise/mbs-prdc": () => (
+    <article className="prose ported">
+      <MbsPrdc />
     </article>
   ),
   "/enterprise/automatic-differentiation": () => (
