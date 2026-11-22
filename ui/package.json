@@ -17,6 +17,7 @@
     "reconcile:prdc-risk": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc_risk/reconcile_prdc_risk.R",
     "reconcile:parallel": "node scripts/run-r.mjs ../server/tests/reconciliation/parallel/reconcile_parallel.R",
     "reconcile:prdc": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc/reconcile_prdc.R",
+    "reconcile:p16": "node scripts/run-r.mjs ../server/tests/reconciliation/p16/reconcile_p16.R",
     "reconcile:callable": "node scripts/run-r.mjs ../server/tests/reconciliation/callable/reconcile_callable.R",
     "reconcile:rate-models": "node scripts/run-r.mjs ../server/tests/reconciliation/rate_models/reconcile_rate_models.R",
     "reconcile:calibration": "node scripts/run-r.mjs ../server/tests/reconciliation/calibration/reconcile_calibration.R",

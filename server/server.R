@@ -21,6 +21,10 @@
 #   POST /api/parallel            {"batch":{"count":10000,"maxThreads":8}} -> parallel valuation timing (III-1)
 #   GET  /api/cnn/jgb-summary     -> the 1D-CNN experiment: metrics, errors, kernels (chapter 11.4)
 #   POST /api/cnn/jgb-forecast    {"month":"202101","bond":{"remainingYears":10,"couponPct":1}} -> forecast curves, bond value and P&L by rmql
+#   POST /api/lookback            {"lookbackType":"floating","optionType":"call","spot":100,...} -> lookback option, continuous and discrete (13.2)
+#   POST /api/convertible         {"bond":{...},"conversion":{...},"market":{...},"steps":200} -> convertible bond, fixed or reset price (13.3, 13.4)
+#   POST /api/mscb                {"bond":{...},"resetYears":[1,2],"rule":"downward_only","method":"scaled"} -> price carried between resets (13.5)
+#   GET  /api/lookback-convertible/summary -> the precomputed convergence and comparison tables of chapter 13
 #   POST /api/prdc-risk           {"market":{...},"mc":{...},"threads":{...}} -> PRDC risk: AD vs bump, threads (Part III)
 #   POST /api/prdc-risk/job       {"scenarios":[{"id":1,"spot":150,"volPct":12},...]} -> one job of the distributed grid
 #   GET  /api/asw/offers          -> the ASW offer sheet (Curie demo data)
@@ -58,6 +62,8 @@ source(file.path(script_dir, "R", "prdc_risk_model.R"))
 source(file.path(script_dir, "R", "server_info.R"))
 source(file.path(script_dir, "R", "jgb_curve_model.R"))
 source(file.path(script_dir, "R", "cnn_model.R"))
+source(file.path(script_dir, "R", "lookback_model.R"))
+source(file.path(script_dir, "R", "convertible_model.R"))
 # the demo data do not change while the server runs
 ASW_LIST <- asw_list()
 ASW_REPORT <- asw_report()
@@ -94,6 +100,21 @@ read_body <- function(req) {
   if (is.null(input)) return("")
   raw <- input$read()
   if (length(raw) == 0L) "" else rawToChar(raw)
+}
+
+# The POST of the APIs of chapter 13: the body, a request out of range (400, with a message in Japanese) or a failure (500),
+# the request ID and the time.
+p16_post <- function(req, compute) {
+  body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
+  if (!is.list(body)) return(json_response(400, list(error = "本文は JSON のオブジェクトにしてください（例：{}）。")))
+  result <- tryCatch(compute(body),
+                     tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
+                     error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+  if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+  if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+  id <- request_id(req)
+  result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+  json_response(200, result, request_id = id)
 }
 
 handle <- function(req) {
@@ -317,6 +338,21 @@ handle <- function(req) {
                        tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
                        error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
     if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  # Lookback options, convertible bonds and MSCB (chapter 13)
+  for (p16 in list(list("/api/lookback", lookback_compute), list("/api/convertible", convertible_compute), list("/api/mscb", mscb_compute))) {
+    if (identical(path, p16[[1]])) {
+      if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body (every field is optional), for example {}.")))
+      return(p16_post(req, p16[[2]]))
+    }
+  }
+  if (identical(path, "/api/lookback-convertible/summary")) {
+    if (method != "GET") return(json_response(405, list(error = "Use GET.")))
+    result <- tryCatch(lookback_convertible_summary(), error = function(e) structure(list(error = conditionMessage(e)), class = "failed"))
     if (inherits(result, "failed")) return(json_response(500, unclass(result)))
     id <- request_id(req)
     result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
