@@ -4,7 +4,7 @@ import { fetchBlack, type BlackInputs, type BlackResponse, type BsmInputs, type 
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
-// Components of the Black model chapter (Coral Book II-4). The reader moves the Black 76 inputs, the Monte Carlo
+// Components of the Black model chapter (Coral-Book II-4). The reader moves the Black 76 inputs, the Monte Carlo
 // settings, the BSM inputs and the Longstaff-Schwartz path count; each change asks the R API (rmql).
 
 type Req = { black: BlackInputs; mc: McInputs; bsm: BsmInputs; lsm: LsmInputs };

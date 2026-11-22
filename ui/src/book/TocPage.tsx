@@ -8,7 +8,7 @@ const COVERAGE_CLASS: Record<Coverage, string> = { 対応: "cov-ok", 一部: "co
 export function TocPage() {
   return (
     <article className="prose toc">
-      <h1>Carmine Studio『エンタープライズ金融モデル』</h1>
+      <h1>Carmine-Studio『エンタープライズ金融モデル』</h1>
       <p>
         無裁定価格評価モデル（イールドカーブ、OISスワップ、国債先物・CTD、オプション、CDS、キャリブレーション、金利モデル、早期償還、PRDC）とエンタープライズ計算技術（並列計算、分散計算、自動微分）を、ブラウザ上で条件を操作しながら評価・比較する Web アプリです。
       </p>

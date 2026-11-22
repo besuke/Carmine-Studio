@@ -1,4 +1,4 @@
-# Computational evolution and parallel computing (Coral Book III-1). The chapter's worked example (present values
+# Computational evolution and parallel computing (Coral-Book III-1). The chapter's worked example (present values
 # of six scenarios, applied row by row) is the manuscript's R; the measurement of parallel valuation is rmql's
 # batch of bonds on worker threads (compute_bond_values_batch), whose results do not depend on the number of threads.
 #

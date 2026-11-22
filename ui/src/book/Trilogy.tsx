@@ -3,7 +3,7 @@ import { href } from "./router";
 
 export const CORAL_BOOK_REPO = "https://github.com/besuke/coral-book";
 export const CRIMSON_PROOF_REPO = "https://github.com/besuke/Crimson";
-export const CARMINE_STUDIO_REPO = "https://github.com/besuke/Carmine";
+export const CARMINE_STUDIO_REPO = "https://github.com/besuke/Carmine-Studio";
 
 export const coralChapter = (source: string) => `${CORAL_BOOK_REPO}/blob/main/${source}`;
 const crimsonChapter = (file: string) => `${CRIMSON_PROOF_REPO}/blob/main/${file}`;
@@ -65,7 +65,7 @@ export function Trilogy() {
     <section aria-labelledby="trilogy-h" className="trilogy">
       <h2 id="trilogy-h">関連プロジェクトとの位置づけ</h2>
       <p>
-        金融モデルを「手元で計算する（Coral Book）」「Webアプリでインタラクティブに動かす（Carmine Studio）」「仮定から定理を形式証明する（Crimson Proof）」の三つの視点から整理しています。
+        金融モデルを「手元で計算する（Coral-Book）」「Webアプリでインタラクティブに動かす（Carmine-Studio）」「仮定から定理を形式証明する（Crimson Proof）」の三つの視点から整理しています。
       </p>
       <div className="two-col">
         <div className="table-wrap">
@@ -76,14 +76,14 @@ export function Trilogy() {
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Coral Book『金融工学の応用基礎』</th>
+                <th scope="row">Coral-Book『金融工学の応用基礎』</th>
                 <td className="wrap">理論と数式を読み、手元のコードで計算を再現する</td>
                 <td><Ext to={CORAL_BOOK_REPO}>besuke/coral-book</Ext></td>
               </tr>
               <tr>
-                <th scope="row">Carmine Studio『エンタープライズ金融モデル』</th>
+                <th scope="row">Carmine-Studio『エンタープライズ金融モデル』</th>
                 <td className="wrap">ブラウザから条件を操作し、計算サーバーでモデルとリスクを評価する</td>
-                <td><Ext to={CARMINE_STUDIO_REPO}>besuke/Carmine</Ext></td>
+                <td><Ext to={CARMINE_STUDIO_REPO}>besuke/Carmine-Studio</Ext></td>
               </tr>
               <tr>
                 <th scope="row">Crimson Proof『Leanから見た金融数学』</th>
@@ -97,7 +97,7 @@ export function Trilogy() {
           <table className="data">
             <caption>テーマ別の対応</caption>
             <thead>
-              <tr><th scope="col">テーマ</th><th scope="col">Coral Book</th><th scope="col">Carmine Studio</th><th scope="col">Crimson Proof</th></tr>
+              <tr><th scope="col">テーマ</th><th scope="col">Coral-Book</th><th scope="col">Carmine-Studio</th><th scope="col">Crimson Proof</th></tr>
             </thead>
             <tbody>
               {THEMES.map((t) => (

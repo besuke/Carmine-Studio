@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Coral Book の数式を読みながら金融モデルをブラウザで動かす教材（初版：円OISカーブと7年OIS）",
+  "description": "Coral-Book の数式を読みながら金融モデルをブラウザで動かす教材（初版：円OISカーブと7年OIS）",
   "scripts": {
     "dev": "node scripts/check-port.mjs 8081 && vite",
     "api": "node scripts/run-r.mjs ../server/server.R --port 8787",

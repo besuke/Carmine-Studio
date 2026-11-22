@@ -3,7 +3,7 @@ import { ApiError } from "../../api/client";
 import { fetchCalibration, type BgmInputs, type CalibrationResponse, type HwInputs, type NormalInputs, type SabrInputs } from "../../api/calibration";
 import { LineChart } from "../LineChart";
 
-// Components of the calibration chapter (Coral Book II-6). The reader moves the inputs of the normal/Black
+// Components of the calibration chapter (Coral-Book II-6). The reader moves the inputs of the normal/Black
 // comparison, the SABR beta, the Hull-White reference parameters and the BGM correlation decay; each change asks the
 // R API (rmql).
 

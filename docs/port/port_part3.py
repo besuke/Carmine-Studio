@@ -10,7 +10,7 @@ import os
 import re
 
 SRC = r"C:\AnalyticFin\Projects\coral-book\part3_enterprise_riemann"
-DST = r"C:\AnalyticFin\Projects\Carmine\ui\src\content\enterprise"
+DST = r"C:\AnalyticFin\Projects\Carmine-Studio\ui\src\content\enterprise"
 REPO = "https://github.com/besuke/coral-book/blob/main/part3_enterprise_riemann"
 
 CHAPTERS = [

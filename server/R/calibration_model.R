@@ -1,4 +1,4 @@
-# Calibration of interest-rate derivatives (Coral Book II-6). The model prices and volatilities are rmql.
+# Calibration of interest-rate derivatives (Coral-Book II-6). The model prices and volatilities are rmql.
 # The manuscript's own fitting procedure (R's optim, L-BFGS-B, its starts, bounds and objectives) is run on the
 # rmql functions, next to rmql's own calibrators. Reconciled with GaussQuant running the
 # manuscript's code, and with the manuscript's own results, in server/tests/reconciliation/calibration/.

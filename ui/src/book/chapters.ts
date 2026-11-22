@@ -2,16 +2,16 @@ import { TOC, type Chapter } from "./toc";
 import type { IconName } from "../components/icons";
 
 // The chapters as the reader sees them: the introduction (no number), then one numbered list, 1 to 13.
-// Chapters 1 to 8 are Coral Book's II-1 to II-8. Coral Book's Part III is gathered into three chapters: 9 parallel
-// computing (III-1), 10 distributed computing (III-2, III-3), two chapters of Carmine Studio's own on convolutional
-// networks (11, 12: no source in Coral Book) and 13 automatic differentiation (III-1.7, III-4 to III-7). The PRDC page
-// (Coral Book II-9) is part of chapter 13 (exotic autodiff), accessible from its top link.
-// Coral Book's numbers stay as the sources (ids, the contents page's references, each page's note).
+// Chapters 1 to 8 are Coral-Book's II-1 to II-8. Coral-Book's Part III is gathered into three chapters: 9 parallel
+// computing (III-1), 10 distributed computing (III-2, III-3), two chapters of Carmine-Studio's own on convolutional
+// networks (11, 12: no source in Coral-Book) and 13 automatic differentiation (III-1.7, III-4 to III-7). The PRDC page
+// (Coral-Book II-9) is part of chapter 13 (exotic autodiff), accessible from its top link.
+// Coral-Book's numbers stay as the sources (ids, the contents page's references, each page's note).
 
 export interface NumberedChapter extends Chapter {
   no: number;
   icon: IconName;
-  /** Coral Book's chapters the text comes from, e.g. ["III-4", "III-5"]. */
+  /** Coral-Book's chapters the text comes from, e.g. ["III-4", "III-5"]. */
   sourceIds: string[];
   sources: string[];
 }

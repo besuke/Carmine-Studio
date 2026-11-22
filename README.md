@@ -1,18 +1,18 @@
-# Carmine Studio『エンタープライズ金融モデル』
+# Carmine-Studio『エンタープライズ金融モデル』
 
-金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. 並列計算」「10. 分散計算」「13. 自動微分」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱い、「11. CNN の基礎と実践」「12. CNN の金融モデル応用」では、畳み込みニューラルネットワークの式と、国債カーブの翌月予測の実験、重いモデルの近似への応用を扱います（この 2 章は Carmine Studio の独自の章で、Coral Book に対応する章はありません）。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
+金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral-Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. 並列計算」「10. 分散計算」「13. 自動微分」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱い、「11. CNN の基礎と実践」「12. CNN の金融モデル応用」では、畳み込みニューラルネットワークの式と、国債カーブの翌月予測の実験、重いモデルの近似への応用を扱います（この 2 章は Carmine-Studio の独自の章で、Coral-Book に対応する章はありません）。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral-Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
 
 ## 三部作
 
-| | Coral Book『金融工学の応用基礎』 | Carmine Studio『エンタープライズ金融モデル』 | Crimson Proof『Leanから見た金融数学』 |
+| | Coral-Book『金融工学の応用基礎』 | Carmine-Studio『エンタープライズ金融モデル』 | Crimson Proof『Leanから見た金融数学』 |
 |---|---|---|---|
 | 学び方 | **手元で計算する**：理論を読み、手元の R で計算を再現する Quarto の本 | **サーバーで動かす**：React で条件を操作し、R サーバー上の rmql でモデルを評価する Web アプリ | **証明する**：金融モデルの仮定を Lean で定義し、どの仮定のもとで何が成り立つかを証明する本 |
-| リポジトリ | <https://github.com/besuke/coral-book> | <https://github.com/besuke/Carmine> | <https://github.com/besuke/Crimson> |
+| リポジトリ | <https://github.com/besuke/coral-book> | <https://github.com/besuke/Carmine-Studio> | <https://github.com/besuke/Crimson> |
 | 始め方 | `quarto render`（または RStudio で各章を実行） | R API（`npm run api`、127.0.0.1:8787）と画面（`npm run dev`）を起動し、<http://127.0.0.1:8081/> を開く | `lean/` で `lake build`、本は `quarto render` |
 
 ## 同じテーマを三つの入口で
 
-| テーマ | Coral Book（手元で計算する） | Carmine Studio（サーバーで動かす） | Crimson Proof（証明する） |
+| テーマ | Coral-Book（手元で計算する） | Carmine-Studio（サーバーで動かす） | Crimson Proof（証明する） |
 |---|---|---|---|
 | 割引と無裁定 | 第II部 第1章 確定キャッシュフロー、第3章 OISスワップとマルチカーブ評価で、割引係数と複製を手で計算する | 「イールドカーブと円OIS」（`#/yield-curve-ois`）で OIS の気配を動かしてスワップの時価を確かめる。「OISアセットスワップ」（`#/asw`） | 第10章 有限市場における無裁定と価格の一意性、第11章 ニューメレール、第12章 資産価格の基本定理で、無裁定に必要な市場の仮定を定義して定理を証明する |
 | 金利カーブ | 第II部 第2章 金利カーブ | 「金利カーブ」（`#/yield-curves`）、「国債先物・CTD」（`#/jgb-futures`） | 第11章 ニューメレール（割引による価格の正規化） |
@@ -23,7 +23,7 @@
 | 並列・分散・自動微分 | — | 「 9. 並列計算」（`#/enterprise/parallel-computing`）、「10. 分散計算」（`#/enterprise/distributed-jobs`）、「11. CNN の基礎と実践」（`#/enterprise/cnn-fundamentals`）、「12. CNN の金融モデル応用」（`#/enterprise/cnn-applications`）、「13. 自動微分」（`#/enterprise/automatic-differentiation`） | — |
 | 計算の保証 | 各章の計算例 | 照合の記録（`server/tests/reconciliation/`） | 第1章 計算と証明、第7章 実数と数値計算 |
 
-画面のパスは <http://127.0.0.1:8081/> に続けて開きます（例：<http://127.0.0.1:8081/#/yield-curve-ois>）。目次ページにも同じ表があり、Coral Book と Crimson Proof の章へリンクしています。
+画面のパスは <http://127.0.0.1:8081/> に続けて開きます（例：<http://127.0.0.1:8081/#/yield-curve-ois>）。目次ページにも同じ表があり、Coral-Book と Crimson Proof の章へリンクしています。
 
 ## 設計の要点
 
@@ -39,7 +39,7 @@
 | 画面 | 内容 | URL（開発時） |
 |---|---|---|
 | 目次と対応状況 | 序論と全13章について、操作できること、rmql で計算できる範囲、追加実装が必要な箇所（`ui/src/book/toc.ts`） | http://127.0.0.1:8081/#/ |
-| 序論 | Coral Book で手元の R を使って再現した金融モデルを、複数の利用者がブラウザから使える形にする設計の考え方（役割分担、Rust、並列・分散計算、非同期の画面） | `#/introduction` |
+| 序論 | Coral-Book で手元の R を使って再現した金融モデルを、複数の利用者がブラウザから使える形にする設計の考え方（役割分担、Rust、並列・分散計算、非同期の画面） | `#/introduction` |
 |  1. 確定キャッシュフロー | TONAR のパー・スポット・フォワード、順・逆イールドの模式図、40年債のキャッシュフロー、単利→単価→複利利回り、フラットイールド、Zスプレッド、BPV・デュレーション・コンベクシティ、利回りの数値解法（II-1.1〜1.8。GaussQuant・原稿の結果に照合）。取引日・発行日・償還日を変えられる（`bond.tradeDate`・`issueDate`・`maturityDate`、既定は原稿の例。Infrago Quantlet から移した） | `#/deterministic-cashflow` |
 |  2. 金利カーブ | ゼロ金利ノードと平行シフトを操作して、ZeroCurve・DiscountCurve・シフト後のカーブを描く（II-2.2、2.3.1、2.5.2〜2.5.3。GaussQuant と差 0）。財務省の国債金利（月末、1990年1月〜）から作ったカーブを、年月スライダーと再生で切り替える。ノードのシミュレーション（1つのノードのゼロ金利だけを bp 動かし、割引係数とゼロクーポン債の価格の変化を見る。`POST /api/curves/zero` の任意の入力 `bump`。Infrago Quantlet から移した） | `#/yield-curves` |
 | 2.1 国債先物・CTD | 受渡適格銘柄の Basis・Implied Repo・CTD と先物BPV（CTD の DV01 ÷ CF）。全銘柄の利回り水準と Funding Rate を動かして CTD の入れ替わりを見る（II-2.6〜2.7。現物価格は架空。GaussQuant・原稿のストレス結果と差 0） | `#/jgb-futures` |
@@ -49,15 +49,15 @@
 |  6. キャリブレーション | Normal・Black ボラの比較、SABR のスマイル（原稿の optim と calibrate_sabr）、Hull–White の債券オプションへの適合と未使用商品の検証、BGM の相関の減衰（II-6.1〜6.6。GaussQuant・原稿の結果に照合） | `#/irs-calibration` |
 |  7. 金利モデル | Hull–White の短期金利の経路と割引の検証、HJM のフォワードの変動係数、キャップレットの公式とモンテカルロ・満期のフォワードの分布、相関ショック、後決め金利の複利（II-7.1〜7.6。原稿のコードと原稿の結果に照合） | `#/rate-models` |
 |  8. 早期償還モデル | Hull–White のコール債（Bullet・Callable・コール権の価値、コール日ごとの判断、ボラティリティと格子の検証）、MBS のプリペイメント（シナリオ別の CPR と加重平均残存年数、金利経路、PSA 別の静的 OAS）（II-8.1〜8.8。原稿の結果に照合）。コール判断（各コール日の、継続価値とコール価格の比べと境界）は rmql の `compute_hull_white_callable_bond_decisions`（0.4.0 から。以前は原稿の独自の R 関数で求めていたが、同じ結果を rmql が返す）で計算する | `#/early-redemption` |
-|  9. 並列計算 | Coral Book III-1 の本文に、6シナリオの逐次・並列の例、債券の件数とスレッド数を選んだ一括評価の測定、PRDC のモンテカルロのスレッド比較を組み込んだ章（結果はスレッド数によらず同じ） | `#/enterprise/parallel-computing` |
-| 10. 分散計算 | Coral Book III-2・III-3 の本文に、45シナリオをジョブに分けてブラウザから R API へ送り、集約する画面を組み込んだ章 | `#/enterprise/distributed-jobs` |
-| 11. CNN の基礎と実践 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ヨーロピアン・オプションの曲面への応用（解説）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`。Coral Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
+|  9. 並列計算 | Coral-Book III-1 の本文に、6シナリオの逐次・並列の例、債券の件数とスレッド数を選んだ一括評価の測定、PRDC のモンテカルロのスレッド比較を組み込んだ章（結果はスレッド数によらず同じ） | `#/enterprise/parallel-computing` |
+| 10. 分散計算 | Coral-Book III-2・III-3 の本文に、45シナリオをジョブに分けてブラウザから R API へ送り、集約する画面を組み込んだ章 | `#/enterprise/distributed-jobs` |
+| 11. CNN の基礎と実践 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ヨーロピアン・オプションの曲面への応用（解説）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`。Coral-Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
 | 12. CNN の金融モデル応用 | Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較（解説のみ） | `#/enterprise/cnn-applications` |
-| 13. 自動微分 | Coral Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
+| 13. 自動微分 | Coral-Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
 | 13.1 PRDC | クーポンのペイオフ、FX のサンプルパス、現在価値（閉じた式とモンテカルロ）、期待クーポンの期間構造とフロア・キャップの確率、クーポンの分布、FX スポット・ボラ感応度（II-9.1〜9.6。原稿の結果に照合） | `#/prdc` |
 | サーバー接続 | rmql Compute Server（R の HTTP API）との接続の状態、往復の時間、利用者が開くアドレス、API の一覧。右上の「rmql Compute Server：接続中／未接続」からも開く | `#/server` |
 
-メニューと目次の番号は、主章が 1.〜13.、章の下のページが「2.1」「13.1」です（序論とサーバー接続は番号なし）。本文の見出しも同じ番号です。上の帯は、左に二段の文字「Carmine Studio」「エンタープライズ金融モデル」です。オファーシート（POC と ASW）は Infrago Quant に移したので、メニューと目次から外しました（`ui/src/asw/` のコードと API は残してあります）。
+メニューと目次の番号は、主章が 1.〜13.、章の下のページが「2.1」「13.1」です（序論とサーバー接続は番号なし）。本文の見出しも同じ番号です。上の帯は、左に二段の文字「Carmine-Studio」「エンタープライズ金融モデル」です。オファーシート（POC と ASW）は Infrago Quant に移したので、メニューと目次から外しました（`ui/src/asw/` のコードと API は残してあります）。
 
 ## 構成
 
@@ -86,17 +86,17 @@ TypeScript は金融計算をしません。APIへの送信と、返ってきた
 install.packages("rmql", repos = c("https://besuke.github.io/RiemannQL", "https://cloud.r-project.org"))
 ```
 
-起動はプロジェクトの `CarmineStudio.ps1`（デスクトップのショートカット「Carmine Studio」）でできます。メニューの「1」でこのPCの開発用（rmql Compute Server 127.0.0.1:8787 と画面 http://127.0.0.1:8081/）、「2」で社内LANへの公開です（次の「社内LANで使う」）。引数でも選べます：
+起動はプロジェクトの `CarmineStudio.ps1`（デスクトップのショートカット「Carmine-Studio」）でできます。メニューの「1」でこのPCの開発用（rmql Compute Server 127.0.0.1:8787 と画面 http://127.0.0.1:8081/）、「2」で社内LANへの公開です（次の「社内LANで使う」）。引数でも選べます：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine\CarmineStudio.ps1 dev
-powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine\CarmineStudio.ps1 lan
+powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine-Studio\CarmineStudio.ps1 dev
+powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine-Studio\CarmineStudio.ps1 lan
 ```
 
 npm で直接起動する場合：
 
 ```powershell
-cd C:\AnalyticFin\Projects\Carmine\ui   # npm は ui/ で実行する
+cd C:\AnalyticFin\Projects\Carmine-Studio\ui   # npm は ui/ で実行する
 npm install          # 初回のみ
 
 # ターミナル1：R API（127.0.0.1:8787）
@@ -132,10 +132,10 @@ npm run dev
 このPCをサーバーにして、同じ社内LANの他のPCやスマートフォンのブラウザから使います。ログインはありません。LANに届く人なら誰でも使えます。
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine\CarmineStudio.ps1 lan
+powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine-Studio\CarmineStudio.ps1 lan
 ```
 
-（メニューの「2」と同じです。`npm run lan` を直接実行してもかまいません。）画面をビルドしてから rmql Compute Server を起動し、全てのネットワークインターフェース（`0.0.0.0`）の 8081 番で画面（`dist/`）と API を同じポートで返します。止めるときは「Carmine Studio - LAN (8081)」のウィンドウを閉じます（`npm run lan` なら Ctrl+C）。
+（メニューの「2」と同じです。`npm run lan` を直接実行してもかまいません。）画面をビルドしてから rmql Compute Server を起動し、全てのネットワークインターフェース（`0.0.0.0`）の 8081 番で画面（`dist/`）と API を同じポートで返します。止めるときは「Carmine-Studio - LAN (8081)」のウィンドウを閉じます（`npm run lan` なら Ctrl+C）。
 
 ### 利用者に案内するアドレス（配備先のホスト名）
 
@@ -156,13 +156,13 @@ powershell -ExecutionPolicy Bypass -File C:\AnalyticFin\Projects\Carmine\Carmine
 社内LANでは、Windows はふつう「ドメイン」ネットワークとして扱います。その場合、8081番への受信を許可する規則が必要です。
 
 ```powershell
-New-NetFirewallRule -DisplayName "Carmine Studio (TCP 8081)" -Direction Inbound -Protocol TCP -LocalPort 8081 -Action Allow -Profile Domain,Private
+New-NetFirewallRule -DisplayName "Carmine-Studio (TCP 8081)" -Direction Inbound -Protocol TCP -LocalPort 8081 -Action Allow -Profile Domain,Private
 ```
 
 - 規則を作らないと、他のPCからは接続できません（このPCからは開けます）。
 - 社内のセキュリティポリシーで規則が無効になる場合や、作れない場合は、情報システム部門に相談してください。
 - 公衆Wi-Fiなど「パブリック」のネットワークでは `npm run lan` を使わないでください。このPCには以前から R に対する「パブリック」の受信許可（`R for Windows front-end`）があり、`npm run lan` 中はそのネットワークからも接続できてしまいます。不要なら「Windows Defender ファイアウォール」の受信の規則から無効にできます。
-- 規則を消すとき：`Remove-NetFirewallRule -DisplayName "Carmine Studio (TCP 8081)"`
+- 規則を消すとき：`Remove-NetFirewallRule -DisplayName "Carmine-Studio (TCP 8081)"`
 
 ### 確認したこと（2026-11-16）
 
@@ -232,7 +232,7 @@ New-NetFirewallRule -DisplayName "Carmine Studio (TCP 8081)" -Direction Inbound 
 
 ## OISアセットスワップ・オファーシート
 
-Coral Book の `docs/asw_offer_sheet_spec.qmd` の発行通貨建て ASW を、Curie の A1 オファーシートのデモデータ（**架空**、評価日 2026-10-06、12件）で計算します。
+Coral-Book の `docs/asw_offer_sheet_spec.qmd` の発行通貨建て ASW を、Curie の A1 オファーシートのデモデータ（**架空**、評価日 2026-10-06、12件）で計算します。
 
 - **ASW**：$s^* = (B - L - R - U,D(t,S)) / A$。債券CFを支払い、翌日物（日次複利）＋スプレッドと満期の元本を受け取り、受渡日に $U = N(P_d/100 - 1)$ を授受します。計算は rmql の `compute_ois_asset_swap`。詳細画面のキャッシュフローは `get_bond_cashflows` と `create_ois_swap`・`compute_ois_swap_cashflows` から組み立て、エンジンの値と一致することを確かめています。
 - **規約**（Curie の旧デモと同じ）：OIS カーブは MonotonicLogCubic・年1回払い・支払ラグ0・外挿なし（JPY は TONA、USD は SOFR、EUR は €STR、受渡2営業日）。ASW の翌日物レグは年2回・支払ラグ0（Curie のデモの仮定）。銘柄属性は ISIN とオファー日で結合（exact）。
@@ -317,7 +317,7 @@ server/                      R API と計算
   scripts/                   データ取得・複製のスクリプト（asw/・futures/・jgb/・capm/）と、1D-CNN の学習（cnn/）
   tests/golden/              照合済みの基準 JSON（generate_golden.R が作る）
   tests/reconciliation/      GaussQuant と rmql の照合（asw/ は Curie の旧デモとの照合）
-docs/port/                   Coral Book 第III部の移植ツールと記録
+docs/port/                   Coral-Book 第III部の移植ツールと記録
 ```
 
 ## 制約
@@ -326,5 +326,5 @@ docs/port/                   Coral Book 第III部の移植ツールと記録
 - 7年OISの日付は、QuantLib の `MakeOIS` と同じ規則でR側で作ります。rmql には、期間からスワップの日付を作る `compute_ois_swap_dates` があります（0.4.0 に含まれる）が、この章はまだ使っていません（置き換えは未着手）。開始日が月末営業日の場合には対応していません。
 - 照合の記録（`server/tests/reconciliation/`）は、主に rmql 0.3.0 の時点のものです。rmql 0.4.0 で、全テスト（Vitest 16 ファイル・63 件）と、照合スクリプト（`reconcile`、`reconcile:asw`・`cds`・`black`・`callable`・`calibration`・`rate-models`・`prdc`・`prdc-risk`・`parallel`、`golden`、npm のスクリプトがない `futures` と `curves` は `node scripts/run-r.mjs ../server/tests/reconciliation/<名前>/<スクリプト>.R`）が、最後まで通ることを確かめました（2026-11-20）。記録済みの結果ファイルは更新していません。
 - `npm run reconcile:bond` は、rmql 0.3.2 以降で、日本式の複利利回りの小数の切り捨ての違いにより、7 項目が許容誤差を超えます（記録の最後の結果は rmql 0.3.0 のもの）。原因は、ライブラリー側の小数 4 桁の切り捨てだと考えていますが、未確認の推定です。
-- 画面に出る名前は「Carmine Studio」、リポジトリ名は `Carmine`。
+- 画面に出る名前は「Carmine-Studio」、リポジトリ名は `Carmine`。
 - 計算にはR APIが必要です。ブラウザだけでは動きません。

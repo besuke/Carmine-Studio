@@ -1,4 +1,4 @@
-# JGB futures, CTD and futures BPV (Coral Book II-2.6–2.7). All calculations are rmql; reconciled
+# JGB futures, CTD and futures BPV (Coral-Book II-2.6–2.7). All calculations are rmql; reconciled
 # with GaussQuant and the manuscript's own results in server/tests/reconciliation/futures/ (difference 0).
 #
 # POST /api/futures/basket

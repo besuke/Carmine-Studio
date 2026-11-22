@@ -1,4 +1,4 @@
-# HTTP API for Carmine Studio (httpuv). By default it listens on 127.0.0.1 only.
+# HTTP API for Carmine-Studio (httpuv). By default it listens on 127.0.0.1 only.
 #
 #   Rscript server/server.R [--port 8787] [--host 127.0.0.1] [--static dist]
 #
@@ -415,7 +415,7 @@ public_info <- function(host, port, static_dir) {
 }
 SERVER_PUBLIC <- public_info(host, port, static_dir)
 
-cat(sprintf("Carmine Studio API on http://%s:%d (rmql %s, fixed rate %.17g)\n",
+cat(sprintf("Carmine-Studio API on http://%s:%d (rmql %s, fixed rate %.17g)\n",
             host, port, as.character(utils::packageVersion("rmql")), TONA_FIXED_RATE))
 if (!is.na(static_dir)) cat("Serving the page from", static_dir, "\n")
 if (host == "0.0.0.0") {

@@ -131,7 +131,7 @@ function StatusPanel() {
       {st === "disconnected" && (
         <div className="banner error" role="alert">
           <strong>rmql Compute Server に接続できません。</strong> {s.last?.error}
-          <div className="banner-cmd">起動のしかた：プロジェクトのフォルダーで <code>npm run api</code>、またはプロジェクトの <code>CarmineStudio.ps1</code>（デスクトップのショートカット「Carmine Studio」）で「1」。サーバーは <code>127.0.0.1:8787</code> で待ち受けます。</div>
+          <div className="banner-cmd">起動のしかた：プロジェクトのフォルダーで <code>npm run api</code>、またはプロジェクトの <code>CarmineStudio.ps1</code>（デスクトップのショートカット「Carmine-Studio」）で「1」。サーバーは <code>127.0.0.1:8787</code> で待ち受けます。</div>
         </div>
       )}
       <dl className="server-facts">

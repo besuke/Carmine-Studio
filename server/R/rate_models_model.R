@@ -1,4 +1,4 @@
-# Interest-rate models (Coral Book II-7). The manuscript draws its random numbers with R (set.seed, rnorm); the
+# Interest-rate models (Coral-Book II-7). The manuscript draws its random numbers with R (set.seed, rnorm); the
 # same numbers are used here and passed to rmql where it takes normals (caplet, correlated shocks). The
 # Hull-White paths are the manuscript's exact OU transition in R, next to rmql's monthly Hull-White rates
 # (its own random numbers). Reconciled with the manuscript's code and its own results in server/tests/reconciliation/rate_models/.

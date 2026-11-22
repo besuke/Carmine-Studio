@@ -1,11 +1,11 @@
-# OIS asset swap offer sheet for the Carmine Studio API. All calculations are rmql.
+# OIS asset swap offer sheet for the Carmine-Studio API. All calculations are rmql.
 # Inputs: Curie's demo (fictitious) offers, bond attributes and OIS quotes, copied into server/data/asw_demo.
 #
 # Conventions follow Curie's A1 demo (reconciled in server/tests/reconciliation/asw/): OIS curves MonotonicLogCubic,
 # annual, payment lag 0, no extrapolation; the ASW overnight leg semiannual, lag 0 (a demo assumption in
 # Curie); the swap starts on the bond's settlement date; spread day count = the index's.
 #
-# ASW (Coral Book docs/asw_offer_sheet_spec.qmd): with dirty price P_d, U = N (P_d/100 - 1),
+# ASW (Coral-Book docs/asw_offer_sheet_spec.qmd): with dirty price P_d, U = N (P_d/100 - 1),
 #   s* = (B - L - R - U D(t,S)) / A
 # B bond cash flows after S, L the overnight leg, R the principal at the last overnight payment, A the spread annuity.
 
@@ -249,7 +249,7 @@ asw_price <- function(row, detail = FALSE) {
   ))
 }
 
-# Yen-converted ASW of a foreign bond (Coral Book asw_offer_sheet_spec.qmd "通貨ベーシスを反映した円換算ASW";
+# Yen-converted ASW of a foreign bond (Coral-Book asw_offer_sheet_spec.qmd "通貨ベーシスを反映した円換算ASW";
 # Curie compute_asset_swap_basis_JPY). rmql compute_yen_asset_swap computes it. With detail = TRUE the
 # hedged cash flows, the calibration of z and the checks are rebuilt here from the same curves:
 #   F_z(S,T) = X (D_f(T)/D_f(S)) / (D_j(T)/D_j(S)) exp(-z tau(S,T)),   Q_f(z) - Q_j - b A_j = 0,

@@ -4,7 +4,7 @@ import { fetchBond, type BondInputs, type BondResponse, type ShapeInputs } from 
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
-// Components of the deterministic cash-flow chapter (Coral Book II-1). The reader moves the shapes of the
+// Components of the deterministic cash-flow chapter (Coral-Book II-1). The reader moves the shapes of the
 // schematic curves and the bond's simple yield, coupon and zero spread; each change asks the R API (rmql).
 
 type Req = { shapes: ShapeInputs; bond: BondInputs };

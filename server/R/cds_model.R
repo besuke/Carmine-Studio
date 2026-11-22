@@ -1,4 +1,4 @@
-# Credit risk and CDS (Coral Book II-5). All calculations are rmql; reconciled with GaussQuant running
+# Credit risk and CDS (Coral-Book II-5). All calculations are rmql; reconciled with GaussQuant running
 # the manuscript's code, and with the manuscript's own results, in server/tests/reconciliation/cds/ (difference 0).
 #
 # POST /api/cds

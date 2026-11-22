@@ -4,7 +4,7 @@ import { fetchParallel, type BatchInputs, type ParallelResponse } from "../../ap
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
-// Components of the parallel computing chapter (Coral Book III-1). The reader chooses the number of bonds and the
+// Components of the parallel computing chapter (Coral-Book III-1). The reader chooses the number of bonds and the
 // largest number of threads, and the server measures the batch.
 
 const DEFAULT: BatchInputs = { count: 10000, maxThreads: 8 };

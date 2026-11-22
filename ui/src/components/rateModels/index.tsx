@@ -4,7 +4,7 @@ import { fetchRateModels, type CapletInputs, type FixingInputs, type HwInputs, t
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
-// Components of the interest-rate models chapter (Coral Book II-7). The reader moves the Hull-White parameters,
+// Components of the interest-rate models chapter (Coral-Book II-7). The reader moves the Hull-White parameters,
 // the caplet, the target correlations and the fictitious fixings; each change asks the R API.
 
 type Req = { hw: HwInputs; caplet: CapletInputs; shocks: ShockInputs; fixings: FixingInputs };

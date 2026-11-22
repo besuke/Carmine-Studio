@@ -1,4 +1,4 @@
-# Zero-rate nodes to curves, for the yield-curve chapter (Coral Book II-2.2, II-2.3.1, II-2.5.2, II-2.5.3).
+# Zero-rate nodes to curves, for the yield-curve chapter (Coral-Book II-2.2, II-2.3.1, II-2.5.2, II-2.5.3).
 # All calculations are rmql; reconciled with GaussQuant in server/tests/reconciliation/curves/ (difference 0).
 #
 # POST /api/curves/zero  {"zeroRatesPct": [9 numbers, or omitted for the manuscript's], "shiftBp": 50}

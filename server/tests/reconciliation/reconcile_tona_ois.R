@@ -1,7 +1,7 @@
 # Reconcile JPY TONA OIS curve construction and valuation: GaussQuant (QuantLib, reference) vs rmql.
 #
 # Run from anywhere:
-#   "C:/Program Files/R/R-4.6.0/bin/Rscript.exe" C:/AnalyticFin/Projects/Carmine/server/tests/reconciliation/reconcile_tona_ois.R
+#   "C:/Program Files/R/R-4.6.0/bin/Rscript.exe" C:/AnalyticFin/Projects/Carmine-Studio/server/tests/reconciliation/reconcile_tona_ois.R
 #
 # Writes raw (unrounded) results to server/tests/reconciliation/results/*.csv. Nothing in GaussQuant or rmql is modified.
 
@@ -14,7 +14,7 @@ suppressPackageStartupMessages({
   library(tibble)
 })
 
-out_dir <- "C:/AnalyticFin/Projects/Carmine/server/tests/reconciliation/results"
+out_dir <- "C:/AnalyticFin/Projects/Carmine-Studio/server/tests/reconciliation/results"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # ---------------------------------------------------------------------------

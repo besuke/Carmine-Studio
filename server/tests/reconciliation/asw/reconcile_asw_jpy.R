@@ -17,7 +17,7 @@ suppressPackageStartupMessages({
 })
 
 curie <- "C:/AnalyticFin/Projects/Curie"
-out_dir <- "C:/AnalyticFin/Projects/Carmine/server/tests/reconciliation/asw/results"
+out_dir <- "C:/AnalyticFin/Projects/Carmine-Studio/server/tests/reconciliation/asw/results"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 isin <- "JPTEST000022"

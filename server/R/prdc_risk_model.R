@@ -1,4 +1,4 @@
-# Part III in one page: the risk of a PRDC by automatic differentiation, in parallel and distributed (Coral Book
+# Part III in one page: the risk of a PRDC by automatic differentiation, in parallel and distributed (Coral-Book
 # III-1 to III-7, on the note of III-7). All calculations are rmql (compute_prdc_value: the value and its
 # derivatives by automatic differentiation, in closed form or by Monte Carlo on worker threads). Bump and revalue is the
 # same function called again with each input moved. Reconciled in server/tests/reconciliation/prdc_risk/.

@@ -9,7 +9,7 @@ import RateModels from "./content/rate-models.mdx";
 import EarlyRedemption from "./content/early-redemption.mdx";
 import Prdc from "./content/prdc.mdx";
 import Introduction from "./content/introduction.mdx";
-// Coral Book's Part III, gathered into chapters 9, 10 and 13 (scripts/port/merge_part3.py); chapters 11 and 12 are Carmine Studio's own
+// Coral-Book's Part III, gathered into chapters 9, 10 and 13 (scripts/port/merge_part3.py); chapters 11 and 12 are Carmine-Studio's own
 import ParallelComputing from "./content/chapters/parallel-computing.mdx";
 import DistributedComputing from "./content/chapters/distributed-computing.mdx";
 import AutomaticDifferentiation from "./content/chapters/automatic-differentiation.mdx";
@@ -205,9 +205,9 @@ export function App() {
   return (
     <ServerConnectionProvider>
       <header className="site-header">
-        <a className="brand" href={href("/")} title="Carmine Studio">
+        <a className="brand" href={href("/")} title="Carmine-Studio">
           <span className="brand-text">
-            <span className="brand-name">Carmine Studio</span>
+            <span className="brand-name">Carmine-Studio</span>
             <span className="brand-sub">エンタープライズ金融モデル</span>
           </span>
         </a>

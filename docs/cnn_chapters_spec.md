@@ -1,6 +1,6 @@
 # Carmine Studio 第 11 章・第 12 章（CNN）新設 指示書（Claude Code 向け）
 
-`C:\AnalyticFin\Projects\Carmine`（Carmine Studio）の第 III 部（エンタープライズ計算）に、**自動微分の前章として CNN（畳み込みニューラルネットワーク）の 2 章（第 11 章・第 12 章）を新設**し、旧 11 章（エキゾチック自動微分）を第 13 章へ繰り下げてください。
+`C:\AnalyticFin\Projects\Carmine-Studio`（Carmine Studio）の第 III 部（エンタープライズ計算）に、**自動微分の前章として CNN（畳み込みニューラルネットワーク）の 2 章（第 11 章・第 12 章）を新設**し、旧 11 章（エキゾチック自動微分）を第 13 章へ繰り下げてください。
 
 ---
 

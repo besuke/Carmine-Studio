@@ -1,4 +1,4 @@
-# Deterministic cash flows (Coral Book II-1). All calculations are rmql, except the manuscript's own
+# Deterministic cash flows (Coral-Book II-1). All calculations are rmql, except the manuscript's own
 # teaching formulas (the closed-form price of a regular semiannual bond, its derivatives, and the root finders of
 # II-1.8), which are written here in R as in the manuscript and compared with rmql. Reconciled with
 # GaussQuant running the manuscript's code, and with the manuscript's own results, in server/tests/reconciliation/bond/.

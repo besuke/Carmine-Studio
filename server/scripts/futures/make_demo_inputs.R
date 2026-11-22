@@ -13,7 +13,7 @@
 # Writes server/data/futures_demo/inputs.json. rmql computes the prices, as the API does.
 
 suppressPackageStartupMessages({ library(rmql); library(jsonlite) })
-out_dir <- "C:/AnalyticFin/Projects/Carmine/server/data/futures_demo"
+out_dir <- "C:/AnalyticFin/Projects/Carmine-Studio/server/data/futures_demo"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 valuation <- as.Date("2026-09-10")

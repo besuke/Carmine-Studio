@@ -1,4 +1,4 @@
-# Black model (Coral Book II-4). All calculations are rmql; reconciled with GaussQuant running the
+# Black model (Coral-Book II-4). All calculations are rmql; reconciled with GaussQuant running the
 # manuscript's code, and with the manuscript's own results, in server/tests/reconciliation/black/.
 #
 # POST /api/black

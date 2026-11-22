@@ -4,7 +4,7 @@ import { fetchPrdc, type McInputs, type NoteInputs, type PrdcResponse } from "..
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
-// Components of the PRDC chapter (Coral Book II-9). The reader moves the FX market, the coupon's terms and the
+// Components of the PRDC chapter (Coral-Book II-9). The reader moves the FX market, the coupon's terms and the
 // Monte Carlo settings; each change asks the R API.
 
 type Req = { note: NoteInputs; mc: McInputs };

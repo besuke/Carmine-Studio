@@ -69,7 +69,7 @@ export function AswListPage() {
       <h1>OISアセットスワップ・オファーシート</h1>
       <p>
         債券のオファー（クリーン価格）から、発行通貨の OIS に対するアセットスワップ・スプレッド（ASW）を計算します。行を選ぶと、使ったカーブ、価格の換算、
-        債券とスワップのキャッシュフロー、ASW の計算条件を確かめられます。仕様は Coral Book の <code>docs/asw_offer_sheet_spec.qmd</code>、
+        債券とスワップのキャッシュフロー、ASW の計算条件を確かめられます。仕様は Coral-Book の <code>docs/asw_offer_sheet_spec.qmd</code>、
         データと規約は Curie の A1 オファーシートのデモ（<strong>架空のデータ</strong>）です。
       </p>
       {error && <ApiProblem error={error} retry={retry} />}

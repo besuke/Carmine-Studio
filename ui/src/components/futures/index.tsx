@@ -3,7 +3,7 @@ import { ApiError } from "../../api/client";
 import { fetchFutures, type FuturesResponse } from "../../api/futures";
 import { LineChart } from "../LineChart";
 
-// Components of the JGB futures chapter (Coral Book II-2.6–2.7). The reader switches between the current
+// Components of the JGB futures chapter (Coral-Book II-2.6–2.7). The reader switches between the current
 // market (fictitious prices) and a flat yield level for every deliverable bond, and sets the funding rate; each
 // change asks the R API (rmql).
 

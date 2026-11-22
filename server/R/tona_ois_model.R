@@ -1,4 +1,4 @@
-# JPY TONA OIS model for the Carmine Studio API. All calculations are rmql (R, native build).
+# JPY TONA OIS model for the Carmine-Studio API. All calculations are rmql (R, native build).
 # Inputs (13 quotes, evaluation date, conventions, 7Y OIS terms) are held here, on the R side.
 #
 # The conditions are those reconciled against GaussQuant (QuantLib 1.42) in server/tests/reconciliation/RECONCILIATION.md:

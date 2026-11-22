@@ -1,6 +1,6 @@
 # Supplementary: GaussQuant flat_forward (PiecewiseFlatForward) vs log_linear_discount (PiecewiseLogLinearDiscount).
 # rmql has no flat-forward bootstrap, so this checks whether log_linear can stand in for it.
-#   "C:/Program Files/R/R-4.6.0/bin/Rscript.exe" C:/AnalyticFin/Projects/Carmine/server/tests/reconciliation/check_flat_forward_vs_log_linear.R
+#   "C:/Program Files/R/R-4.6.0/bin/Rscript.exe" C:/AnalyticFin/Projects/Carmine-Studio/server/tests/reconciliation/check_flat_forward_vs_log_linear.R
 
 suppressPackageStartupMessages({ library(GaussQuant); library(QuantLib); library(dplyr); library(purrr) })
 
@@ -27,4 +27,4 @@ res <- purrr::imap_dfr(sets, function(q, nm) {
 
 options(width = 200, pillar.sigfig = 6)
 print(res)
-utils::write.csv(res, "C:/AnalyticFin/Projects/Carmine/server/tests/reconciliation/results/flat_forward_vs_log_linear.csv", row.names = FALSE)
+utils::write.csv(res, "C:/AnalyticFin/Projects/Carmine-Studio/server/tests/reconciliation/results/flat_forward_vs_log_linear.csv", row.names = FALSE)

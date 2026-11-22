@@ -1,4 +1,4 @@
-# Early redemption models (Coral Book II-8). The callable bond and the mortgage pool are rmql, and so are the
+# Early redemption models (Coral-Book II-8). The callable bond and the mortgage pool are rmql, and so are the
 # issuer's exercise decisions (II-8.4.3: compute_hull_white_callable_bond_decisions, from rmql 0.3.5; reconciled with the
 # manuscript's decisions in rmql's tests, and here in server/tests/reconciliation/callable/). The 20 Hull-White
 # paths of II-8.8 are the manuscript's (R's set.seed 48, antithetic) and are valued with rmql.

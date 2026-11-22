@@ -108,7 +108,7 @@ isin_check_digit <- function(body) {
   as.integer((10L - sum(doubled %/% 10L + doubled %% 10L) %% 10L) %% 10L)
 }
 
-# The codes in Curie's order: first those of the ported Coral Book checks, then Curie's own.
+# The codes in Curie's order: first those of the ported Coral-Book checks, then Curie's own.
 asw_validation_issues <- function(offer, attr, duplicate) {
   blank <- function(x) is.null(x) || length(x) == 0L || is.na(x) || !nzchar(trimws(as.character(x)))
   isin <- toupper(trimws(offer$ISIN))

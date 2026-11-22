@@ -3,7 +3,7 @@ import { ApiError } from "../../api/client";
 import { fetchZeroCurves, type CurvePointRow, type ZeroCurvesResponse } from "../../api/curves";
 import { LineChart, type Series } from "../LineChart";
 
-// Components of the yield-curve chapter (Coral Book II-2). The reader edits the zero-rate nodes and the
+// Components of the yield-curve chapter (Coral-Book II-2). The reader edits the zero-rate nodes and the
 // parallel shift; every change asks the R API (rmql) for the curves. Figures follow the manuscript's
 // ggplot2 figures: date on the x-axis, rates in percent, line type for the interpolation target.
 

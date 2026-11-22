@@ -3,7 +3,7 @@ import { ApiError } from "../../api/client";
 import { fetchCallable, type BondInputs, type CallableResponse, type MbsInputs } from "../../api/callable";
 import { LineChart } from "../LineChart";
 
-// Components of the early redemption chapter (Coral Book II-8): the callable bond under Hull-White, and the
+// Components of the early redemption chapter (Coral-Book II-8): the callable bond under Hull-White, and the
 // prepayment of a mortgage pool. Each change of the inputs asks the R API.
 
 type Req = { bond: BondInputs; mbs: MbsInputs };

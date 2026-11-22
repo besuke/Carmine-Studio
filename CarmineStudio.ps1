@@ -1,4 +1,4 @@
-﻿# CarmineStudio.ps1 - start rmql Compute Server (R + rmql) and the Carmine Studio page, then open it.
+﻿# CarmineStudio.ps1 - start rmql Compute Server (R + rmql) and the Carmine-Studio page, then open it.
 #
 #   powershell -ExecutionPolicy Bypass -File CarmineStudio.ps1          menu
 #   powershell -ExecutionPolicy Bypass -File CarmineStudio.ps1 dev      this PC: API 127.0.0.1:8787, page http://127.0.0.1:8081/
@@ -64,7 +64,7 @@ function Start-Dev {
   } else {
     Assert-PortFree 8787
     Write-Host "[1/3] rmql Compute Server を別のウィンドウで起動します（127.0.0.1:8787）..."
-    Start-Window "Carmine Studio - rmql Compute Server (8787)" "api"
+    Start-Window "Carmine-Studio - rmql Compute Server (8787)" "api"
     Wait-Url $LocalApi 120 "rmql Compute Server"
   }
   if (Test-Url $LocalPage) {
@@ -72,13 +72,13 @@ function Start-Dev {
   } else {
     Assert-PortFree 8081
     Write-Host "[2/3] 画面を別のウィンドウで起動します（$LocalPage）..."
-    Start-Window "Carmine Studio - page (8081)" "dev"
+    Start-Window "Carmine-Studio - page (8081)" "dev"
     Wait-Url $LocalPage 60 "画面"
   }
   Write-Host "[3/3] ブラウザで $LocalPage を開きます（このPCでの開発用）。"
   Start-Process $LocalPage
   Write-Host ""
-  Write-Host "止めるときは「Carmine Studio - rmql Compute Server (8787)」と「Carmine Studio - page (8081)」のウィンドウを閉じてください。"
+  Write-Host "止めるときは「Carmine-Studio - rmql Compute Server (8787)」と「Carmine-Studio - page (8081)」のウィンドウを閉じてください。"
 }
 
 function Start-Lan {
@@ -88,7 +88,7 @@ function Start-Lan {
   if (-not $hosts.Count) { throw "公開に使うホスト名も LAN の IP アドレスも見つかりません。carmine.config.json の publicHost を設定してください。" }
   $url = "http://$($hosts[0]):8081/"
   Write-Host "[1/2] 画面をビルドし、画面と計算を 8081 でまとめて公開します（別のウィンドウ）..."
-  Start-Window "Carmine Studio - LAN (8081)" "lan"
+  Start-Window "Carmine-Studio - LAN (8081)" "lan"
   Wait-Url $LocalPage 300 "社内LAN用のサーバー"
   # the name may take a moment to resolve right after the start: try for up to 15 seconds before warning
   $reached = $false
@@ -99,7 +99,7 @@ function Start-Lan {
   Write-Host ""
   Write-Host "社内の利用者には次のアドレスを案内してください（Windows ファイアウォールで 8081 の受信を許可しておきます）："
   foreach ($h in $hosts) { Write-Host "  http://${h}:8081/" }
-  Write-Host "止めるときは「Carmine Studio - LAN (8081)」のウィンドウを閉じてください。"
+  Write-Host "止めるときは「Carmine-Studio - LAN (8081)」のウィンドウを閉じてください。"
 }
 
 function Invoke-Safely([scriptblock]$Action) {
@@ -116,7 +116,7 @@ if ($Mode -eq "lan") { Invoke-Safely { Start-Lan }; exit }
 while ($true) {
   Write-Host ""
   Write-Host "=============================================================="
-  Write-Host " Carmine Studio『エンタープライズ金融モデル』（計算は rmql Compute Server）"
+  Write-Host " Carmine-Studio『エンタープライズ金融モデル』（計算は rmql Compute Server）"
   Write-Host "=============================================================="
   Write-Host " 1  起動する：rmql Compute Server（8787）と画面（8081）をこのPCで開く"
   Write-Host " 2  社内LANで起動する：画面と計算を 8081 でまとめて公開し、LAN のアドレスで開く"

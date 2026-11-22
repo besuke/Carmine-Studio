@@ -1,4 +1,4 @@
-# PRDC note (Coral Book II-9). Calculations are rmql: the schedule (generate_schedule), the value in
+# PRDC note (Coral-Book II-9). Calculations are rmql: the schedule (generate_schedule), the value in
 # closed form (each coupon is a floor plus a call spread on the FX rate) and by Monte Carlo (compute_prdc_value), the
 # expected coupon of each date and the probabilities of the floor and the cap (compute_forward_option_value: the call
 # and its strike sensitivity), and sample FX paths (generate_black_scholes_paths). Reconciled with the manuscript's

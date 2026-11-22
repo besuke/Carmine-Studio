@@ -251,7 +251,7 @@ export const TOC: Part[] = [
         title: "CNN の基礎と実践（JGB カーブ予測・ヨーロピアン）",
         route: "/enterprise/cnn-fundamentals",
         routeNote: "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまで、操作して確かめられます",
-        source: "Carmine Studio の独自の章（Coral Book に対応する章はない）",
+        source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: [
           "予測の起点の月と債券の条件（残存年限・クーポン・額面）を選び、1D-CNN・リッジ回帰の予測カーブと翌月の実績のカーブを重ねて見る",
           "債券を各カーブで評価した価値と損益（rmql）を、実績と比べる",
@@ -270,7 +270,7 @@ export const TOC: Part[] = [
         title: "CNN の金融モデル応用（Hull–White・MBS・CLO）",
         route: "/enterprise/cnn-applications",
         routeNote: "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説します",
-        source: "Carmine Studio の独自の章（Coral Book に対応する章はない）",
+        source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: ["解説のみ（画面での計算はありません）"],
         rows: [
           { sections: "12.1", topic: "複雑なモデルへの CNN 適用の共通の設計（入力、教師データ、範囲外の検証、フォールバック）", coverage: "対象外", rmql: "解説のみ" },
