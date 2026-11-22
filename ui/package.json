@@ -19,6 +19,7 @@
     "reconcile:prdc": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc/reconcile_prdc.R",
     "reconcile:p16": "node scripts/run-r.mjs ../server/tests/reconciliation/p16/reconcile_p16.R",
     "reconcile:mbs-prdc": "node scripts/run-r.mjs ../server/tests/reconciliation/mbs_prdc/reconcile_mbs_prdc.R",
+    "reconcile:bs-surrogate": "node scripts/run-r.mjs ../server/tests/reconciliation/cnn_bs/reconcile_bs_surrogate.R",
     "reconcile:callable": "node scripts/run-r.mjs ../server/tests/reconciliation/callable/reconcile_callable.R",
     "reconcile:rate-models": "node scripts/run-r.mjs ../server/tests/reconciliation/rate_models/reconcile_rate_models.R",
     "reconcile:calibration": "node scripts/run-r.mjs ../server/tests/reconciliation/calibration/reconcile_calibration.R",
