@@ -56,7 +56,7 @@ export function useSummary(): Call<P16Summary> {
 
 export function Status({ call, label }: { call: Call<unknown>; label: string }) {
   if (call.error && !call.data) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {call.error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{call.loading ? "R APIで計算中…" : label}</p>;
+  return <p className="status" aria-live="polite">{call.loading ? "計算中…" : label}</p>;
 }
 
 /** A number input that ignores what is not a number. */
@@ -100,7 +100,7 @@ export function CallState({ call, id }: { call: Call<{ response: { request_id: s
 
 export const sciOrFixed = (x: number) => (Math.abs(x) < 1e-3 && x !== 0 ? x.toExponential(2) : x.toFixed(4));
 export const metaLine = (m: { rmql_version: string; generated: string; seed: number | null }) =>
-  `事前計算：rmql ${m.rmql_version}、${m.generated.slice(0, 10)}${m.seed ? `、乱数の種 ${m.seed}` : ""}`;
+  `計算日 ${m.generated.slice(0, 10)}${m.seed ? `、乱数の種 ${m.seed}` : ""}`;
 
 /** The saved results of chapter 14 (server/data/p14), fetched once per page. */
 let mbsPrdcPromise: Promise<MbsPrdcSummary> | null = null;

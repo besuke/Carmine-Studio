@@ -19,6 +19,7 @@ import LookbackConvertible from "./content/chapters/lookback-convertible.mdx";
 import MbsPrdc from "./content/chapters/mbs-prdc.mdx";
 import { CurveProvider } from "./components/curves";
 import { CHAPTERS_LIST, ROUTE_ALIASES } from "./book/chapters";
+import { GROUPS } from "./book/groups";
 import { useEffect, useState } from "react";
 import { TocPage } from "./book/TocPage";
 import { href, useRoute } from "./book/router";
@@ -125,14 +126,6 @@ const CHAPTERS: Record<string, () => React.ReactNode> = {
   ),
 };
 
-/** The side menu's four groups (by what the reader computes), over the chapters of book/chapters.ts, in the order shown. */
-const SIDEBAR_GROUPS: { title: string; routes: string[] }[] = [
-  { title: "金利カーブ・債券", routes: ["/deterministic-cashflow", "/yield-curves", "/yield-curve-ois", "/credit-cds"] },
-  { title: "株・オプション・CB", routes: ["/black-model", "/enterprise/lookback-convertible"] },
-  { title: "金利モデル・仕組み債", routes: ["/irs-calibration", "/rate-models", "/early-redemption", "/prdc", "/enterprise/mbs-prdc"] },
-  { title: "計算基盤・ML・自動微分", routes: ["/enterprise/parallel-computing", "/enterprise/distributed-jobs", "/enterprise/cnn-fundamentals", "/enterprise/cnn-applications", "/enterprise/automatic-differentiation"] },
-];
-
 function ThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     try {
@@ -172,6 +165,13 @@ function Sidebar({
   collapsed: boolean;
   onToggle: () => void;
 }) {
+  // Only the group of the page on show is open (none on the top page and the server page); a click opens or closes a group,
+  // and moving to another page opens the group of that page. In the narrow (icon) sidebar every group shows its icons.
+  const groupOf = GROUPS.find((g) => g.items.some((it) => it.route === route))?.title;
+  const [open, setOpen] = useState<Record<string, boolean>>(() => (groupOf ? { [groupOf]: true } : {}));
+  useEffect(() => {
+    setOpen(groupOf ? { [groupOf]: true } : {});
+  }, [groupOf, route]);
   return (
     <nav className={`sidebar ${collapsed ? "collapsed" : ""}`} aria-label="ナビゲーション">
       <div className="sidebar-top">
@@ -190,33 +190,44 @@ function Sidebar({
         <Icon name="contents" />
         <span className="sidebar-label">目次</span>
       </a>
-      <a href={href("/server")} className={route === "/server" ? "active" : undefined} title="rmql Compute Server との接続">
+      <a href={href("/server")} className={route === "/server" ? "active" : undefined} title="計算サーバーとの接続">
         <Icon name="server" />
         <span className="sidebar-label">サーバー接続</span>
       </a>
-      <a href={href("/introduction")} className={route === "/introduction" ? "active" : undefined} title="序論">
-        <Icon name="book" />
-        <span className="sidebar-label">序論</span>
-      </a>
-      {SIDEBAR_GROUPS.map((g) => (
+      {GROUPS.map((g) => {
+        const isOpen = collapsed || !!open[g.title];
+        return (
         <div className="sidebar-group" key={g.title} data-testid="sidebar-group">
-          <div className="sidebar-part">{g.title}</div>
+          <button
+            type="button"
+            className="sidebar-part sidebar-group-toggle"
+            aria-expanded={isOpen}
+            onClick={() => setOpen((prev) => ({ ...prev, [g.title]: !prev[g.title] }))}
+          >
+            <span className="group-caret" aria-hidden="true">{isOpen ? "▾" : "▸"}</span>
+            {g.title}
+          </button>
+          {isOpen && (
           <ul className="chapter-list">
-            {g.routes.map((r) => {
-              const ch = CHAPTERS_LIST.find((c) => c.route === r);
-              if (!ch) return null;
+            {g.items.map((it) => {
+              const ch = CHAPTERS_LIST.find((c) => c.route === it.route);
+              const label = it.label ?? ch?.menu ?? ch?.title ?? it.route;
+              const icon = it.icon ?? ch?.icon;
+              if (!icon) return null;
               return (
-                <li key={ch.id}>
-                  <a href={href(ch.route!)} className={route === ch.route ? "active" : undefined} title={ch.menu ?? ch.title}>
-                    <Icon name={ch.icon} />
-                    <span className="sidebar-label">{ch.menu ?? ch.title}</span>
+                <li key={it.route}>
+                  <a href={href(it.route)} className={route === it.route ? "active" : undefined} title={label}>
+                    <Icon name={icon} />
+                    <span className="sidebar-label">{label}</span>
                   </a>
                 </li>
               );
             })}
           </ul>
+          )}
         </div>
-      ))}
+        );
+      })}
     </nav>
   );
 }

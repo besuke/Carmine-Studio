@@ -40,7 +40,7 @@ export function ApiStatus() {
     );
   }
   if (loading) {
-    return <p className="status" aria-live="polite">R APIで計算中…</p>;
+    return <p className="status" aria-live="polite">計算中…</p>;
   }
   return null;
 }

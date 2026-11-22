@@ -38,7 +38,7 @@ export function ResetShape() {
         <Num label="現物" value={spot} min={10} max={500} step={5} onChange={setSpot} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API。残存 5 年・クーポン 2%・アメリカン・信用スプレッド 2%）` : ""} />
+      <Status call={call} label={d ? "残存 5 年・クーポン 2%・アメリカン・信用スプレッド 2%" : ""} />
       {d ? (
         <>
           <div className="tiles">
@@ -67,7 +67,7 @@ export function ResetClosedForm() {
   return (
     <div className="table-wrap">
       <table className="data">
-        <caption>ヨーロピアン・ゼロクーポン・信用スプレッドなし・コールなしの閉じた式と、rmql の木の相対誤差　<span className="muted">{metaLine(d.meta)}</span></caption>
+        <caption>ヨーロピアン・ゼロクーポン・信用スプレッドなし・コールなしの閉じた式と、木の相対誤差　<span className="muted">{metaLine(d.meta)}</span></caption>
         <thead>
           <tr><th scope="col" className="num">α</th><th scope="col" className="num">下限</th><th scope="col" className="num">上限</th><th scope="col" className="num">閉じた式</th>
             {steps.map((n) => <th key={n} scope="col" className="num">{n} 段の相対誤差</th>)}</tr>
@@ -115,12 +115,12 @@ export function CarriedLive() {
         <Num label="木の段数" value={steps} min={2} max={400} step={50} onChange={setSteps} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API。アメリカン、残存 5 年、クーポン 2%、3 年後にコール 108、信用スプレッド 2%）` : ""} />
+      <Status call={call} label={d ? "アメリカン、残存 5 年、クーポン 2%、3 年後にコール 108、信用スプレッド 2%" : ""} />
       {d ? (
         <>
           <div className="tiles">
             <Tile emphasis label="価値" value={f(d.values.value, 4)} testId="carried-value" note={d.conventions.method} />
-            {method === "scaled" ? <Tile label="デルタ" value={f(d.values.delta, 4)} note="縮約では、グリークスもライブで求まる" /> : <Tile label="グリークス" value="事前計算" note="転換価額の格子のグリークスは 1 秒を超えるので、下の事前計算の表を見る" />}
+            {method === "scaled" ? <Tile label="デルタ" value={f(d.values.delta, 4)} note="縮約では、グリークスも求まる" /> : <Tile label="グリークス" value="事前計算" note="転換価額の格子のグリークスは 1 秒を超えるので、下の事前計算の表を見る" />}
           </div>
           {sc ? (
             <LineChart
@@ -181,13 +181,13 @@ export function CarriedGrid() {
       </div>
       <div className="table-wrap">
         <table className="data">
-          <caption data-testid="vega-convergence">ベガ（1.00 あたり）：自動微分と、中心差分の参考値。表の値の差を、方法の食い違いと読まないでください　<span className="muted">{metaLine(g.meta)}</span></caption>
+          <caption data-testid="vega-convergence">ベガ（1.00 あたり）：自動微分と中心差分　<span className="muted">{metaLine(g.meta)}</span></caption>
           <thead>
             <tr><th scope="col">方法</th><th scope="col" className="num">段数</th><th scope="col" className="num">点数</th><th scope="col" className="num">自動微分</th><th scope="col" className="num">差分（幅 1e-5）</th><th scope="col" className="num">差分（幅 0.01）</th><th scope="col" className="num">差分（幅 0.02）</th></tr>
           </thead>
           <tbody>{g.vega_convergence.map((r, i) => <tr key={i}><th scope="row">{r.method === "scaled" ? "縮約" : "格子"}</th><td className="num">{r.steps}</td><td className="num">{r.method === "scaled" ? "—" : r.price_nodes}</td><td className="num">{f(r.vega_ad, 2)}</td><td className="num">{f(r.fd_micro, 2)}</td><td className="num">{f(r.fd_wide_0_01, 2)}</td><td className="num">{f(r.fd_wide_0_02, 2)}</td></tr>)}</tbody>
         </table>
-        <p className="note">離散木の価値は、ボラティリティについて滑らかでなく、転換とコールの境界が節点で切り替わるところで小さく折れます。<strong>自動微分は、その点の木の局所の傾きを正確に返します</strong>（縮約では、幅 1e-5 の差分と小数 2 桁まで一致）が、段数が変わると、その傾きが動きます（縮約の 200・400・800・1600・3200 段で 53、91、78、76、75）。幅の広い差分は、この折れを均して、約 82〜85 に落ち着きます。<strong>格子の自動微分は、転換価額の格子を固定して微分する</strong>（rmql の仕様）ので、格子の範囲がボラティリティで動く分は含まず、幅 1e-5 の差分（格子を作り直す）とも一致しません。</p>
+        <p className="note">ベガは、離散木の局所の傾きで、段数で動きます（縮約の 200〜3200 段で 53、91、78、76、75）。幅の広い差分は約 82〜85 に落ち着きます。格子の自動微分は転換価額の格子を固定して微分するので、格子を作り直す差分とは一致しません。</p>
       </div>
     </>
   );

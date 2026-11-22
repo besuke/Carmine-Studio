@@ -148,7 +148,7 @@ cnn_forecast <- function(body = list()) {
     current_value = list(npv = v_now$npv, clean_price = v_now$clean_price),
     valuation = valuation,
     conventions = list(
-      curve = "各年限（2・5・10・20 年）の利回りを割引係数 (1+y)^-t にし、rmql の単調な対数3次補間の割引カーブを通す。4 本のカーブは同じ作り方",
+      curve = "各年限（2・5・10・20 年）の利回りを割引係数 (1+y)^-t にし、単調な対数3次補間の割引カーブを通す。4 本のカーブは同じ作り方",
       bond = sprintf("額面 %s、クーポン %.2f%%（半年ごと）、当月末に発行、残存 %d 年の固定利付債。現在の価値は当月末のカーブ、翌月の価値は翌月末の各カーブで評価", format(b$faceAmount, big.mark = ","), b$couponPct, as.integer(b$remainingYears)),
       pnl = "損益 = 翌月末の価値 − 当月末の価値（利息と 1 か月の経過を含む）",
       engine = paste("rmql", as.character(utils::packageVersion("rmql")))

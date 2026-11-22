@@ -82,8 +82,8 @@ export const CHAPTERS_LIST: NumberedChapter[] = [
 export const ROUTE_ALIASES: Record<string, { route: string; anchor: string }> = {
   "/parallel": { route: "/enterprise/parallel-computing", anchor: "measure" },
   "/enterprise/enterprise-computing": { route: "/enterprise/distributed-jobs", anchor: "enterprise-computing" },
-  "/enterprise/option-greeks": { route: "/enterprise/automatic-differentiation", anchor: "option-greeks" },
-  "/enterprise/interest-rate-risk": { route: "/enterprise/automatic-differentiation", anchor: "interest-rate-risk" },
-  "/enterprise/prdc": { route: "/enterprise/automatic-differentiation", anchor: "prdc" },
-  "/prdc-risk": { route: "/enterprise/automatic-differentiation", anchor: "prdc" },
+  "/enterprise/option-greeks": { route: "/enterprise/automatic-differentiation", anchor: "ad-vs-bump" },
+  "/enterprise/interest-rate-risk": { route: "/enterprise/automatic-differentiation", anchor: "ad-vs-bump" },
+  "/enterprise/prdc": { route: "/enterprise/automatic-differentiation", anchor: "prdc-mc" },
+  "/prdc-risk": { route: "/enterprise/automatic-differentiation", anchor: "prdc-mc" },
 };

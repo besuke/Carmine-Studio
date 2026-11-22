@@ -50,7 +50,7 @@ export function ConvertibleLive() {
         <Num label="木の段数" value={steps} min={2} max={300} step={10} onChange={setSteps} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API）` : ""} />
+      <Status call={call} label="" />
       {d ? (
         <>
           <div className="tiles">
@@ -60,7 +60,7 @@ export function ConvertibleLive() {
           </div>
           <div className="table-wrap">
             <table className="data">
-              <caption>グリークス（rmql）　<Tag id={d.response.request_id} /></caption>
+              <caption>グリークス　<Tag id={d.response.request_id} /></caption>
               <thead><tr><th scope="col">項目</th><th scope="col" className="num">値</th></tr></thead>
               <tbody>{GREEKS.map(([k, label]) => <tr key={k}><th scope="row">{label}</th><td className="num">{f(d.values[k], 5)}</td></tr>)}</tbody>
             </table>

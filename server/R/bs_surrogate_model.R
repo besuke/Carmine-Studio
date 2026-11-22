@@ -68,7 +68,7 @@ bs_surrogate_compute <- function(body = list()) {
     conventions = list(
       network = "価格は S と K について 1 次同次なので、入力は (ln(S/K), 満期, ボラティリティ, 金利, 配当利回り) の 5 つ、出力は C/K。全結合 5-32-32-1、tanh",
       delta = "ネットワークのデルタ = c'(ln(S/K)) / (S/K)。c' は、入力に対するバックワードパス（11.3 の連鎖律）で求める",
-      exact = paste("rmql", as.character(utils::packageVersion("rmql")), "の閉じた式（compute_european_option_value）")
+      exact = "ブラック・ショールズの閉じた式"
     )
   )
 }

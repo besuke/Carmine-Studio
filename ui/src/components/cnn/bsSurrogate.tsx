@@ -48,18 +48,18 @@ export function BsSurrogateLive() {
         <Num label="満期（年）" value={time} min={0.01} max={30} step={0.25} onChange={setTime} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? "学習はオフラインで実施済み。ネットワークの値は、保存した重みからの計算（R）、基準は rmql の閉じた式" : ""} />
+      <Status call={call} label={d ? "学習はオフラインで実施済み。ネットワークの値は、保存した重みからの計算（R）、基準は閉じた式" : ""} />
       {d ? (
         <>
           {d.warnings.length ? (
             <div className="banner warn" role="status" data-testid="bs-warning">{d.warnings.map((w) => <div key={w}>{w}</div>)}</div>
           ) : null}
           <div className="tiles">
-            <Tile emphasis label="ネットワークの価格" value={f(d.network.price, 4)} testId="bs-network-price" note={`rmql の閉じた式 ${f(d.exact.price, 4)}`} />
+            <Tile emphasis label="ネットワークの価格" value={f(d.network.price, 4)} testId="bs-network-price" note={`閉じた式 ${f(d.exact.price, 4)}`} />
             <Tile label="価格の誤差（ネットワーク − 真の値）" value={sign(d.error.price, 4)} testId="bs-price-error" note={`相対 ${sign(100 * d.error.price_relative, 2)}%`} />
-            <Tile label="ネットワークのデルタ（バックワード）" value={f(d.network.delta, 4)} testId="bs-network-delta" note={`rmql のデルタ ${f(d.exact.delta, 4)}、誤差 ${sign(d.error.delta, 4)}`} />
+            <Tile label="ネットワークのデルタ（バックワード）" value={f(d.network.delta, 4)} testId="bs-network-delta" note={`閉じた式のデルタ ${f(d.exact.delta, 4)}、誤差 ${sign(d.error.delta, 4)}`} />
           </div>
-          <p className="note">{d.conventions.network}。{d.conventions.delta}。基準：{d.conventions.exact}。　<Tag id={d.response.request_id} /></p>
+          <p className="note">{d.conventions.network}。{d.conventions.delta}。　<Tag id={d.response.request_id} /></p>
         </>
       ) : null}
     </>
@@ -80,7 +80,7 @@ export function BsSurrogateResults() {
   const lcTicks = [0, 2000, 4000, 6000].map((x) => ({ x, label: String(x) }));
   return (
     <>
-      <p className="note">学習：{d.settings.n_train.toLocaleString("ja-JP")} 点（rmql の閉じた式が教師）、検証 {d.settings.n_validation.toLocaleString("ja-JP")} 点、全結合 5-{d.settings.hidden}-{d.settings.hidden}-1（{d.settings.activation}）、{d.settings.optimizer}、{d.settings.epochs.toLocaleString("ja-JP")} エポック、乱数の種 {d.meta.seed}（rmql {d.meta.rmql_version}、{d.meta.generated.slice(0, 10)}）。
+      <p className="note">学習：{d.settings.n_train.toLocaleString("ja-JP")} 点（閉じた式が教師）、検証 {d.settings.n_validation.toLocaleString("ja-JP")} 点、全結合 5-{d.settings.hidden}-{d.settings.hidden}-1（{d.settings.activation}）、{d.settings.optimizer}、{d.settings.epochs.toLocaleString("ja-JP")} エポック、乱数の種 {d.meta.seed}（{d.meta.generated.slice(0, 10)}）。
         勾配の数値チェック（解析的な勾配と中心差分の差、最大の成分に対する比）の最大は {sci(Math.max(...Object.values(d.gradient_check)))} でした。</p>
       <LineChart title="学習曲線（平均二乗誤差、C/K の単位）" origin={DATE} xMin={0} xMax={d.settings.epochs} xTicks={lcTicks} xLabel="エポック" yLabel="MSE"
         series={[
@@ -90,21 +90,21 @@ export function BsSurrogateResults() {
         formatY={(y) => `1e${y.toFixed(1)}`} formatTick={(y) => `1e${y.toFixed(0)}`} />
       <LineChart title={`価格（C/K）：ln(S/K) の学習範囲は ${lo[0]}〜${hi[0]}。範囲の外で、ネットワークは真の値から離れる`} origin={DATE} xMin={-1} xMax={1} xTicks={mTicks} xLabel="ln(S/K)" yLabel="C / K"
         series={[
-          { key: "ex", label: "rmql の閉じた式", color: "var(--text)", points: pts(m.grid, m.exact_price) },
+          { key: "ex", label: "閉じた式", color: "var(--text)", points: pts(m.grid, m.exact_price) },
           { key: "nn", label: "ネットワーク", color: "var(--series-1)", dashed: true, points: pts(m.grid, m.network_price) },
         ]}
         markers={[{ x: lo[0], label: "学習範囲の下限" }, { x: hi[0], label: "学習範囲の上限" }]}
         formatY={(y) => y.toFixed(3)} formatTick={(y) => y.toFixed(2)} footer={<span className="muted">他の入力は、満期 1 年、ボラティリティ 25%、金利 3%、配当 1%</span>} />
       <LineChart title="デルタ：ネットワークの入力に対する微分（バックワード）と、真のデルタ" origin={DATE} xMin={-1} xMax={1} xTicks={mTicks} xLabel="ln(S/K)" yLabel="デルタ"
         series={[
-          { key: "ex", label: "rmql のデルタ", color: "var(--text)", points: pts(m.grid, m.exact_delta) },
+          { key: "ex", label: "閉じた式のデルタ", color: "var(--text)", points: pts(m.grid, m.exact_delta) },
           { key: "nn", label: "ネットワークのデルタ", color: "var(--series-2)", dashed: true, points: pts(m.grid, m.network_delta) },
         ]}
         markers={[{ x: lo[0], label: "学習範囲の下限" }, { x: hi[0], label: "学習範囲の上限" }]}
         formatY={(y) => y.toFixed(3)} formatTick={(y) => y.toFixed(2)} />
       <LineChart title={`価格（C/K）を満期に対して：学習範囲は ${lo[1]}〜${hi[1]} 年`} origin={DATE} xMin={0} xMax={4} xTicks={tTicks} xLabel="満期（年）" yLabel="C / K"
         series={[
-          { key: "ex", label: "rmql の閉じた式", color: "var(--text)", points: pts(t.grid, t.exact_price) },
+          { key: "ex", label: "閉じた式", color: "var(--text)", points: pts(t.grid, t.exact_price) },
           { key: "nn", label: "ネットワーク", color: "var(--series-1)", dashed: true, points: pts(t.grid, t.network_price) },
         ]}
         markers={[{ x: lo[1], label: "下限" }, { x: hi[1], label: "上限" }]} formatY={(y) => y.toFixed(3)} formatTick={(y) => y.toFixed(2)} />

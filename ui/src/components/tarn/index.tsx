@@ -56,7 +56,7 @@ export function TarnLive() {
         <span className="controls-state muted">経路数 × ステップ × 年数 = {work.toLocaleString("ja-JP")}（上限 300,000）</span>
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API）` : ""} />
+      <Status call={call} label="" />
       {d ? (
         <>
           <div className="tiles">

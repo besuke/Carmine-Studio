@@ -52,9 +52,9 @@ const f = (x: number, n: number) => x.toFixed(n);
 const t3 = (x: number) => (Math.trunc(x * 1000) / 1000).toFixed(3);
 
 export function ParallelStatus() {
-  const { error, loading, data } = useP();
+  const { error, loading } = useP();
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{loading ? "R APIで計測中…" : data ? `計算エンジン：${data.conventions.engine}（R、HTTP API）` : ""}</p>;
+  return <p className="status" aria-live="polite">{loading ? "計測中…" : ""}</p>;
 }
 
 /** III-1.4: the six scenarios, one independent task per row. */

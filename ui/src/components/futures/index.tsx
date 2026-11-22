@@ -52,9 +52,9 @@ const f = (x: number, n: number) => x.toFixed(n);
 const t3 = (x: number) => (Math.trunc(x * 1000) / 1000).toFixed(3);
 
 export function FuturesStatus() {
-  const { error, loading, data } = useF();
+  const { error, loading } = useF();
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{loading ? "R APIで計算中…" : data ? `計算エンジン：${data.conventions.engine}（R、HTTP API）` : ""}</p>;
+  return <p className="status" aria-live="polite">{loading ? "計算中…" : ""}</p>;
 }
 
 export function FuturesControls() {
@@ -74,7 +74,7 @@ export function FuturesControls() {
           onChange={(e) => { const v = Number(e.target.value); if (e.target.value !== "" && Number.isFinite(v)) set({ fundingPct: v }); }} />
       </label>
       {req.mode === "flat" && <button type="button" onClick={() => set({ yieldPct: 8, fundingPct: 9 })}>ストレスシナリオ（8%・9%）</button>}
-      <span className="controls-state">{loading ? "R APIで再計算中…" : data ? <>CTD：<strong data-testid="ctd-issue">{data.ctd_issue}回債</strong>　<Tag d={data} /></> : null}</span>
+      <span className="controls-state">{loading ? "再計算中…" : data ? <>CTD：<strong data-testid="ctd-issue">{data.ctd_issue}回債</strong>　<Tag d={data} /></> : null}</span>
     </div>
   );
 }

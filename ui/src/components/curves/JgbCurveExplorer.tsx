@@ -172,7 +172,7 @@ export function JgbCurveExplorer() {
   const month = data?.months[index];
 
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  if (!data || !month) return <p className="muted">R APIで月別のカーブを計算中…</p>;
+  if (!data || !month) return <p className="muted">月別のカーブを計算中…</p>;
 
   const togglePlay = () => {
     if (!playing && index >= data.months.length - 1) setIndex(0);

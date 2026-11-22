@@ -66,9 +66,9 @@ const bp = (x: number, n = 4) => `${f(x * 1e4, n)} bp`;
 const opt = (x: number | null, fmt: (v: number) => string) => (x == null ? "—" : fmt(x));
 
 export function CdsStatus() {
-  const { error, loading, data } = useC();
+  const { error, loading } = useC();
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{loading ? "R APIで計算中…" : data ? `計算エンジン：${data.conventions.engine}（R、HTTP API）` : ""}</p>;
+  return <p className="status" aria-live="polite">{loading ? "計算中…" : ""}</p>;
 }
 
 const FIELDS: { key: keyof CdsInputs; label: string; step: number; min: number; max: number }[] = [
@@ -92,7 +92,7 @@ export function CdsControls({ which }: { which: Section }) {
         </label>
       ))}
       <button type="button" onClick={() => reset(which)}>初期値に戻す</button>
-      <span className="controls-state">{loading ? "R APIで再計算中…" : data ? <Tag d={data} /> : null}</span>
+      <span className="controls-state">{loading ? "再計算中…" : data ? <Tag d={data} /> : null}</span>
     </div>
   );
 }

@@ -544,3 +544,21 @@ table, .tile-value, .tooltip, .server-facts dd, .num, td, th { font-variant-nume
 .prose table:not(.data):not(.kv) { border-collapse: collapse; margin: 1rem 0; background: var(--surface-1); }
 .prose table:not(.data):not(.kv) th, .prose table:not(.data):not(.kv) td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
 .prose table:not(.data):not(.kv) thead th { color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--axis); }
+
+/* top page: launcher cards */
+.toc .lead { color: var(--text-secondary); margin: 0.2rem 0 0.4rem; }
+.launch-group h2 { font-size: 0.95rem; letter-spacing: 0.04em; color: var(--brand); text-transform: none; border-top: 1px solid var(--grid); margin: 1.4rem 0 0.6rem; padding-top: 0.6rem; }
+.launcher { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.6rem; }
+.launch-card { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.7rem 0.9rem; background: var(--surface-1); border: 1px solid var(--grid); border-radius: var(--radius); color: var(--text-primary); text-decoration: none; }
+.launch-card:hover { border-color: var(--series-1); background: var(--surface-2); }
+.launch-name { font-weight: 700; }
+.launch-blurb { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
+.launch-open { margin-top: auto; padding-top: 0.3rem; color: var(--series-1); font-size: 0.8rem; }
+.prose .ref { margin-top: 2rem; font-size: 0.78rem; color: var(--text-muted); }
+
+/* collapsible groups of the side menu */
+.sidebar .sidebar-group-toggle { display: flex; align-items: center; gap: 0.35rem; width: 100%; margin: 0.4rem 0 0.1rem; padding: 0.25rem 0.4rem; border: none; border-radius: 4px; background: none; box-shadow: none; filter: none; text-align: left; cursor: pointer; }
+.sidebar .sidebar-group-toggle:hover:not(:disabled) { background: var(--surface-2); color: var(--text-primary); filter: none; }
+.sidebar .sidebar-group-toggle:active:not(:disabled) { transform: none; box-shadow: none; }
+.sidebar .sidebar-group-toggle .group-caret { width: 0.8rem; color: var(--brand); }
+.sidebar.collapsed .sidebar-group-toggle { height: 1px; min-height: 0; padding: 0; gap: 0; }

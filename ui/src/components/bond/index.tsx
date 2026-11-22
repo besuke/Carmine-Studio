@@ -67,9 +67,9 @@ const sci = (x: number) => (x === 0 ? "0" : x.toExponential(2));
 const yearsFrom = (origin: string, date: string) => (Date.parse(date) - Date.parse(origin)) / 86_400_000 / 365;
 
 export function BondStatus() {
-  const { error, loading, data } = useB();
+  const { error, loading } = useB();
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{loading ? "R APIで計算中…" : data ? `計算エンジン：${data.conventions.engine}（R、HTTP API）` : ""}</p>;
+  return <p className="status" aria-live="polite">{loading ? "計算中…" : ""}</p>;
 }
 
 type Field = { key: string; label: string; step: number; min: number; max: number };
@@ -109,7 +109,7 @@ export function BondControls({ which }: { which: Section }) {
         </label>
       ))}
       <button type="button" onClick={() => reset(which)}>初期値に戻す</button>
-      <span className="controls-state">{loading ? "R APIで再計算中…" : data ? <Tag d={data} /> : null}</span>
+      <span className="controls-state">{loading ? "再計算中…" : data ? <Tag d={data} /> : null}</span>
     </div>
   );
 }
@@ -283,8 +283,8 @@ export function RiskTable() {
             </div>
             <div className="table-wrap">
               <table className="data">
-                <caption>債券価格と金利リスク指標（解析式と計算エンジン、Y = {t3(d.bond.compound_yield_pct)}%）　<Tag d={d} /></caption>
-                <thead><tr><th scope="col">指標</th><th scope="col" className="num">解析式</th><th scope="col" className="num">計算エンジン</th><th scope="col" className="num">差</th></tr></thead>
+                <caption>債券価格と金利リスク指標（解析式と計算値、Y = {t3(d.bond.compound_yield_pct)}%）　<Tag d={d} /></caption>
+                <thead><tr><th scope="col">指標</th><th scope="col" className="num">解析式</th><th scope="col" className="num">計算値</th><th scope="col" className="num">差</th></tr></thead>
                 <tbody>{rows.map(([k, a, b, n]) => <tr key={k}><th scope="row">{k}</th><td className="num">{n === 3 ? t3(a) : f(a, n)}</td><td className="num">{n === 3 ? t3(b) : f(b, n)}</td><td className="num">{sci(a - b)}</td></tr>)}</tbody>
               </table>
             </div>

@@ -91,7 +91,7 @@ const sign = (x: number, n: number) => `${x >= 0 ? "+" : "−"}${Math.abs(x).toF
 export function CnnStatus() {
   const { error, loading, summary } = useC();
   if (error) return <div className="banner error" role="alert"><strong>R APIの応答を受け取れませんでした。</strong> {error}<div className="banner-cmd">起動コマンド：<code>npm run api</code></div></div>;
-  return <p className="status" aria-live="polite">{loading ? "R APIで計算中…" : summary ? `計算エンジン：${summary.conventions.engine}（R、HTTP API）。学習はオフラインで実施済み` : ""}</p>;
+  return <p className="status" aria-live="polite">{loading ? "計算中…" : summary ? "学習はオフラインで実施済み" : ""}</p>;
 }
 
 /** The month to forecast from, and the bond. */
@@ -197,7 +197,7 @@ export function ValuationTable() {
           </div>
           <div className="table-wrap">
             <table className="data">
-              <caption>債券の価値と損益（rmql による評価）　<Tag id={d.response.request_id} /></caption>
+              <caption>債券の価値と損益　<Tag id={d.response.request_id} /></caption>
               <thead>
                 <tr>
                   <th scope="col">シナリオ</th><th scope="col" className="num">翌月末の価値</th><th scope="col" className="num">単価</th>

@@ -41,7 +41,7 @@ build_market_curves <- function(csv_file, x_max, source_text, source_url, data_u
       source = source_text,
       source_url = source_url,
       data_url = data_url,
-      curve = "各年限の利回りを割引係数 (1+y)^-t にし、rmql の単調な対数3次補間の割引カーブ（create_discount_curve）を通して、0.5年刻みの年複利のゼロ金利を読む",
+      curve = "各年限の利回りを割引係数 (1+y)^-t にし、単調な対数3次補間の割引カーブ（create_discount_curve）を通して、0.5年刻みの年複利のゼロ金利を読む",
       engine = paste("rmql", as.character(utils::packageVersion("rmql")))
     )
   )

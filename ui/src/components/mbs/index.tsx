@@ -47,7 +47,7 @@ export function MbsLive() {
         <Num label="OAS を求める価格" value={price} min={1} max={1000} step={1} onChange={setPrice} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API）` : ""} />
+      <Status call={call} label="" />
       {d ? (
         <>
           <LineChart title="元本残高（額面 100）：金利が下がるほど、早く減る" origin={DATE} xMin={0} xMax={months - 1} xTicks={ticks} xLabel="経過" yLabel="残高"
@@ -56,7 +56,7 @@ export function MbsLive() {
             series={series((k) => d.scenarios[k].cpr)} formatY={(y) => `${(100 * y).toFixed(2)}%`} formatTick={(y) => `${(100 * y).toFixed(0)}%`} zeroLine />
           <div className="table-wrap">
             <table className="data">
-              <caption>借換え金利の 3 つの経路での価格と平均残存期間（rmql。短期金利 = 借換え金利 − 3%、各経路を 1 本として割り引く）</caption>
+              <caption>借換え金利の 3 つの経路での価格と平均残存期間（短期金利 = 借換え金利 − 3%、各経路を 1 本として割り引く）</caption>
               <thead><tr><th scope="col">経路</th><th scope="col" className="num">価格</th><th scope="col" className="num">加重平均残存期間（年）</th></tr></thead>
               <tbody>{(["down", "flat", "up"] as const).map((k) => <tr key={k}><th scope="row">{SCENARIO_LABEL[k]}（{sign(d.scenarios[k].slope_pct_per_year, 2)}%/年）</th><td className="num" data-testid={`mbs-price-${k}`}>{f(d.scenarios[k].price, 4)}</td><td className="num">{f(d.scenarios[k].weighted_average_life, 2)}</td></tr>)}</tbody>
             </table>

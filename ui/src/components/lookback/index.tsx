@@ -50,7 +50,7 @@ export function LookbackLive() {
         <Num label="木の段数" value={steps} min={2} max={400} step={12} onChange={setSteps} width="5em" />
         <CallState call={call} />
       </div>
-      <Status call={call} label={d ? `計算エンジン：${d.conventions.engine}（R、HTTP API）` : ""} />
+      <Status call={call} label="" />
       {d ? (
         <>
           <div className="tiles">
@@ -60,7 +60,7 @@ export function LookbackLive() {
           </div>
           <div className="table-wrap">
             <table className="data">
-              <caption>価値とグリークス（rmql）　<Tag id={d.response.request_id} /></caption>
+              <caption>価値とグリークス　<Tag id={d.response.request_id} /></caption>
               <thead><tr><th scope="col">項目</th><th scope="col" className="num">連続監視</th><th scope="col" className="num">離散監視</th></tr></thead>
               <tbody>
                 {GREEKS.map(([k, label]) => (
