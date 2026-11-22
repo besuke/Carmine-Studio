@@ -24,6 +24,7 @@
 #   POST /api/lookback            {"lookbackType":"floating","optionType":"call","spot":100,...} -> lookback option, continuous and discrete (13.2)
 #   POST /api/convertible         {"bond":{...},"conversion":{...},"market":{...},"steps":200} -> convertible bond, fixed or reset price (13.3, 13.4)
 #   POST /api/mscb                {"bond":{...},"resetYears":[1,2],"rule":"downward_only","method":"scaled"} -> price carried between resets (13.5)
+#   POST /api/mbs/state, /api/prdc/tarn, GET /api/mbs-prdc/summary -> chapter 14: the MBS balance and OAS, the PRDC target redemption and knock-out
 #   GET  /api/lookback-convertible/summary -> the precomputed convergence and comparison tables of chapter 13
 #   POST /api/prdc-risk           {"market":{...},"mc":{...},"threads":{...}} -> PRDC risk: AD vs bump, threads (Part III)
 #   POST /api/prdc-risk/job       {"scenarios":[{"id":1,"spot":150,"volPct":12},...]} -> one job of the distributed grid
@@ -64,6 +65,7 @@ source(file.path(script_dir, "R", "jgb_curve_model.R"))
 source(file.path(script_dir, "R", "cnn_model.R"))
 source(file.path(script_dir, "R", "lookback_model.R"))
 source(file.path(script_dir, "R", "convertible_model.R"))
+source(file.path(script_dir, "R", "mbs_prdc_model.R"))
 # the demo data do not change while the server runs
 ASW_LIST <- asw_list()
 ASW_REPORT <- asw_report()
@@ -344,7 +346,8 @@ handle <- function(req) {
     return(json_response(200, result, request_id = id))
   }
   # Lookback options, convertible bonds and MSCB (chapter 13)
-  for (p16 in list(list("/api/lookback", lookback_compute), list("/api/convertible", convertible_compute), list("/api/mscb", mscb_compute))) {
+  for (p16 in list(list("/api/lookback", lookback_compute), list("/api/convertible", convertible_compute), list("/api/mscb", mscb_compute),
+                    list("/api/mbs/state", mbs_state_compute), list("/api/prdc/tarn", prdc_tarn_compute))) {
     if (identical(path, p16[[1]])) {
       if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body (every field is optional), for example {}.")))
       return(p16_post(req, p16[[2]]))
@@ -353,6 +356,14 @@ handle <- function(req) {
   if (identical(path, "/api/lookback-convertible/summary")) {
     if (method != "GET") return(json_response(405, list(error = "Use GET.")))
     result <- tryCatch(lookback_convertible_summary(), error = function(e) structure(list(error = conditionMessage(e)), class = "failed"))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  if (identical(path, "/api/mbs-prdc/summary")) {
+    if (method != "GET") return(json_response(405, list(error = "Use GET.")))
+    result <- tryCatch(mbs_prdc_summary(), error = function(e) structure(list(error = conditionMessage(e)), class = "failed"))
     if (inherits(result, "failed")) return(json_response(500, unclass(result)))
     id <- request_id(req)
     result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))

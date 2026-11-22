@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ApiError } from "../api/client";
 import { fetchP16Summary, type P16Summary } from "../api/p16";
+import { fetchMbsPrdcSummary, type MbsPrdcSummary } from "../api/mbsPrdc";
 
 // Shared by the components of chapter 13: a debounced call of the R API that follows the inputs, the saved results, and
 // the small pieces every section uses. The page shows what the API returns; no calculation happens here.
@@ -100,3 +101,21 @@ export function CallState({ call, id }: { call: Call<{ response: { request_id: s
 export const sciOrFixed = (x: number) => (Math.abs(x) < 1e-3 && x !== 0 ? x.toExponential(2) : x.toFixed(4));
 export const metaLine = (m: { rmql_version: string; generated: string; seed: number | null }) =>
   `事前計算：rmql ${m.rmql_version}、${m.generated.slice(0, 10)}${m.seed ? `、乱数の種 ${m.seed}` : ""}`;
+
+/** The saved results of chapter 14 (server/data/p14), fetched once per page. */
+let mbsPrdcPromise: Promise<MbsPrdcSummary> | null = null;
+export function useMbsPrdcSummary(): Call<MbsPrdcSummary> {
+  const [state, setState] = useState<Call<MbsPrdcSummary>>({ data: null, loading: true, error: null });
+  useEffect(() => {
+    mbsPrdcPromise ??= fetchMbsPrdcSummary();
+    let alive = true;
+    mbsPrdcPromise
+      .then((data) => alive && setState({ data, loading: false, error: null }))
+      .catch((e: unknown) => {
+        mbsPrdcPromise = null;
+        if (alive) setState({ data: null, loading: false, error: e instanceof ApiError ? e.message : String(e) });
+      });
+    return () => { alive = false; };
+  }, []);
+  return state;
+}

@@ -54,7 +54,7 @@
 | 11. CNN の基礎と実践 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ヨーロピアン・オプションの曲面への応用（解説）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`。Coral-Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
 | 12. CNN の金融モデル応用 | Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較（解説のみ） | `#/enterprise/cnn-applications` |
 | 13. ルックバック・転換社債・MSCB | 「明日からの価値のために、今日までの何を覚えておくか」を貫く問いにして、ルックバック（最小値）、転換社債、MSCB（転換価額）の状態と次元の縮約を扱う、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表。設計：`docs/part3_chapters_13_15_spec.md`）。Coral-Book に対応する章はない | `#/enterprise/lookback-convertible` |
-| 14. MBS・PRDC | 縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を経路ごとに持ち越す、Carmine-Studio の独自の章（準備中）。PRDC の画面は 14.1 | `#/enterprise/mbs-prdc` |
+| 14. MBS・PRDC | 縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を経路ごとに持ち越す、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表）。PRDC の画面は 14.1 | `#/enterprise/mbs-prdc` |
 | 15. 自動微分 | Coral-Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
 | 14.1 PRDC | クーポンのペイオフ、FX のサンプルパス、現在価値（閉じた式とモンテカルロ）、期待クーポンの期間構造とフロア・キャップの確率、クーポンの分布、FX スポット・ボラ感応度（II-9.1〜9.6。原稿の結果に照合） | `#/prdc` |
 | サーバー接続 | rmql Compute Server（R の HTTP API）との接続の状態、往復の時間、利用者が開くアドレス、API の一覧。右上の「rmql Compute Server：接続中／未接続」からも開く | `#/server` |

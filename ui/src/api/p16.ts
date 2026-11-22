@@ -72,9 +72,9 @@ export interface P16Summary {
 }
 export interface P16Meta { script: string; rmql_version: string; generated: string; seed: number | null; r_version: string; platform: string; note: string }
 
-type Options = { baseUrl?: string; signal?: AbortSignal; requestId?: string };
+export type Options = { baseUrl?: string; signal?: AbortSignal; requestId?: string };
 
-async function call<T extends { response: ResponseStamp }>(path: string, init: RequestInit, requestId: string, options: Options): Promise<T> {
+export async function call<T extends { response: ResponseStamp }>(path: string, init: RequestInit, requestId: string, options: Options): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${options.baseUrl ?? ""}${path}`, {
@@ -92,7 +92,7 @@ async function call<T extends { response: ResponseStamp }>(path: string, init: R
   return body;
 }
 
-function post<T extends { response: ResponseStamp }>(path: string, request: object, options: Options): Promise<T> {
+export function post<T extends { response: ResponseStamp }>(path: string, request: object, options: Options): Promise<T> {
   return call<T>(path, { method: "POST", body: JSON.stringify(request) }, options.requestId ?? newRequestId(), options);
 }
 
