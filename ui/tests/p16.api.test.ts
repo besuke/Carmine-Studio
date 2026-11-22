@@ -152,6 +152,12 @@ describe("precomputed results (chapters 13.2 to 13.5)", () => {
     const call = d.lookback_convergence.every_step.call;
     const scaled = call.error.map((e, i) => e * Math.sqrt(call.steps[i]));
     expect(Math.max(...scaled) - Math.min(...scaled)).toBeLessThan(0.05 * Math.max(...scaled));
+    // the vega of the discrete lattice: the automatic-differentiation vega of the scaled lattice equals the micro-step difference (the exact local slope),
+    // while the wide-step differences settle in a band that the single-lattice values (which jump with the steps) do not
+    const sc = d.mscb_carried_grid.vega_convergence.filter((r) => r.method === "scaled");
+    for (const r of sc) expect(Math.abs(r.vega_ad - r.fd_micro)).toBeLessThan(0.05);
+    expect(Math.max(...sc.map((r) => r.vega_ad)) - Math.min(...sc.map((r) => r.vega_ad))).toBeGreaterThan(10); // the lattice vega moves with the steps
+    for (const r of d.mscb_carried_grid.vega_convergence.filter((r) => r.steps >= 800 || r.method === "grid")) expect(r.fd_wide_0_02).toBeGreaterThan(75), expect(r.fd_wide_0_02).toBeLessThan(90);
     // the closed form of the European reset is met at 2000 steps
     for (const row of d.mscb_reset_closed_form.closed_form_table) expect(Math.abs(row.relative_error.at(-1)!)).toBeLessThan(1e-4);
     // the convertible lies above both the straight bond and the conversion value

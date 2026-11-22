@@ -179,6 +179,16 @@ export function CarriedGrid() {
           <tbody>{(["value", "delta", "gamma", "vega", "rho", "dividend_rho", "credit_spread_sensitivity"] as const).map((k) => <tr key={k}><th scope="row">{k}</th><td className="num">{sign(g.greeks.grid[k], 4)}</td><td className="num">{sign(g.greeks.scaled[k], 4)}</td></tr>)}</tbody>
         </table>
       </div>
+      <div className="table-wrap">
+        <table className="data">
+          <caption data-testid="vega-convergence">ベガ（1.00 あたり）：自動微分と、中心差分の参考値。表の値の差を、方法の食い違いと読まないでください　<span className="muted">{metaLine(g.meta)}</span></caption>
+          <thead>
+            <tr><th scope="col">方法</th><th scope="col" className="num">段数</th><th scope="col" className="num">点数</th><th scope="col" className="num">自動微分</th><th scope="col" className="num">差分（幅 1e-5）</th><th scope="col" className="num">差分（幅 0.01）</th><th scope="col" className="num">差分（幅 0.02）</th></tr>
+          </thead>
+          <tbody>{g.vega_convergence.map((r, i) => <tr key={i}><th scope="row">{r.method === "scaled" ? "縮約" : "格子"}</th><td className="num">{r.steps}</td><td className="num">{r.method === "scaled" ? "—" : r.price_nodes}</td><td className="num">{f(r.vega_ad, 2)}</td><td className="num">{f(r.fd_micro, 2)}</td><td className="num">{f(r.fd_wide_0_01, 2)}</td><td className="num">{f(r.fd_wide_0_02, 2)}</td></tr>)}</tbody>
+        </table>
+        <p className="note">離散木の価値は、ボラティリティについて滑らかでなく、転換とコールの境界が節点で切り替わるところで小さく折れます。<strong>自動微分は、その点の木の局所の傾きを正確に返します</strong>（縮約では、幅 1e-5 の差分と小数 2 桁まで一致）が、段数が変わると、その傾きが動きます（縮約の 200・400・800・1600・3200 段で 53、91、78、76、75）。幅の広い差分は、この折れを均して、約 82〜85 に落ち着きます。<strong>格子の自動微分は、転換価額の格子を固定して微分する</strong>（rmql の仕様）ので、格子の範囲がボラティリティで動く分は含まず、幅 1e-5 の差分（格子を作り直す）とも一致しません。</p>
+      </div>
     </>
   );
 }

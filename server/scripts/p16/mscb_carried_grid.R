@@ -12,9 +12,9 @@ bond <- p16_bond(5, 0.02)
 exercise <- c(p16_settlement, format(p16_years_to_date(5)))
 calls <- data.frame(date = p16_years_to_date(3), kind = "call", price = 108)
 resets <- vapply(1:4, \(y) as.numeric(p16_years_to_date(y)), 0) |> as.Date(origin = "1970-01-01")
-run <- function(method, steps, nodes = 40L, greeks = TRUE, spot = market$spot, reset = resets, calls_ = calls) {
+run <- function(method, steps, nodes = 40L, greeks = TRUE, spot = market$spot, reset = resets, calls_ = calls, vol = market$volatility) {
   compute_carried_reset_convertible_bond_value(bond, p16_settlement, "american", exercise, reset, "downward_only", 0.9, 100, spot = spot, rate = market$rate, dividend_yield = market$dividend,
-                                               volatility = market$volatility, credit_spread = market$spread, steps = as.integer(steps), method = method, price_nodes = as.integer(nodes),
+                                               volatility = vol, credit_spread = market$spread, steps = as.integer(steps), method = method, price_nodes = as.integer(nodes),
                                                greeks = greeks, callabilities = calls_)
 }
 
@@ -53,9 +53,24 @@ greeks <- list(steps = 200L, price_nodes = 40L,
                grid = as.list(g_grid[c("value", "delta", "gamma", "vega", "rho", "dividend_rho", "credit_spread_sensitivity")]),
                scaled = as.list(g_scaled[c("value", "delta", "gamma", "vega", "rho", "dividend_rho", "credit_spread_sensitivity")]))
 
+# (5) the vega of the discrete lattice. The value of an American convertible on a lattice is not smooth in the volatility (the conversion and
+# call boundaries move from node to node), so the automatic-differentiation vega is the exact slope of the lattice at this point, which moves with
+# the number of steps; central differences over a wide step smooth the kinks and settle near 83 to 85. Both are shown, so that the vega of two
+# lattices is not read as a disagreement of the methods.
+fd <- function(method, steps, nodes, h) (run(method, steps, nodes, greeks = FALSE, vol = market$volatility + h)$value - run(method, steps, nodes, greeks = FALSE, vol = market$volatility - h)$value) / (2 * h)
+vega_cfg <- list(list("scaled", 200L, 0L), list("scaled", 400L, 0L), list("scaled", 800L, 0L), list("scaled", 1600L, 0L), list("scaled", 3200L, 0L),
+                 list("grid", 200L, 40L), list("grid", 400L, 40L), list("grid", 400L, 80L))
+vega_convergence <- lapply(vega_cfg, function(cfg) {
+  m <- cfg[[1]]; n <- cfg[[2]]; k <- cfg[[3]]
+  row <- list(method = m, steps = n, price_nodes = k, vega_ad = run(m, n, k, greeks = TRUE)$vega, fd_micro = fd(m, n, k, 1e-5), fd_wide_0_01 = fd(m, n, k, 0.01), fd_wide_0_02 = fd(m, n, k, 0.02))
+  cat(sprintf("vega %-6s %5d steps %3d nodes: AD %.2f, FD(1e-5) %.2f, FD(0.01) %.2f, FD(0.02) %.2f
+", m, n, k, row$vega_ad, row$fd_micro, row$fd_wide_0_01, row$fd_wide_0_02))
+  row
+})
+
 p16_write("mscb_carried_grid.json", list(
   meta = p16_meta("server/scripts/p16/mscb_carried_grid.R", NA_integer_, "deterministic; the times are of this machine on the day"),
   inputs = list(market = market, reset_years = 1:4, rule = "downward_only", price_ratio = 0.9, initial_price = 100, call = list(years = 3, price = 108)),
   convergence = convergence, closed_form_both = closed_form,
-  timing = lapply(seq_len(nrow(timing)), \(i) as.list(timing[i, ])), greeks = greeks
+  timing = lapply(seq_len(nrow(timing)), \(i) as.list(timing[i, ])), greeks = greeks, vega_convergence = vega_convergence
 ))
