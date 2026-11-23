@@ -1,6 +1,6 @@
 # Carmine-Studio『エンタープライズ金融モデル』
 
-金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral-Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. 並列計算」「10. 分散計算」「15. 自動微分」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱い、「11. CNN の基礎と実践」「12. CNN の金融モデル応用」では、畳み込みニューラルネットワークの式と、国債カーブの翌月予測の実験、重いモデルの近似への応用を扱います（この 2 章は Carmine-Studio の独自の章で、Coral-Book に対応する章はありません）。「13. 株式ルックバックと転換社債（CB・MSCB）」「14. MBS・目標償還付きPRDC（TARN）」では、覚えておく状態（最小値、転換価額、元本残高、累積クーポン）を持ち越す経路依存の商品を、縮約できるかどうかで分けて扱います（この 2 章も独自の章です）。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral-Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
+金融モデルを「手元で計算する」「サーバーで動かす」「仮定から何が導けるかを証明する」の三つの入口から学ぶ三部作のうち、**React で条件を操作し、R サーバー上の rmql でモデルを評価する** Web アプリです。Coral-Book『金融工学の応用基礎』の無裁定モデルの数式と解説を読みながら、ブラウザで金融モデルを動かせます。「 9. マルチコアCPUによる並列計算（債券・PRDC）」「10. PRDCのシナリオ評価（分散計算）」「15. PRDCグリークス計算（自動微分・有限差分）」では、同じモデルを多数のシナリオや感応度へ広げる計算を扱い、「11. CNNによる国債カーブ予測」「12. CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO）」では、畳み込みニューラルネットワークの式と、国債カーブの翌月予測の実験、重いモデルの近似への応用を扱います（この 2 章は Carmine-Studio の独自の章で、Coral-Book に対応する章はありません）。「13. ルックバック・転換社債（MSCB）」「14. MBSのプリペイメント・早期償還型PRDC（TARN）」では、覚えておく状態（最小値、転換価額、元本残高、累積クーポン）を持ち越す経路依存の商品を、縮約できるかどうかで分けて扱います（この 2 章も独自の章です）。メニューと目次は部に分けず、一つの章の並びにしています（各章には Coral-Book の章番号を添えています）。計算は R の HTTP API（開発時は 127.0.0.1:8787）が rmql で行い、React は返ってきた JSON を本文・表・グラフに表示します。画面は <http://127.0.0.1:8081/> です。
 
 ## 三部作
 
@@ -19,8 +19,8 @@
 | オプション | 第II部 第4章 ブラックモデル | 「ブラックモデル」（`#/black-model`） | — |
 | 信用リスク | 第II部 第5章 信用リスクとCDS | 「信用リスクとCDS」（`#/credit-cds`） | — |
 | 金利モデルと早期償還 | 第II部 第6〜8章 | `#/irs-calibration`、`#/rate-models`、`#/early-redemption` | — |
-| PRDC | 第II部 第9章 | 「PRDC」（`#/prdc`）、「14. MBS・目標償還付きPRDC（TARN）」の 14.1 PRDC | PRDC のクーポンの分解（`lean/LagrangeAcademy/PrdcCoupon.lean`） |
-| 並列・分散・自動微分 | — | 「 9. 並列計算」（`#/enterprise/parallel-computing`）、「10. 分散計算」（`#/enterprise/distributed-jobs`）、「11. CNN の基礎と実践」（`#/enterprise/cnn-fundamentals`）、「12. CNN の金融モデル応用」（`#/enterprise/cnn-applications`）、「13. 株式ルックバックと転換社債（CB・MSCB）」（`#/enterprise/lookback-convertible`）、「14. MBS・目標償還付きPRDC（TARN）」（`#/enterprise/mbs-prdc`）、「15. 自動微分」（`#/enterprise/automatic-differentiation`） | — |
+| PRDC | 第II部 第9章 | 「PRDC」（`#/prdc`）、「14. MBSのプリペイメント・早期償還型PRDC（TARN）」の 14.1 PRDC | PRDC のクーポンの分解（`lean/LagrangeAcademy/PrdcCoupon.lean`） |
+| 並列・分散・自動微分 | — | 「 9. マルチコアCPUによる並列計算（債券・PRDC）」（`#/enterprise/parallel-computing`）、「10. PRDCのシナリオ評価（分散計算）」（`#/enterprise/distributed-jobs`）、「11. CNNによる国債カーブ予測」（`#/enterprise/cnn-fundamentals`）、「12. CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO）」（`#/enterprise/cnn-applications`）、「13. ルックバック・転換社債（MSCB）」（`#/enterprise/lookback-convertible`）、「14. MBSのプリペイメント・早期償還型PRDC（TARN）」（`#/enterprise/mbs-prdc`）、「15. PRDCグリークス計算（自動微分・有限差分）」（`#/enterprise/automatic-differentiation`） | — |
 | 計算の保証 | 各章の計算例 | 照合の記録（`server/tests/reconciliation/`） | 第1章 計算と証明、第7章 実数と数値計算 |
 
 画面のパスは <http://127.0.0.1:8081/> に続けて開きます（例：<http://127.0.0.1:8081/#/yield-curve-ois>）。目次ページにも同じ表があり、Coral-Book と Crimson Proof の章へリンクしています。
@@ -49,13 +49,13 @@
 |  6. キャリブレーション | Normal・Black ボラの比較、SABR のスマイル（原稿の optim と calibrate_sabr）、Hull–White の債券オプションへの適合と未使用商品の検証、BGM の相関の減衰（II-6.1〜6.6。GaussQuant・原稿の結果に照合） | `#/irs-calibration` |
 |  7. 金利モデル | Hull–White の短期金利の経路と割引の検証、HJM のフォワードの変動係数、キャップレットの公式とモンテカルロ・満期のフォワードの分布、相関ショック、後決め金利の複利（II-7.1〜7.6。原稿のコードと原稿の結果に照合） | `#/rate-models` |
 |  8. 早期償還モデル | Hull–White のコール債（Bullet・Callable・コール権の価値、コール日ごとの判断、ボラティリティと格子の検証）、MBS のプリペイメント（シナリオ別の CPR と加重平均残存年数、金利経路、PSA 別の静的 OAS）（II-8.1〜8.8。原稿の結果に照合）。コール判断（各コール日の、継続価値とコール価格の比べと境界）は rmql の `compute_hull_white_callable_bond_decisions`（0.4.0 から。以前は原稿の独自の R 関数で求めていたが、同じ結果を rmql が返す）で計算する | `#/early-redemption` |
-|  9. 並列計算 | Coral-Book III-1 の本文に、6シナリオの逐次・並列の例、債券の件数とスレッド数を選んだ一括評価の測定、PRDC のモンテカルロのスレッド比較を組み込んだ章（結果はスレッド数によらず同じ） | `#/enterprise/parallel-computing` |
-| 10. 分散計算 | Coral-Book III-2・III-3 の本文に、45シナリオをジョブに分けてブラウザから R API へ送り、集約する画面を組み込んだ章 | `#/enterprise/distributed-jobs` |
-| 11. CNN の基礎と実践 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ブラック・ショールズの価格関数を全結合ネットワークで学習して、価格と微分（バックワード）の誤差を範囲の中と外で解析解と比べる節（曲面への応用は補足）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`、`train_bs_surrogate.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`、`bs_surrogate_results.json`。Coral-Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
-| 12. CNN の金融モデル応用 | Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較（解説のみ） | `#/enterprise/cnn-applications` |
-| 13. 株式ルックバックと転換社債（CB・MSCB） | 「明日からの価値のために、今日までの何を覚えておくか」を貫く問いにして、ルックバック（最小値）、転換社債、MSCB（転換価額）の状態と次元の縮約を扱う、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表。設計：`docs/part3_chapters_13_15_spec.md`）。Coral-Book に対応する章はない | `#/enterprise/lookback-convertible` |
-| 14. MBS・目標償還付きPRDC（TARN） | 縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を経路ごとに持ち越す、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表）。PRDC の画面は 14.1 | `#/enterprise/mbs-prdc` |
-| 15. 自動微分 | Coral-Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。導入は、14 章の PRDC を題材にして、11.3 の手で導いた勾配と 13 章のグリークスにつなぐ。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
+|  9. マルチコアCPUによる並列計算（債券・PRDC） | Coral-Book III-1 の本文に、6シナリオの逐次・並列の例、債券の件数とスレッド数を選んだ一括評価の測定、PRDC のモンテカルロのスレッド比較を組み込んだ章（結果はスレッド数によらず同じ） | `#/enterprise/parallel-computing` |
+| 10. PRDCのシナリオ評価（分散計算） | Coral-Book III-2・III-3 の本文に、45シナリオをジョブに分けてブラウザから R API へ送り、集約する画面を組み込んだ章 | `#/enterprise/distributed-jobs` |
+| 11. CNNによる国債カーブ予測 | 畳み込みの定式化（フォワード）と勾配の導出（バックワード）、財務省の月末の国債利回り（442 か月）から翌月の変化を予測する 1D-CNN の実験（ランダムウォーク・リッジ回帰と、ウォークフォワードで比較。数値勾配チェック付き）、予測・実績のカーブでの債券の価値と損益（rmql）、ブラック・ショールズの価格関数を全結合ネットワークで学習して、価格と微分（バックワード）の誤差を範囲の中と外で解析解と比べる節（曲面への応用は補足）。学習はオフラインのスクリプト（`server/scripts/cnn/train_jgb_1d_cnn.R`、`train_bs_surrogate.R`）で、結果は `server/data/cnn/jgb_1d_cnn_results.json`、`bs_surrogate_results.json`。Coral-Book に対応する章はない | `#/enterprise/cnn-fundamentals` |
+| 12. CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO） | Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較（解説のみ） | `#/enterprise/cnn-applications` |
+| 13. ルックバック・転換社債（MSCB） | 「明日からの価値のために、今日までの何を覚えておくか」を貫く問いにして、ルックバック（最小値）、転換社債、MSCB（転換価額）の状態と次元の縮約を扱う、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表。設計：`docs/part3_chapters_13_15_spec.md`）。Coral-Book に対応する章はない | `#/enterprise/lookback-convertible` |
+| 14. MBSのプリペイメント・早期償還型PRDC（TARN） | 縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を経路ごとに持ち越す、Carmine-Studio の独自の章（実装済み：ライブの計算と事前計算の表）。PRDC の画面は 14.1 | `#/enterprise/mbs-prdc` |
+| 15. PRDCグリークス計算（自動微分・有限差分） | Coral-Book III-4〜III-7 の本文（III-1.7 を導入に）に、PRDC の12の感応度を自動微分で一度に求めて Bump & Revalue（24回の評価）と比べる画面と、パスごとの自動微分のモンテカルロを組み込んだ章。導入は、14 章の PRDC を題材にして、11.3 の手で導いた勾配と 13 章のグリークスにつなぐ。旧ページ（`#/parallel`、`#/prdc-risk`、`#/enterprise/...`）からは、統合先の節へ移る。統合は `docs/port/merge_part3.py` | `#/enterprise/automatic-differentiation` |
 | 14.1 PRDC | クーポンのペイオフ、FX のサンプルパス、現在価値（閉じた式とモンテカルロ）、期待クーポンの期間構造とフロア・キャップの確率、クーポンの分布、FX スポット・ボラ感応度（II-9.1〜9.6。原稿の結果に照合） | `#/prdc` |
 | サーバー接続 | rmql Compute Server（R の HTTP API）との接続の状態、往復の時間、利用者が開くアドレス、API の一覧。右上の「rmql Compute Server：接続中／未接続」からも開く | `#/server` |
 

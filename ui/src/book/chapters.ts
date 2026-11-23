@@ -62,19 +62,19 @@ export const CHAPTERS_LIST: NumberedChapter[] = [
     const no = i + 1;
     return { ...c, no, icon: CHAPTER_ICONS[no], sourceIds: [c.id], sources: [c.source] };
   }),
-  merge(9, "並列計算", "/enterprise/parallel-computing", ["III-1"],
+  merge(9, "マルチコアCPUによる並列計算（債券・PRDC）", "/enterprise/parallel-computing", ["III-1"],
     "債券の一括評価の測定や、モンテカルロ・シミュレーションのスレッド数を変えて並列計算の効果を測定・操作できる"),
-  merge(10, "分散計算", "/enterprise/distributed-jobs", ["III-2", "III-3"],
+  merge(10, "PRDCのシナリオ評価（分散計算）", "/enterprise/distributed-jobs", ["III-2", "III-3"],
     "シナリオ格子をジョブに分割して計算サーバーへ送り、集約する分散計算の流れを操作できる"),
-  merge(11, "CNN の基礎と実践", "/enterprise/cnn-fundamentals", ["CNN-1"],
+  merge(11, "CNNによる国債カーブ予測", "/enterprise/cnn-fundamentals", ["CNN-1"],
     "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまでを操作できる"),
-  merge(12, "CNN の金融モデル応用", "/enterprise/cnn-applications", ["CNN-2"],
+  merge(12, "CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO）", "/enterprise/cnn-applications", ["CNN-2"],
     "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説する（画面での計算はありません）"),
-  merge(13, "株式ルックバックと転換社債（CB・MSCB）", "/enterprise/lookback-convertible", ["LC-1"],
+  merge(13, "ルックバック・転換社債（MSCB）", "/enterprise/lookback-convertible", ["LC-1"],
     "明日からの価値のために、今日までの何を覚えておくか：ルックバックの最小値、転換価額（リセット）を持ち越す状態として、次元を縮約して評価する計算を扱う"),
-  merge(14, "MBS・目標償還付きPRDC（TARN）", "/enterprise/mbs-prdc", ["MP-1", "II-9"],
+  merge(14, "MBSのプリペイメント・早期償還型PRDC（TARN）", "/enterprise/mbs-prdc", ["MP-1", "II-9"],
     "縮約できない経路依存（MBS の元本残高、TARN の累積クーポン）を、経路ごとに持ち越して評価する。PRDC の評価は、この章の 14.1 から操作できる"),
-  merge(15, "エキゾチック自動微分", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7"],
+  merge(15, "PRDCグリークス計算（自動微分・有限差分）", "/enterprise/automatic-differentiation", ["III-4", "III-5", "III-6", "III-7"],
     "14 章の PRDC の高次元リスク感応度を自動微分（AAD）で一度に求め、有限差分と比べる計算や、パスごとの自動微分モンテカルロを操作できる"),
 ];
 

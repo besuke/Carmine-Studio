@@ -251,8 +251,8 @@ export const TOC: Part[] = [
       },
       {
         id: "CNN-1",
-        menu: "CNN の基礎と実践",
-        title: "CNN の基礎と実践（JGB カーブ予測・ヨーロピアン）",
+        menu: "CNNによる国債カーブ予測",
+        title: "CNNによる国債カーブ予測",
         route: "/enterprise/cnn-fundamentals",
         routeNote: "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまで、操作して確かめられる",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
@@ -271,8 +271,8 @@ export const TOC: Part[] = [
       },
       {
         id: "CNN-2",
-        menu: "CNN の金融モデル応用",
-        title: "CNN の金融モデル応用（Hull–White・MBS・CLO）",
+        menu: "CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO）",
+        title: "CNNによるモデルキャリブレーションと近似の設計（Hull–White・MBS・CLO）",
         route: "/enterprise/cnn-applications",
         routeNote: "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説する",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
@@ -286,8 +286,8 @@ export const TOC: Part[] = [
       },
       {
         id: "LC-1",
-        menu: "ルックバック・転換社債・MSCB",
-        title: "株式ルックバックと転換社債（CB・MSCB）",
+        menu: "ルックバック・転換社債（MSCB）",
+        title: "ルックバック・転換社債（MSCB）",
         route: "/enterprise/lookback-convertible",
         routeNote: "ルックバックの最小値と、MSCB の転換価額を、持ち越す状態として扱い、次元を縮約して評価する",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
@@ -303,8 +303,8 @@ export const TOC: Part[] = [
       },
       {
         id: "MP-1",
-        menu: "MBS・PRDC",
-        title: "MBS・目標償還付きPRDC（TARN）",
+        menu: "MBSのプリペイメント・早期償還型PRDC（TARN）",
+        title: "MBSのプリペイメント・早期償還型PRDC（TARN）",
         route: "/enterprise/mbs-prdc",
         routeNote: "MBS の元本残高と、TARN の累積クーポンを、経路ごとに持ち越して評価する（PRDC の評価は 14.1 から操作できる）",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
