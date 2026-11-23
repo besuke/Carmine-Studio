@@ -5,6 +5,7 @@ import { href } from "../book/router";
 import { df, pct } from "../format";
 import { FlowChart, type FlowBar } from "../components/FlowChart";
 import { LineChart } from "../components/LineChart";
+import { UsageGuide } from "../components/UsageGuide";
 
 // OIS asset swap offer sheet: the list of offers and the detail of one offer.
 // Every number is computed by the R API with rmql; the page only lays it out.
@@ -72,6 +73,14 @@ export function AswListPage() {
         債券とスワップのキャッシュフロー、ASW の計算条件を確かめられる。仕様は Coral-Book の <code>docs/asw_offer_sheet_spec.qmd</code>、
         データと規約は Curie の A1 オファーシートのデモ（<strong>架空のデータ</strong>）である。
       </p>
+      <UsageGuide
+        lead="入力欄はなく、オファーの行を選んで詳細を開く。オファーは12件（円債 JPY-01〜06、外債 ISO-01〜06）で、単価はオファーのクリーン価格（額面100あたり）である。"
+        steps={[
+          { text: <><b>オファー一覧</b> の <b>ID</b>（例：JPY-01）か <b>銘柄</b> をクリックして、詳細を開く。</>, to: "オファー一覧" },
+          { text: <><b>ASW</b>（発行通貨の OIS に対するスプレッド）と <b>円の比較</b> の列を比べる。円債は JGB 対比、外債は円換算 ASW が出る。</>, to: "オファー一覧" },
+          { text: <>JPY-06（変動利付債）と ISO-06（コーラブル債）は未対応で、行の下に理由が出る。</>, to: "オファー一覧" },
+        ]}
+      />
       {error && <ApiProblem error={error} retry={retry} />}
       {loading && !data && <p className="muted">R APIで計算中…</p>}
       {data && (
@@ -186,6 +195,19 @@ function Detail({ d }: { d: AswDetailResponse }) {
         </div>
       )}
 
+      {d.status === "computed" && (
+        <UsageGuide
+          lead="入力欄は、キャッシュフロー表示の切り替えだけである。オファーの単価（クリーン価格）から、ダーティ価格、キャッシュフロー、ASW スプレッドの順に画面を下へ読む。"
+          steps={[
+            { text: <>上のタイルで <b>ASWスプレッド</b> と <b>ダーティ価格（額面100）</b> を確認する。<b>円換算ASW</b> のタイルは外債だけに出る。</> },
+            { text: <><b>2. 適用したカーブ</b> で使ったカーブを、<b>3. 価格の入力と換算</b> でクリーンからダーティへの換算を見る。</>, to: "2. 適用したカーブ", label: "2." },
+            { text: <><b>利息だけ</b> と <b>元本・償還を含む</b> を切り替えて、債券とスワップのキャッシュフローを見る。</>, to: "4. 債券とスワップのキャッシュフロー", label: "4." },
+            { text: <><b>5. ASWスプレッドの計算</b> で、NPV がゼロになるスプレッドを確認する。</>, to: "5. ASWスプレッドの計算", label: "5." },
+            ...(d.yen?.detail ? [{ text: <>外債は <b>6. 円換算ASW</b> で、FXスポット、ベーシス、ヘッジ後のキャッシュフローを見る。</>, to: "6. 円換算ASW（通貨ベーシスを反映）", label: "6." }] : []),
+            ...(d.jgb ? [{ text: <>円債は <b>6. JGBスプレッド</b> で、補間した JGB 利回りとの差を見る。</>, to: "6. JGBスプレッド", label: "6." }] : []),
+          ]}
+        />
+      )}
       <h2>1. オファーと銘柄属性</h2>
       <OfferAndAttributes d={d} />
       <h2>計算条件</h2>

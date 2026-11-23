@@ -3,6 +3,7 @@ import { ApiError } from "../api/client";
 import { fetchAswReport, postJgbSpread, type AswReport, type JgbSpreadQuote, type ReportOffer } from "../api/asw";
 import { href } from "../book/router";
 import { LineChart } from "../components/LineChart";
+import { UsageGuide } from "../components/UsageGuide";
 
 // Curie docs/A1_offer_sheet_POC.qmd as a React page. The sections and tables follow the QMD (the a1_*_table_Curie()
 // tables of R/a1_offer_sheet/report_tables.R, with the same columns, digits and labels). The numbers come from the
@@ -375,6 +376,14 @@ function JgbSpreadQuoteSection({ offers }: { offers: ReportOffer[] }) {
         利回り = 補間JGB複利利回り ＋ スプレッド/100 とし、日本式の複利の価格式（残存年数は満年数＋端数ACT/365）で単価を求める。
         <strong>特定のベンチマーク銘柄対比や単利利回りでの提示には対応しない</strong>ので、実際の提示方法を確かめてから使う。
       </p>
+      <UsageGuide
+        lead="円債のオファーを JGB 対比スプレッドで受けた場合に、単価へ換算する。初期値は、選んだ銘柄の単価から計算した JGB 対比スプレッドである。"
+        steps={[
+          { text: <><b>銘柄</b> を選ぶ（円債 JPY-01〜JPY-05）。</> },
+          { text: <><b>JGB対比スプレッド（bp）</b> に値を入れる。例：JPY-01 の初期値から 0.5 bp 上げる。</> },
+          { text: <><b>単価に換算</b> を押し、換算結果の表で <b>単価（切り捨てなし）</b> と <b>その単価での JPY OIS ASW</b> を見る。</> },
+        ]}
+      />
       <div className="controls" role="group" aria-label="JGB対比スプレッドの換算">
         <label>銘柄{" "}
           <select value={offerId} onChange={(e) => { setOfferId(e.target.value); const o = offers.find((x) => x.offer_id === e.target.value); setSpread((o?.jgb_spread_bp ?? 0).toFixed(1)); setResult(null); }}>

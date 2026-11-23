@@ -10,6 +10,8 @@ export interface UsageStep {
   text: ReactNode;
   /** Leading number of the heading to scroll to, such as "II-1.5.2", or the id of an element. */
   to?: string;
+  /** Button text (before 「へ」); defaults to `to`. */
+  label?: string;
 }
 
 function headingStartingWith(prefix: string): HTMLElement | null {
@@ -39,7 +41,7 @@ export function UsageGuide({ lead, steps }: { lead: ReactNode; steps: UsageStep[
               <>
                 {" "}
                 <button type="button" className="usage-jump" data-testid={`usage-jump-${s.to}`} onClick={() => jump(s.to!)}>
-                  {s.to} へ
+                  {s.label ?? s.to} へ
                 </button>
               </>
             )}
