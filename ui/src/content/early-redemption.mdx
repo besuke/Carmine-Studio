@@ -1,58 +1,64 @@
 import { CallableProvider, CallableStatus, CallableControls, FlowsTable, PricePanel, DecisionPanel, VolatilityPanel, GridTable, MbsScenarioPanel, MbsPathsPanel, StaticOasPanel } from "../components/callable";
+import { UsageGuide } from "../components/UsageGuide";
 
 <CallableProvider>
 
-# 早期償還モデル
+# コーラブル債と住宅ローン担保証券（MBS）
 
-発行体が繰上償還できるコール条項付債券（Callable Bond）と、借り手の期限前返済リスクを伴うモーゲージ担保証券（MBS）の評価手法を扱います。Hull–White モデルに基づくバックワード・インダクションによる行使判断や、プリペイメント（PSAモデル）とOAS（Option-Adjusted Spread）の計算を操作・確認できます。
+計算の仕様と式は Coral-Book 第II-8章に従う。入力値はすべて説明用の例示値である。
 
 <CallableStatus />
 
-> 入力値はすべて説明用の例示値です。
+<UsageGuide
+  lead="初期値は原稿の例で、2つの入力欄（コーラブル債、MBS）が章の順に並ぶ。各欄の初期値に戻すボタンで、その欄だけ元に戻る。"
+  steps={[
+    { text: <>コーラブル債の <b>初期曲線の金利（%）</b> 2、<b>平均回帰 a（%）</b> 15、<b>σ（%）</b> 1.2、<b>クーポン（%）</b> 3、<b>最初のコール日（年）</b> 1、<b>コール価格</b> 100 から、<b>コール価格</b> を 105 に変える。</>, to: "II-8.3" },
+    { text: <><b>σ（%）</b> を 2.0 に変え、コール権の価値のグラフを見る。</>, to: "II-8.5" },
+    { text: <>MBS の <b>PSA（%）</b> 100、<b>借換えの感応度 β</b> 20、<b>借換えコスト k（%）</b> 0.5 から、<b>PSA（%）</b> を 50 に変える。</>, to: "II-8.8" },
+  ]}
+/>
 
-## 発行体コール条項付債券の評価とバックワード・インダクション
+## II-8.3 発行体の行使判断とバックワード・インダクション
 
-コールのない Bullet Bond の価格は $V_0^{\mathrm{bullet}} = \sum_i C_i P(0,t_i) + N P(0,t_n)$ であり、発行体のコール権の価値は $V_0^{\mathrm{issuer\ call}} = V_0^{\mathrm{bullet}} - V_0^{\mathrm{callable}} \ge 0$ です。各コール日にクーポン支払後、継続価値 $H_i(x)$ がコール価格 $K_i$ を上回るなら発行体はコールします。
+次の6項目を入れる。
 
-$$
-V_i(x) = C_i + \min\{K_i, H_i(x)\}, \qquad
-H_i(x) = \mathbb{E}^{\mathbb{Q}}\!\left[\exp\left(-\int_{t_i}^{t_{i+1}} r_s\,ds\right) V_{i+1}(x_{t_{i+1}}) \,\middle|\, x_{t_i} = x\right]
-$$
+- **初期曲線の金利（%）**：−2〜10（フラットな初期曲線）。
+- **平均回帰 a（%）**：1〜100。
+- **σ（%）**：0〜3。
+- **クーポン（%）**：0〜10。
+- **最初のコール日（年）**：0.5〜4.5。
+- **コール価格**：90〜120（額面100に対する値）。
 
 <CallableControls which="bond" />
 
 <PricePanel />
 
-### 発行体コール判定とボラティリティ感応度
-
 <DecisionPanel />
+
+## II-8.5 金利変動とコールオプション価値
 
 <VolatilityPanel />
 
-### クーポン・コール日程と格子・求積点の収束確認
+## II-8.6 数値計算検証
 
 <div className="two-col">
   <FlowsTable />
   <GridTable />
 </div>
 
-## MBS のプリペイメント（PSAモデル）とOAS
+## II-8.8 MBSのプリペイメント
 
-借り手の期限前返済は、借入からの月数 $m$ と借換えの誘因で決まるルールとしてモデル化します（$c$ はモーゲージ金利 5%、$f_m$ は借換え金利、$k$ は借換えコスト）。
+次の3項目を入れる。
 
-$$
-\mathrm{CPR}^{\mathrm{PSA}}_m = \min(0.002m, 0.06), \qquad
-\mathrm{CPR}_m = \min\{0.60,\ \alpha\,\mathrm{CPR}^{\mathrm{PSA}}_m \exp[\beta(c - f_m - k)]\}, \qquad
-\mathrm{SMM}_m = 1 - (1 - \mathrm{CPR}_m)^{1/12}
-$$
+- **PSA（%）**：0〜500。
+- **借換えの感応度 β**：0〜50。
+- **借換えコスト k（%）**：0〜3。
 
 <CallableControls which="mbs" />
 
 <MbsScenarioPanel />
 
 ### Hull–White 金利経路による評価と PSA 別静的 OAS
-
-短期金利を Hull–White で動かし、借換え金利を「短期金利 + 3%」として経路ごとにキャッシュフローを割り引きます。OAS $z$ に対応する価格は $P(z) = \mathbb{E}^{\mathbb{Q}}\!\left[\sum_{m=1}^{360} CF_m \exp\!\left(-\int_0^{m/12} (r_s + z)\,ds\right)\right]$ です。
 
 <div className="two-col">
   <div>

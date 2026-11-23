@@ -1,53 +1,80 @@
 import { RateModelsProvider, RateModelsStatus, RateModelsControls, HwPathsChart, HwDiscountTable, HjmLoadingChart, CapletPanel, ShockPanel, FixingsPanel } from "../components/rateModels";
+import { UsageGuide } from "../components/UsageGuide";
 
 <RateModelsProvider>
 
-# 金利モデル
+# 短期金利・フォワード金利モデル
 
-代表的な金利モデル（Hull–White 1因子短期金利モデル、HJM瞬間フォワードモデル、BGM/LMMフォワード・マーケット・モデル、後決め金利向けFMM）の理論構造とシミュレーションを操作・確認します。モンテカルロ経路の生成や、キャップレット価格と相関ショックへの感応度を学べます。
+計算の仕様と式は Coral-Book 第II-7章に従う。入力値はすべて説明用の例示値で、翌日物金利は架空のものである。
 
 <RateModelsStatus />
 
-> 入力値はすべて説明用の例示値で、翌日物金利は架空のものです。
+<UsageGuide
+  lead="初期値は原稿の例で、4つの入力欄（Hull–White、キャップレット、相関ショック、後決め金利）が章の順に並ぶ。各欄の初期値に戻すボタンで、その欄だけ元に戻る。"
+  steps={[
+    { text: <>Hull–White の <b>初期曲線の金利（%）</b> 2、<b>平均回帰 a（%）</b> 12、<b>σ（%）</b> 1 から、<b>σ（%）</b> を 2 に変える。</>, to: "II-7.2" },
+    { text: <>キャップレットの <b>フォワード（%）</b> 2.5、<b>行使金利（%）</b> 2.75、<b>ボラ（%）</b> 24、<b>満期（年）</b> 2、<b>期間（年）</b> 0.5、<b>割引金利（%）</b> 2 から、<b>行使金利（%）</b> を 2.5 に変える。<b>Black価格</b> とモンテカルロの価格を比べる。</>, to: "II-7.4" },
+    { text: <><b>ρ(A,B)</b> 0.8、<b>ρ(A,C)</b> 0.5、<b>ρ(B,C)</b> 0.7 を変える（範囲 −0.99〜0.99）。</>, to: "II-7.4" },
+    { text: <>後決め金利の <b>水準（%）</b> 1、<b>振幅（%）</b> 0.4、<b>日数</b> 90 を変える。</>, to: "II-7.5" },
+  ]}
+/>
 
-## 短期金利モデル（Hull–White 1因子）とHJM瞬間フォワード係数
+## II-7.2 短期金利：VasicekからHull–Whiteへ
 
-Hull–White 1因子モデル $dr_t = [\theta(t) - a r_t]dt + \sigma\,dW_t$ では、$r_t = \phi(t) + x_t$ と分けると $x_0 = 0$ の OU 過程 $dx_t = -a x_t\,dt + \sigma\,dW_t$ と決定論的な項 $\phi(t) = f(0,t) + \frac{\sigma^2}{2a^2}\left(1 - e^{-at}\right)^2$ になります。また、1因子 Hull–White は瞬間フォワードの変動係数 $\sigma e^{-a(T-t)}$ を持つ HJM モデルに対応します。
+次の3項目を入れる。
+
+- **初期曲線の金利（%）**：−2〜15（フラットな初期曲線）。
+- **平均回帰 a（%）**：0.5〜100。
+- **σ（%）**：0.01〜5。
 
 <RateModelsControls which="hw" />
 
-<div className="chart-pair">
-  <HwPathsChart />
-  <HjmLoadingChart />
-</div>
+<HwPathsChart />
 
 <HwDiscountTable />
 
-## BGM/LMM：期間別フォワードとキャップレット評価
+## II-7.3 HJM：瞬間フォワードモデル
 
-期間フォワード金利 $L_i$ は支払時点 $T_{i+1}$ のフォワード測度の下でマルチンゲールです。ボラティリティが一定なら満期 $T_i$ の周辺分布は対数正規分布 $L_i(T_i) = L_i(0)\exp\left[-\tfrac12 \nu_i^2 T_i + \nu_i\sqrt{T_i}\,Z\right]$ となり、キャップレットは Black 公式とモンテカルロの双方で評価できます。
+1因子 Hull–White に対応するフォワードの変動係数。入力は上の Hull–White の欄を共用する。
+
+<HjmLoadingChart />
+
+## II-7.4 BGM/LMM：期間別フォワード
+
+次の6項目を入れる。
+
+- **フォワード（%）**：0.01〜20。
+- **行使金利（%）**：0.01〜20。
+- **ボラ（%）**：1〜200。
+- **満期（年）**：0.1〜30。
+- **期間（年）**：0.05〜2。
+- **割引金利（%）**：−2〜15。
 
 <RateModelsControls which="caplet" />
 
 <CapletPanel />
 
-## マルチフォワードレートと相関ショック
+### マルチフォワードレートと相関ショック
 
-複数のフォワード金利を同時に動かすには、独立な正規乱数に目標相関行列のコレスキー因子を掛けた相関ショックを用います。
+3つの金利 A・B・C の相関 **ρ(A,B)**、**ρ(A,C)**、**ρ(B,C)** を −0.99〜0.99 で入れる。
 
 <RateModelsControls which="shocks" />
 
 <ShockPanel />
 
-## 後決め金利（RFR）と FMM モデル
+## II-7.5 後決め金利とFMMモデル
 
-期間内の各日の翌日物金利を $R_j$、日数割合を $\delta_j$、全期間の日数割合を $\Delta_i$ とすると、確定後の期間複利金利は $R_i^{\mathrm{comp}} = \bigl(\prod_{j \in [T_i, T_{i+1})} (1 + \delta_j R_j) - 1\bigr)/\Delta_i$ です。
+日次の翌日物金利を、**水準（%）**、**振幅（%）**、**日数** で与える。
+
+- **水準（%）**：−2〜15。
+- **振幅（%）**：0〜5。
+- **日数**：5〜400。
 
 <RateModelsControls which="fixings" />
 
 <FixingsPanel />
 
-## 各種金利モデルの特徴比較
+## II-7.6 各種モデルサマリー
 
 | 枠組み | 主に動かす量 | 自然な用途 | 注意点 |
 |---|---|---|---|

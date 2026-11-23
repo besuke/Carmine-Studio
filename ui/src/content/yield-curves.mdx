@@ -1,57 +1,58 @@
 import { CurveStatus, NodeEditor, ZeroCurveTable, ZeroCurveCharts, InterpolationCharts, ShiftSection, NodeSimulation, ValidationTables } from "../components/curves";
 import { JgbCurveExplorer } from "../components/curves/JgbCurveExplorer";
+import { UsageGuide } from "../components/UsageGuide";
 
-# 金利カーブ・CTD
+# 金利カーブと国債先物のCTD
 
-ゼロ金利ノードや平行シフトの幅を変え、割引係数・ゼロ金利・フォワード金利の変化を確認します。また、日本の国債金利情報に基づくイールドカーブの期間構造の推移を操作できます。国債先物の受渡適格銘柄、Basis、CTD、先物BPVは「[国債先物・CTD](#/jgb-futures)」で操作できます。
+計算の仕様と式は Coral-Book 第II-2章に従う。国債先物の受渡適格銘柄・Basis・CTD は「[国債先物のCTD](#/jgb-futures)」の画面で操作する。
 
 <CurveStatus />
 
-## ゼロ金利ノードとカーブの表現（割引係数・ゼロ金利・フォワード金利）
+<UsageGuide
+  lead="初期値は原稿の例（評価日 2022-08-19、ゼロ金利は連続複利で 0D 0.05%〜10Y 1.15%）で、原稿の図を再現する。入力はノード表のゼロ金利（%）と平行シフト（bp）。"
+  steps={[
+    { text: <>ノード表の <b>ゼロ金利（%）</b>（連続複利）を変える。例：<b>10Y</b> を 1.15 から 2.00 にする。</>, to: "II-2.2" },
+    { text: <><b>10Y</b> の変更後、<b>DiscountCurve</b> と <b>ZeroCurve</b> のフォワード金利の形を比べる。<b>初期値に戻す</b> で元に戻る。</>, to: "II-2.3" },
+    { text: <><b>平行シフト（bp）</b> に 100 を入れる（初期値は 50）。</>, to: "II-2.5" },
+    { text: <><b>動かすノード</b> の <b>年限</b> に 5Y、<b>ゼロ金利の変化（bp）</b> に 100 を入れる。</>, to: "II-2.5" },
+    { text: <><b>JGB カーブ</b> の年月スライダーで月を動かす。</>, to: "II-2.1" },
+    { text: <>国債先物の CTD は <a href="#/jgb-futures">国債先物のCTD</a> の画面で操作する。</> },
+  ]}
+/>
 
-評価日と複数の将来日について連続複利のゼロ金利を設定し、細かい時間間隔に展開した割引係数・ゼロ金利・隣接区間フォワード金利の3グラフを比較します。
+## II-2.2 金利カーブの基礎
 
-<ZeroCurveCharts />
+評価日と将来日のゼロ金利（連続複利、%）を入れる。年限は 1M〜10Y の8点で、日付は評価日から自動で決まる。
 
 <div className="two-col">
   <NodeEditor />
   <ZeroCurveTable />
 </div>
 
-評価日を0、将来時点を $t$ とし、時点 $t$ に1を受け取るキャッシュフローの現在価値を $D(0,t)$、連続複利のゼロ金利を $z(0,t)$、二時点 $t_1, t_2$ 間の連続複利フォワード金利を $f(t_1,t_2)$ とすると、次の関係が成り立ちます。
+<ZeroCurveCharts />
 
-$$
-D(0,t) = \exp\left[-z(0,t)\,t\right], \qquad z(0,t) = -\frac{\log D(0,t)}{t}, \qquad f(t_1,t_2) = -\frac{\log\left[D(0,t_2)/D(0,t_1)\right]}{t_2-t_1}
-$$
+## II-2.3 補間と参照日
 
-割引係数、ゼロ金利、フォワード金利は同じ期間構造を違う形で表したものですが、補間方法の違いはとくにフォワード金利の形に強く表れます。ゼロ金利を線形補間すると、ノードでフォワード金利が段差を持ちます。
-
-## 補間方式とフォワード金利の比較
-
-同じゼロ金利ノードから、**ZeroCurve**（ゼロ金利を時間について線形補間）と **DiscountCurve**（割引係数の対数を線形補間）の2本のカーブを作り、ゼロ金利とフォワード金利の形状を並べて比較します。
+同じノードから、ゼロ金利を線形補間する **ZeroCurve** と、割引係数の対数を線形補間する **DiscountCurve** を作り、ゼロ金利とフォワード金利を重ねる。入力はノード表を共用する。
 
 <InterpolationCharts />
 
-両カーブは入力ノードで同じ値を再現しますが、ノードの間では形が異なります。DiscountCurve のフォワード金利はノードの間で一定（階段状）になり、ZeroCurve のフォワード金利はノードの間で傾きを持ちます。
+## II-2.5 カーブ操作と検証
 
-## カーブの平行シフトと検証
-
-基準カーブのすべての満期に一定のスプレッド（単利・年1回複利）を加える平行シフトを行います。年限別の Key Rate Shift は上のノード表の値を1つだけ変えて試すことができます。
+**平行シフト（bp）** は全満期に一律に加える。1ノードだけの変化は、ノード表の値を変えるか、下の **年限** と **ゼロ金利の変化（bp）** で与える。
 
 <ShiftSection />
 
-### ノードのシミュレーション（1つのノードだけ動かす）
-
-1つのノード（例：10年）のゼロ金利だけを bp 動かし、ほかのノードは変えずにゼロカーブを作り直して、割引係数とゼロクーポン債（額面100）の価格の変化を見ます。平行シフトと違い、動かしたノードの近くの年限に効果が集まります。
+### ノードのシミュレーション
 
 <NodeSimulation />
 
-### カーブの再現性と検証サマリー
+### 検証サマリー
 
 <ValidationTables />
 
-## 日米国債利回りの年限方向と時間方向の変化
+## II-2.1 国債利回りの年限・時間方向の変化
 
-日本国債（[財務省「国債金利情報」](https://www.mof.go.jp/jgbs/reference/interest_rate/index.htm)）と米国債（[セントルイス連銀 FRED「Treasury Constant Maturity」](https://fred.stlouisfed.org/categories/115)）について、各月の最終観測日の利回りから割引係数の対数を単調3次スプラインで補間したイールドカーブ（左：年限方向）と、主要年限の利回りの長期時系列推移（右：時間方向）を並べて比較します。スライダーや再生ボタンを操作すると、イールドカーブの形状変化と年限別の時系列推移が連動してアニメーション表示されます。
+日本国債（[財務省「国債金利情報」](https://www.mof.go.jp/jgbs/reference/interest_rate/index.htm)）と米国債（[FRED「Treasury Constant Maturity」](https://fred.stlouisfed.org/categories/115)）の、各月の最終観測日の利回りによるカーブ（左：年限方向）と主要年限の時系列（右：時間方向）。年月のスライダーと再生ボタンで動かす。入力は年月のみ。
 
 <JgbCurveExplorer />

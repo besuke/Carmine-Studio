@@ -562,3 +562,11 @@ table, .tile-value, .tooltip, .server-facts dd, .num, td, th { font-variant-nume
 .sidebar .sidebar-group-toggle:active:not(:disabled) { transform: none; box-shadow: none; }
 .sidebar .sidebar-group-toggle .group-caret { width: 0.8rem; color: var(--brand); }
 .sidebar.collapsed .sidebar-group-toggle { height: 1px; min-height: 0; padding: 0; gap: 0; }
+
+/* この章の使い方 */
+.usage-guide { margin: 1rem 0 1.25rem; padding: 0.75rem 1rem; background: var(--surface-1); border: 1px solid var(--grid); border-left: 3px solid var(--accent); border-radius: var(--radius); max-width: 86ch; }
+.usage-guide .usage-title { margin: 0 0 0.35rem; padding: 0; border: 0; font-size: 1rem; }
+.usage-guide p { margin: 0 0 0.4rem; }
+.usage-guide ol { margin: 0; padding-left: 1.4rem; }
+.usage-guide li { margin: 0.25rem 0; }
+.usage-guide button.usage-jump { padding: 0.05rem 0.5rem; font-size: 0.82rem; border-color: var(--grid); color: var(--accent); }

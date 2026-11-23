@@ -343,7 +343,7 @@ export function SolverPanel() {
               </table>
             </div>
             <p className="note">
-              日本の国債実務の規則どおり小数3桁（4桁目切り捨て）にする場合と、高精度求根アルゴリズムによる違いを確認できます。
+              日本の国債実務の規則どおり小数3桁（4桁目切り捨て）にする場合と、高精度求根アルゴリズムによる違いを確認できる。
               多項式 {b.polyroot.degree} 次の根 {b.polyroot.roots} 個のうち、正の実根は {b.polyroot.real_positive} 個でした。
             </p>
             <div className="two-col">

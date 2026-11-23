@@ -1,39 +1,29 @@
 import { FuturesProvider, FuturesStatus, FuturesControls, BasketTable, CarryTable, FuturesBpvPanel, RegimeChart, CtdSwitchChart } from "../components/futures";
+import { UsageGuide } from "../components/UsageGuide";
 
 <FuturesProvider>
 
-# 国債先物・CTD
+# 国債先物のCTD
 
-[金利カーブ・CTD](#/yield-curves) に関連する日本国債先物の受渡適格銘柄、Gross/Net Basis、Carry、Implied Repo Rate、最割安銘柄（CTD）の決定要因、先物BPV、および金利シナリオによるCTDの入れ替わりを操作・確認できます。
+計算の仕様と式は Coral-Book 第II-2章（2.6〜2.7）に従う。カーブの画面は「[金利カーブと国債先物のCTD](#/yield-curves)」。
 
 <FuturesStatus />
 
-> **現物価格と先物価格は教材用の架空の値です。** 評価日 2026-09-10、受渡日 2026-12-20、長期国債先物 2026年12月限の受渡適格銘柄（373〜383回債）、Funding Rate 1.23% を基準としています。
+> **現物価格と先物価格は教材用の架空の値である。** 評価日 2026-09-10、受渡日 2026-12-20、長期国債先物 2026年12月限の受渡適格銘柄（373〜383回債）、Funding Rate 1.23% を基準とする。
+
+<UsageGuide
+  lead="初期値は原稿の例（現在の市場の架空価格、Funding Rate 1.23%）で、受渡適格銘柄の一覧と CTD を再現する。入力は市場の前提の選択、複利利回り（%）、Funding Rate（%）。"
+  steps={[
+    { text: <><b>現在の市場（架空の価格）</b> を選ぶ。<b>Funding Rate（%）</b> は 1.23。</>, to: "II-2.6" },
+    { text: <><b>全銘柄を同じ複利利回りで評価</b> を選び、<b>複利利回り（%）</b> に 8、<b>Funding Rate（%）</b> に 9 を入れる。</>, to: "II-2.7" },
+  ]}
+/>
 
 <FuturesControls />
 
-## イールドカーブ変動とCTDの入れ替わり
+## II-2.6 国債先物とCTD
 
-標準物のクーポンは 6% です。市場金利が 6% を下回りイールドカーブが右上がりのときは、Duration の短い銘柄が相対的に受け渡しやすくなる傾向があり、6% を上回る高金利・逆イールドのストレスシナリオ（長期金利 8%、Funding Rate 9%）では相対価値が反対方向に動きます。
-
-<div className="two-col">
-  <RegimeChart />
-  <div>
-    <CtdSwitchChart />
-  </div>
-</div>
-
-## 受渡適格銘柄のBasis・Carry・CTD一覧
-
-長期国債先物は、クーポン6%、償還期限10年の標準物を取引対象とします。満期には受渡適格銘柄の中から売方が受け渡す銘柄を選び、標準物との価値の差を Conversion Factor（CF）で調整します（$\text{Invoice Price} = F \times CF$）。
-
-$$
-\text{Gross Basis}_i = P_i - F \times CF_i, \qquad
-\text{Carry} = \text{Coupon Income} + (AI_T - AI_0) - \text{Funding Cost}, \qquad
-\text{Net Basis} = \text{Gross Basis} - \text{Carry}
-$$
-
-Net Basis が最小（Implied Repo Rate が最大）の銘柄が、同じ前提で売方が最も安く受け渡せる銘柄（CTD）です。
+長期国債先物は、クーポン6%、償還期限10年の標準物を取引対象とする。一覧は受渡適格銘柄ごとの Gross Basis、Net Basis、Implied Repo Rate である。
 
 <BasketTable />
 
@@ -44,13 +34,15 @@ Net Basis が最小（Implied Repo Rate が最大）の銘柄が、同じ前提�
   </div>
 </div>
 
-### 先物BPV
+## II-2.7 イールドカーブ変動と最割安銘柄影響
 
-先物の金利感応度は、実務では CTD の BPV（DV01）を CF で割って近似します。CTD が入れ替わると、先物BPV も入れ替わった銘柄のものに変わります。
+利回り水準を動かしたときの CTD の入れ替わり。
 
-$$
-\text{先物BPV} = \frac{\text{CTD の DV01}}{CF_{\text{CTD}}}, \qquad
-\text{DV01} = \frac{P(y - 1\text{bp}) - P(y + 1\text{bp})}{2}
-$$
+<div className="two-col">
+  <RegimeChart />
+  <div>
+    <CtdSwitchChart />
+  </div>
+</div>
 
 </FuturesProvider>

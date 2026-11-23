@@ -197,7 +197,7 @@ export function CapletPanel() {
               <div className="table-wrap">
                 <table className="data">
                   <caption>Caplet 価格：公式と周辺分布（想定元本 1 に対する bp。{c.paths.toLocaleString("ja-JP")} 本、seed {c.seed}）　<Tag d={d} /></caption>
-                  <thead><tr><th scope="col">black_price</th><th scope="col">simulated_price</th><th scope="col">mc_standard_error</th><th scope="col">difference</th><th scope="col">差 ÷ 標準誤差</th></tr></thead>
+                  <thead><tr><th scope="col">Black価格</th><th scope="col">simulated_price</th><th scope="col">mc_standard_error</th><th scope="col">difference</th><th scope="col">差 ÷ 標準誤差</th></tr></thead>
                   <tbody><tr>
                     <td className="num" data-testid="caplet-black">{f(1e4 * c.black_price, 6)}</td><td className="num" data-testid="caplet-mc">{f(1e4 * c.simulated_price, 6)}</td>
                     <td className="num">{f(1e4 * c.mc_standard_error, 6)}</td><td className="num">{f(1e4 * (c.simulated_price - c.black_price), 6)}</td>

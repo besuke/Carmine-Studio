@@ -254,7 +254,7 @@ export function BgmPanel() {
           <div className="two-col">
             <div className="table-wrap">
               <table className="data">
-                <caption>BGM 校正の説明用・固定ウェイト近似と Rebonato の近似　<Tag d={d} /></caption>
+                <caption>BGM キャリブレーションの説明用・固定ウェイト近似と Rebonato の近似　<Tag d={d} /></caption>
                 <tbody>
                   {b.caplet_vol.map((v, i) => <tr key={i}><th scope="row">Caplet volatility {i + 1}（ウェイト {b.weights[i]}）</th><td className="num">{pct(v, 2)}</td></tr>)}
                   <tr><th scope="row">Swaption volatility proxy（減衰 {b.decay}）</th><td className="num" data-testid="bgm-proxy">{pct(b.proxy_vol, 6)}</td></tr>

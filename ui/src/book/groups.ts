@@ -34,7 +34,7 @@ export const GROUPS: Group[] = [
   {
     title: "金利モデル・仕組み債",
     items: [
-      { route: "/irs-calibration", blurb: "Normal・Black ボラ、SABR、Hull–White、BGM の校正" },
+      { route: "/irs-calibration", blurb: "Normal・Black ボラ、SABR、Hull–White、BGM のキャリブレーション" },
       { route: "/rate-models", blurb: "Hull–White の短期金利経路、LMM キャップレット" },
       { route: "/early-redemption", blurb: "コール債の行使判断、MBS のプリペイメントと OAS" },
       { route: "/prdc", label: "PRDC", icon: "paths", blurb: "PRDC の現在価値、FX 感応度、期待クーポン" },

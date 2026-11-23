@@ -1,17 +1,27 @@
 import { CnnProvider, CnnStatus, CnnControls, ForecastCurves, ValuationTable, MetricsTable, ErrorSeries, KernelView, CnnSettings } from "../../components/cnn";
 import { BsSurrogateLive, BsSurrogateResults } from "../../components/cnn/bsSurrogate";
+import { UsageGuide } from "../../components/UsageGuide";
 
 <CnnProvider>
 
 # CNN の基礎と実践
 
-国債利回りの翌月の変化を CNN で予測し、予測したカーブで債券を評価します。あわせて、ブラック・ショールズの価格関数をネットワークに学習させます。
+計算の仕様とネットワークの設計は Coral-Book 補論B に従う。学習はオフラインで済んでおり、ここでは学習済みの結果を使って予測と評価を確認する。
 
 <CnnStatus />
 
-## JGB カーブの翌月予測
+<UsageGuide
+  lead="初期値は、予測の起点が 2026-09（翌月 2026-10 のカーブを予測）、債券は残存 10 年・クーポン 1.00%。入力は予測の起点、債券、ブラック・ショールズ価格の入力欄。"
+  steps={[
+    { text: <><b>予測の起点（月末）</b> を前の月に変える。<b>残存年限</b>（2〜20 年）と <b>クーポン（%）</b> を変える。</>, to: "forecast" },
+    { text: <><b>期間</b> を 全期間・前半・後半・2022 年以降 から選ぶ。</>, to: "errors" },
+    { text: <>ブラック・ショールズ価格の <b>現物</b> 100、<b>行使価格</b> 100、<b>金利（%）</b> 3、<b>配当利回り（%）</b> 1、<b>ボラティリティ（%）</b> 25、<b>満期（年）</b> 1 を変える。学習範囲の外に出すと警告が出る。</>, to: "bs" },
+  ]}
+/>
 
-直近 12 か月の 4 年限（2・5・10・20 年）の利回り変化から、翌月の変化を予測します。ランダムウォーク、リッジ回帰、1D-CNN をウォークフォワードで比べます。月と債券を選ぶと、予測カーブでの債券の価値と損益が出ます。
+<h2 id="forecast">JGB カーブの翌月予測</h2>
+
+直近 12 か月の 4 年限（2・5・10・20 年）の利回り変化から、翌月の変化を予測する。**予測の起点（月末）**、**残存年限**、**クーポン（%）** を選ぶ。
 
 <CnnControls />
 
@@ -19,7 +29,7 @@ import { BsSurrogateLive, BsSurrogateResults } from "../../components/cnn/bsSurr
 
 <ValuationTable />
 
-### 誤差の比較
+<h2 id="errors">誤差の比較</h2>
 
 <MetricsTable />
 
@@ -31,13 +41,16 @@ import { BsSurrogateLive, BsSurrogateResults } from "../../components/cnn/bsSurr
 
 <CnnSettings />
 
-## ブラック・ショールズ価格の学習
+<h2 id="bs">ブラック・ショールズ価格の学習</h2>
 
-5 入力（$\ln(S/K)$、満期、ボラティリティ、金利、配当）、隠れ層 2 つ（各 32、tanh）の全結合ネットワーク。デルタは、入力に対するバックワードで求めます。
+5 入力（現物と行使価格の比、満期、ボラティリティ、金利、配当）、隠れ層 2 つ（各 32、tanh）の全結合ネットワーク。次の6項目を入れる。
+
+- **現物**、**行使価格**：1〜1000。
+- **金利（%）**、**配当利回り（%）**：−5〜30。
+- **ボラティリティ（%）**：1〜200。
+- **満期（年）**：0.01〜30。
 
 <BsSurrogateResults />
-
-学習範囲の外に出すと警告が出ます。
 
 <BsSurrogateLive />
 

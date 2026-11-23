@@ -1,40 +1,55 @@
 import { PrdcProvider, PrdcStatus, PrdcControls, TermsPanel, PayoffChart, SamplePathsChart, ValuePanel, CouponTermPanel, DistributionCharts, SensitivityPanel } from "../components/prdc";
+import { UsageGuide } from "../components/UsageGuide";
 
 <PrdcProvider>
 
-# PRDC（金利為替系デリバティブ）
+# 為替連動クーポン債（PRDC）
 
-金利と為替を組み合わせた代表的なエキゾチック商品である PRDC（Power Reverse Dual Currency Note）を評価します。為替レート、ボラティリティ、金利、クーポンの制約条件（キャップ・フロア）を動かしながら、現在価値、FX デルタやベガ、クーポンの期間構造や到達確率を操作・確認できます。
-
-※ 自動微分を用いた PRDC の一括感応度計算や並列処理は「[エキゾチック自動微分](#/enterprise/automatic-differentiation)」で扱います。
+計算の仕様と式は Coral-Book 第II-9章に従う。入力値はすべて説明用の例示値である。自動微分による一括感応度と並列処理は「[エキゾチック自動微分](#/enterprise/automatic-differentiation)」で扱う。
 
 <PrdcStatus />
 
-> 入力値はすべて説明用の例示値です。
+<UsageGuide
+  lead="初期値は原稿の例（評価日 2023-04-11、想定元本 300,000,000 円、FX スポット 133.2681 円）で、PRDC の現在価値を再現する。入力は市場の前提、クーポンの条件、モンテカルロの3つの欄。"
+  steps={[
+    { text: <>市場の前提の <b>FX スポット（円）</b> 133.2681、<b>FX ボラ（%）</b> 10、<b>円金利（%）</b> 1、<b>外貨金利（%）</b> 3、<b>割引金利（%）</b> 0.5 から、<b>FX スポット（円）</b> を 120 に変える。</>, to: "II-9.1" },
+    { text: <>クーポンの <b>基準 FX</b> 120、<b>レバレッジ a（%）</b> 12.2、<b>控除 b（%）</b> 10、<b>フロア（%）</b> 0、<b>キャップ（%）</b> 2.2 から、<b>キャップ（%）</b> を 3 に変える。</>, to: "II-9.2" },
+    { text: <><b>パス数</b> を 3,000 から 100,000 に増やし、<b>seed</b> を変える（初期値は 123）。</>, to: "II-9.3" },
+  ]}
+/>
 
-## 商品構造・市場条件とクーポンのペイオフ
+## II-9.1 商品構造と市場条件
 
-PRDC は、為替レートに連動するクーポンを払う長期の仕組債です。クーポンは
+市場の前提の5項目を入れる。
 
-$$
-C(S_t) = \min\left[C_{\max},\ \max\left(a\frac{S_t}{S_0} - b,\ C_{\min}\right)\right], \qquad
-S_{\mathrm{floor}} = S_0\,\frac{b + C_{\min}}{a}, \qquad S_{\mathrm{cap}} = S_0\,\frac{b + C_{\max}}{a}
-$$
-
-で表されます（$S_t$ はクーポン決定日の為替レート、$S_0$ は基準為替レート、$a$ は為替連動係数、$b$ は固定控除率、$C_{\min}$ と $C_{\max}$ はフロアとキャップ）。
+- **FX スポット（円）**：50〜250。
+- **FX ボラ（%）**：1〜50。
+- **円金利（%）**：−2〜10。
+- **外貨金利（%）**：−2〜15。
+- **割引金利（%）**：−2〜10。
 
 <PrdcControls which="market" />
 
+クーポンの条件の5項目を入れる。
+
+- **基準 FX**：50〜250。
+- **レバレッジ a（%）**：0.1〜50。
+- **控除 b（%）**：0〜50。
+- **フロア（%）**：0〜10。
+- **キャップ（%）**：0〜20。
+
 <PrdcControls which="terms" />
+
+## II-9.2 FXプロセスとクーポンのペイオフ
 
 <div className="two-col">
   <TermsPanel />
   <PayoffChart />
 </div>
 
-## モンテカルロによる評価とFXサンプルパス
+## II-9.3 モンテカルロによる金利為替系デリバティブ評価
 
-各クーポン日の期待クーポンを $E[C(S_{t_i})]$ とすると、現在価値は $PV_{\mathrm{PRDC}} = \sum_i D(0,t_i)\,N_0\,\alpha_i\,E[C(S_{t_i})] + D(0,T)\,N_0$ です。パス数と乱数の種を変えると、閉じた式の値のまわりで推定値と標準誤差がどう動くかを確認できます。
+**パス数** を 300〜100,000 から選び、**seed** を整数で入れる。
 
 <PrdcControls which="mc" />
 
@@ -45,9 +60,7 @@ $$
   <SamplePathsChart />
 </div>
 
-## クーポンの期間構造と分布（3時点の比較）
-
-期待クーポンは、期待 FX をクーポン式に入れた値とは一般に一致しません（$E[C(S_t)] \ne C(E[S_t])$）。満期が遠いほど FX の分布が広がり、フロアに張り付く確率が上がって期待クーポンは低下します。
+## II-9.4 クーポンの期間構造と分布
 
 <CouponTermPanel />
 
@@ -55,7 +68,7 @@ $$
 
 <DistributionCharts />
 
-## FX スポット・ボラティリティ感応度
+## II-9.5 FX感応度とモンテカルロ誤差
 
 <SensitivityPanel />
 

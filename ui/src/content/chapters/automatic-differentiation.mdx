@@ -1,16 +1,26 @@
 import { PrdcRiskProvider, PrdcRiskStatus, RiskControls, NotePanel, AdPanel, McPanel } from "../../components/prdcRisk";
+import { UsageGuide } from "../../components/UsageGuide";
 
 <PrdcRiskProvider>
 
 # 自動微分（PRDC の感応度）
 
-PRDC の価値が、為替・為替ボラティリティ・円と外貨のカーブのどこにどれだけ効くかを、自動微分と有限差分で求めて比べます。
+計算の仕様と導出は Coral-Book 第III部第4章〜第7章と補論B に従う。ここでは、PRDC の感応度を自動微分と有限差分で求めて比べる。
 
 <PrdcRiskStatus />
 
+<UsageGuide
+  lead="初期値は FX スポット 150 円、FX ボラ 12%、パス数 20,000、seed 1234 で、原稿の例を再現する。入力は市場の前提とモンテカルロの2つの欄。"
+  steps={[
+    { text: <><b>FX スポット（円）</b> 150、<b>FX ボラ（%）</b> 12 から、<b>FX スポット（円）</b> を 140 に変える。</>, to: "ad-vs-bump" },
+    { text: <><b>パス数</b> 20,000、<b>seed</b> 1234 から、<b>パス数</b> を 200,000 に増やす。</>, to: "prdc-mc" },
+  ]}
+/>
+
 <h2 id="ad-vs-bump">自動微分と有限差分</h2>
 
-12 個のリスクファクターへの感応度を、自動微分（評価 1 回）と中心差分（評価 24 回）で求め、時間と精度を比べます。
+- **FX スポット（円）**：50〜300。
+- **FX ボラ（%）**：1〜60。
 
 <RiskControls which="market" />
 
@@ -19,6 +29,8 @@ PRDC の価値が、為替・為替ボラティリティ・円と外貨のカー
 <h2 id="prdc-mc">パスごとの自動微分モンテカルロ</h2>
 
 <NotePanel />
+
+**パス数** を 2,000・20,000・100,000・200,000 から選び、**seed** を整数で入れる。
 
 <RiskControls which="mc" />
 

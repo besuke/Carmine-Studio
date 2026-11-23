@@ -1,39 +1,49 @@
 import { LookbackLive, LookbackConvergence } from "../../components/lookback";
 import { ConvertibleLive, ConvertibleCurve } from "../../components/convertible";
 import { ResetShape, ResetClosedForm, CarriedLive, CarriedGrid } from "../../components/mscb";
+import { UsageGuide } from "../../components/UsageGuide";
 
-# ルックバック・転換社債・MSCB
+# 株式ルックバックと転換社債（CB・MSCB）
 
-ルックバック・オプション、転換社債、転換価額修正条項つき転換社債（MSCB）の価値とグリークスを、条件を動かして確かめます。
+計算の仕様と導出は Coral-Book 補論A・補論B に従う。ここでは、条件を動かして価値とグリークスを確認する。
 
-## ルックバック
+<UsageGuide
+  lead="各節に入力欄がある。初期値は、ルックバックが変動ストライク・コール、転換社債が残存 5 年・クーポン 2%、MSCB が価格の比 α 0.90。"
+  steps={[
+    { text: <>ルックバックの <b>監視の回数</b> 12 を 0（連続のみ）や 52 に変える。<b>種類</b> と <b>コール・プット</b> も切り替える。</>, to: "lookback" },
+    { text: <>転換社債の <b>信用スプレッド（%）</b> 2 を 4 に、<b>ボラティリティ（%）</b> 25 を 35 に変える。</>, to: "convertible" },
+    { text: <>MSCB（リセット）の <b>価格の比 α</b> 0.90 を 0.95 に変える。</>, to: "mscb-reset" },
+    { text: <>MSCB（持ち越し）の <b>リセット</b>、<b>規則</b>、<b>方法</b>、<b>株価のシナリオ</b> を切り替える。</>, to: "mscb-carried" },
+  ]}
+/>
 
-変動ストライクは、満期までの最小値（最大値）が行使価格になります。連続監視は閉じた式、離散監視は木で求めます。
+<h2 id="lookback">ルックバック</h2>
+
+変動ストライク・固定ストライクのルックバック・オプション。入力は **種類**、**コール・プット**、**現物**、**これまでの最小値**、**金利（%）**、**配当利回り（%）**、**ボラティリティ（%）**、**満期（年）**、**監視の回数**（0 は連続のみ）、**木の段数**。
 
 <LookbackLive />
 
 <LookbackConvergence />
 
-## 転換社債
+<h2 id="convertible">転換社債</h2>
 
-転換すれば転換価値、しなければクーポンと償還額を受け取ります。信用スプレッドは、転換されない部分にだけかかります。
+入力は **残存年数**、**クーポン（%）**、**転換比率**、**転換できる時**（アメリカン・ヨーロピアン）、**コール条項**、**現物**、**金利（%）**、**配当利回り（%）**、**ボラティリティ（%）**、**信用スプレッド（%）**、**木の段数**。
 
 <ConvertibleLive />
 
 <ConvertibleCurve />
 
-## 転換時にリセットする MSCB
+<h2 id="mscb-reset">転換時にリセットする MSCB</h2>
 
-転換価額は転換時の株価の $\alpha$ 倍（下限・上限で切り取り）。転換で受け取る価値は
-$F\,\max\bigl(S/K_{\max},\ \min(S/K_{\min},\ 1/\alpha)\bigr)$ です。
+入力は **価格の比 α**、**転換価額の下限・上限**、**現物**。
 
 <ResetShape />
 
 <ResetClosedForm />
 
-## 転換価額を持ち越す MSCB
+<h2 id="mscb-carried">転換価額を持ち越す MSCB</h2>
 
-リセット日の株価で転換価額を見直し、次のリセット日まで持ち越します。限度がなければ $S/K$ の 1 次元に縮約できます。
+入力は **リセット**（なし・1 年後・毎年 2 回・毎年 4 回）、**規則**（downward_only・both）、**方法**（縮約・格子）、**株価のシナリオ**（下落・横ばい・上昇）、**価格の比 α**、**現物**、**木の段数**。
 
 <CarriedLive />
 

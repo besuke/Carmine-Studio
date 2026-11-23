@@ -1,25 +1,32 @@
 import { BlackProvider, BlackStatus, BlackControls, BlackPanel, BlackValueChart, McPanel, McPathCharts, OnePathTable, EuropeanPutTable, AmericanPutTable, TreeConvergenceChart, SobolPathChart, LsmPanel } from "../components/black";
+import { UsageGuide } from "../components/UsageGuide";
 
 <BlackProvider>
 
-# ブラックモデル
+# 株式・先物オプション（Black 76・BSM）
 
-Black 76 および BSM（Black–Scholes–Merton）モデルによるオプション価格とグリークスの算出、モンテカルロ法によるパス生成と収束、アメリカン・オプションの早期行使価値の評価（二項ツリー、各種近似式、Longstaff–Schwartz法）を操作・確認します。
+計算の仕様と式は Coral-Book 第II-4章に従う。入力値は例示的な値であり、市場の気配値ではない。疑似乱数のモンテカルロは、乱数の系列により標本誤差が出る。
 
 <BlackStatus />
 
-> 入力値は例示的な値です（市場の気配値ではありません）。疑似乱数のモンテカルロは乱数の系列により標本誤差が生じます。
+<UsageGuide
+  lead="初期値は原稿の例で、4つの入力欄の組（Black 76、モンテカルロ、BSM、Longstaff–Schwartz）が上から順に並ぶ。各欄の初期値に戻すボタンで、その欄だけ元に戻る。"
+  steps={[
+    { text: <>Black 76 の <b>フォワード価格</b> 107.2109375、<b>行使価格</b> 107.5、<b>ボラティリティ（%）</b> 5.2、<b>無リスク金利（%）</b> 5 から、<b>ボラティリティ（%）</b> を 8 に変える。</>, to: "II-4.2" },
+    { text: <>モンテカルロで <b>疑似乱数</b> と <b>Sobol 列</b> を切り替え、<b>パス数</b> を 200 から 50,000 に増やす。</>, to: "II-4.4" },
+    { text: <>BSM の <b>現物価格</b> 100、<b>行使価格</b> 100、<b>ボラティリティ（%）</b> 20、<b>無リスク金利（%）</b> 5、<b>配当利回り（%）</b> 0 から、<b>行使価格</b> を 110 に変える。</>, to: "II-4.5" },
+    { text: <><b>Sobol パス数</b> を 2,048 から 16,384 に増やす。BSM の入力値を共用する。</>, to: "II-4.6" },
+  ]}
+/>
 
-## ブラック76による解析評価（先物・フォワードオプション）
+## II-4.2 ブラック76による解析評価（先物・フォワードオプション）
 
-Black–Scholes–Merton（BSM）モデルは現物価格・金利・配当からフォワード価格を求め、Black 76 は観測したフォワード価格（先物価格）を直接入力します。リスク中立測度の下で株価が $dS_t = (r - q) S_t\,dt + \sigma S_t\,dW_t$、$F_0 = S_0 e^{(r - q)T}$ に従うとき、Black 76 の European call と put は次の式で与えられます。
+債券先物オプションを意識した価格表示。次の4項目を入れる。
 
-$$
-C = D(0,T)\bigl[F_0 N(d_1) - K N(d_2)\bigr], \qquad P = D(0,T)\bigl[K N(-d_2) - F_0 N(-d_1)\bigr], \qquad
-d_1 = \frac{\log(F_0/K) + \tfrac12 \sigma^2 T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}
-$$
-
-債券先物オプションを意識した価格表示で、初期値はフォワード価格 $107 + 6.75/32$、行使価格 107.5、ボラティリティ 5.2%、無リスク金利 5%（取引日 2023-07-21、満期 2023-08-26）です。
+- **フォワード価格**：1〜1000。
+- **行使価格**：1〜1000。
+- **ボラティリティ（%）**：0.1〜200。
+- **無リスク金利（%）**：−5〜30。
 
 <BlackControls which="black" />
 
@@ -30,9 +37,9 @@ $$
   <BlackValueChart />
 </div>
 
-## モンテカルロ評価とパス分布
+## II-4.4 モンテカルロ評価
 
-リスク中立評価では、オプション価格は満期 Payoff の割引期待値 $V_0 = D(0,T)\,E^Q\bigl[\max(F_T - K, 0)\bigr]$ です。パス数と乱数種別（疑似乱数・Sobol 列）を変えて収束とパス分布を確認します。
+**疑似乱数**／**Sobol 列** を選び、**パス数** を 200〜50,000 から選ぶ。解析値との差を標準誤差で割った値が 2 を超えるか、パス数を増やすと小さくなるかを見る。
 
 <BlackControls which="mc" />
 
@@ -42,13 +49,19 @@ $$
 
 ### Black 過程の1パス検算
 
-フォワード測度の下ではフォワード価格のドリフトがゼロなので、時間幅 $\Delta t$ ごとに $F_{t+\Delta t} = F_t \exp\bigl[-\tfrac12 \sigma^2 \Delta t + \sigma\sqrt{\Delta t}\,Z\bigr]$ で更新できます（$-\tfrac12\sigma^2\Delta t$ は伊藤の補正項）。Sobol 列の 2〜4 本目について、逆正規 $Z$ から手計算した値と比較します。
+Sobol 列の 2〜4 本目について、生成された価格と手計算の価格の差を見る。入力はない。
 
 <OnePathTable />
 
-## BSMモデル：ヨーロピアン・アメリカン・オプションと二項ツリー
+## II-4.5 BSMモデル：ヨーロピアン・アメリカン・オプションと二項ツリー
 
-現物株価を原資産とする BSM モデル（初期値は現物価格 100、行使価格 100、満期 1 年、ボラティリティ 20%、無リスク金利 5%、配当利回り 0%）です。二項ツリー（Cox–Ross–Rubinstein Tree）のステップ数による収束と、American put の早期行使価値（CRR 25・500ステップ、Barone–Adesi–Whaley 近似、Bjerksund–Stensland 近似）を比較します。
+現物株価を原資産とする。次の5項目を入れる。
+
+- **現物価格**：1〜1000。
+- **行使価格**：1〜1000。
+- **ボラティリティ（%）**：1〜200。
+- **無リスク金利（%）**：−5〜30。
+- **配当利回り（%）**：−5〜30。
 
 <BlackControls which="bsm" />
 
@@ -60,9 +73,9 @@ $$
   <TreeConvergenceChart />
 </div>
 
-## 準モンテカルロ（Sobol列）とロングスタッフ–シュワルツ法（LSM）
+## II-4.6 準モンテカルロとロングスタッフ–シュワルツ法
 
-American オプションでは、各行使可能時点で即時行使価値 $I(S_t) = \max(K - S_t, 0)$ と継続価値を比較します。Longstaff–Schwartz 法は、将来の割引キャッシュフローを原資産価格の2次多項式 $\widehat{C}(S_t) = \beta_0 + \beta_1 S_t + \beta_2 S_t^2$ で回帰して継続価値を推定し、即時行使価値が推定継続価値を上回る時点で行使します。
+**Sobol パス数** を 256〜16,384 から選ぶ。入力のうち BSM の欄の値（現物価格など）を共用する。
 
 <BlackControls which="lsm" />
 

@@ -1,67 +1,72 @@
 import { CalibrationProvider, CalibrationStatus, CalibrationControls, NormalPanel, SabrPanel, HullWhitePanel, BgmPanel } from "../components/calibration";
+import { UsageGuide } from "../components/UsageGuide";
 
 <CalibrationProvider>
 
-# キャリブレーション
+# 金利モデルキャリブレーション
 
-市場価格やインプライド・ボラティリティからモデルパラメータを推定するキャリブレーション手法（SABRモデルのボラティリティスマイル、Hull–Whiteモデルのパラメータ推定、BGM/LMMモデルの相関推定）を操作・確認します。Black型とNormal型の換算や、最適化手法によるパラメータ識別の特性を学べます。
+計算の仕様と式は Coral-Book 第II-6章に従う。入力値はすべて説明用の例示値であり、市場の実勢値ではない。
 
 <CalibrationStatus />
 
-> 入力値はすべて説明用の例示値であり、市場の実勢値ではありません。
+<UsageGuide
+  lead="初期値は原稿の例で、4つの入力欄（SABR、Black 型と Normal 型、Hull–White、BGM）が章の順に並ぶ。各欄の初期値に戻すボタンで、その欄だけ元に戻る。"
+  steps={[
+    { text: <>SABR の <b>β（固定）</b> を 0.5 から 1 に変える（範囲 0〜1）。</>, to: "II-6.3" },
+    { text: <>Black・Normal の <b>フォワード（%）</b> 0.56、<b>Black ボラ（%）</b> 40、<b>Normal ボラ（bp）</b> 40、<b>満期（年）</b> 2 から、<b>フォワード（%）</b> を −0.2 に変える。</>, to: "II-6.2" },
+    { text: <>Hull–White の <b>基準の a（%）</b> 8、<b>基準の σ（%）</b> 1.2、<b>ゼロ金利（%）</b> 3 から、<b>基準の σ（%）</b> を 2 に変える。</>, to: "II-6.4" },
+    { text: <>BGM の <b>相関の減衰（基準）</b> を 0.45 から 0.9 に変える（範囲 0.02〜1.9）。</>, to: "II-6.5" },
+  ]}
+/>
 
-## SABR によるスマイル・キャリブレーション
+## II-6.2 Black型とNormal型のボラティリティ
 
-SABR は、フォワード $F_t$ とそのボラティリティ水準 $\alpha_t$ を確率変数として扱い、近似インプライド・ボラティリティ $\sigma_{\mathrm{impl}}(K) = g(F_0, K, T; \alpha, \beta, \nu, \rho)$ を与えます。市場クォートは説明用の7点（単一満期2年、フォワード 0.56%）で、$\beta$ を固定して $\alpha$、$\nu$、$\rho$ をボラティリティの二乗誤差の平均で推定します。準ニュートン法（L-BFGS-B）と Levenberg–Marquardt 法による最適化結果を比較できます。
+次の4項目を入れる。
 
-<CalibrationControls which="sabr" />
-
-<SabrPanel />
-
-## Black 型と Normal 型のボラティリティ
-
-Normal（Bachelier）型の価格は
-
-$$
-V_N = D\left[\omega(F - K)N(\omega d) + \sigma_N\sqrt{T}\,\phi(d)\right], \qquad d = \frac{F - K}{\sigma_N\sqrt{T}}
-$$
-
-で、$F$ や $K$ が負でも定義できます。同じ「40」でも、Black 40% は相対変動の年率、Normal 40bp は金利の絶対変動の年率で意味が異なります。
+- **フォワード（%）**：−1〜5。
+- **Black ボラ（%）**：1〜200。
+- **Normal ボラ（bp）**：1〜500。
+- **満期（年）**：0.1〜30。
 
 <CalibrationControls which="normal" />
 
 <NormalPanel />
 
-## Hull–White のパラメータ推定
+## II-6.3 SABRによるスマイルキャリブレーション
 
-Hull–White 1因子モデル $dr_t = \{\theta(t) - a r_t\}dt + \sigma\,dW_t$ では、満期 $S$ の割引債に対する満期 $T$ のコールは
+**β（固定）** を 0〜1 で入れる。市場クォートは説明用の7点で、α・ν・ρ を推定する。
 
-$$
-C = P(0,S)N(h) - KP(0,T)N(h - v), \qquad h = \frac{\log[P(0,S)/(KP(0,T))]}{v} + \frac{v}{2}, \qquad
-v = \frac{\sigma}{a}\left(1 - e^{-a(S-T)}\right)\sqrt{\frac{1 - e^{-2aT}}{2a}}
-$$
+<CalibrationControls which="sabr" />
 
-で、$v$ はオプション満期までに蓄積される債券価格の標準偏差です。基準の $a$・$\sigma$ で4本の債券オプションの「市場価格」を作り、3本で $a$・$\sigma$ を推定し、残りの1本で検証（面外誤差の確認）を行います。
+<SabrPanel />
+
+## II-6.4 Hull–Whiteのパラメータ推定
+
+基準の a・σ から4本の債券オプションの「市場価格」を作り、3本で推定し、残りの1本で検証する。
+
+- **基準の a（%）**：0.5〜50。
+- **基準の σ（%）**：0.05〜5。
+- **ゼロ金利（%）**：−1〜10。
 
 <CalibrationControls which="hw" />
 
 <HullWhitePanel />
 
-## BGM モデルと相関の推定
+## II-6.5 BGMモデルとBrigo–Mercurioへの接続
 
-フォワード金利の変動係数を $\sigma_i$、スワップレートを局所的に固定ウェイト $w_i$ の和で近似すると、分散率は $\sigma_S^2 \approx \sum_{i,j} w_i w_j \sigma_i \sigma_j \rho_{ij}$、$\rho_{ij} = e^{-\beta |T_i - T_j|}$ で近似できます。キャップレットだけでは相関を識別できないため、スワップションのボラティリティから相関の減衰 $\beta$ を推定します。
+**相関の減衰（基準）** を 0.02〜1.9 で入れる。
 
 <CalibrationControls which="bgm" />
 
 <BgmPanel />
 
-## キャリブレーションサマリー
+## II-6.6 キャリブレーションサマリー
 
 | 確認項目 | SABR | Hull–White | BGM |
 |---|---|---|---|
 | 主な入力 | 行使金利別のオプション・ボラティリティ | 満期・スワップ年限別のオプション価格 | Caplet、Swaption、相関の情報 |
-| 主な推定対象 | $\alpha, \nu, \rho$（必要なら $\beta$） | $a, \sigma$ | フォワード・ボラティリティと相関構造 |
-| よくある不足 | $\beta$ を含むパラメータの識別 | 少数市場点からの同時推定 | Caplet だけでは相関を識別できない |
+| 主な推定対象 | α, ν, ρ（必要なら β） | a, σ | フォワード・ボラティリティと相関構造 |
+| よくある不足 | β を含むパラメータの識別 | 少数市場点からの同時推定 | Caplet だけでは相関を識別できない |
 | 検証 | スマイルと市場点外の形 | 複数満期の価格と未使用商品 | Cap と Swaption の同時再評価 |
 
 </CalibrationProvider>

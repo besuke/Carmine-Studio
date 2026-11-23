@@ -40,7 +40,7 @@ export const TOC: Part[] = [
         title: "確定キャッシュフロー",
         source: "part2_quantive_riemann/ch01_deterministic_cashflow.qmd",
         route: "/deterministic-cashflow",
-        routeNote: "債券のキャッシュフロー、単利・複利利回りと単価、Zスプレッド、金利感応度指標（BPV・デュレーション・コンベクシティ）、複利利回りの数値解法を操作できます",
+        routeNote: "債券のキャッシュフロー、単利・複利利回りと単価、Zスプレッド、金利感応度指標（BPV・デュレーション・コンベクシティ）、複利利回りの数値解法を操作できる",
         operations: [
           "利回りを動かして、単価・経過利子・デュレーション・コンベクシティ・BPVの変化を見る",
           "クーポンと残存年数を変えて、価格と利回りの関係（凸性）を描く",
@@ -56,7 +56,7 @@ export const TOC: Part[] = [
       },
       {
         id: "II-2",
-        title: "金利カーブ・CTD",
+        title: "金利カーブと国債先物のCTD",
         menu: "金利カーブ・CTD",
         source: "part2_quantive_riemann/ch02_interest_rate_curves.qmd",
         operations: [
@@ -72,12 +72,12 @@ export const TOC: Part[] = [
         ],
         additions: [],
         route: "/yield-curves",
-        routeNote: "ゼロ金利ノード、補間方式（ZeroCurve / DiscountCurve）、平行シフト、および国債利回りの期間構造の推移を操作できます。国債先物・CTDは章冒頭から操作できます",
+        routeNote: "ゼロ金利ノード、補間方式（ZeroCurve / DiscountCurve）、平行シフト、および国債利回りの期間構造の推移を操作できる。国債先物・CTDは章冒頭から操作できる",
       },
       {
         id: "II-3",
         menu: "OISスワップ",
-        title: "OISスワップとマルチカーブ評価",
+        title: "翌日物金利スワップ（OIS）",
         source: "part2_quantive_riemann/ch03_ois_swaps_multicurve.qmd",
         operations: [
           "円TONA OISカーブを構築し、5年クォート＋1 bp とリセットで、割引係数・ゼロ金利・フォワードの3グラフと7年OISの時価の変化を見る",
@@ -90,14 +90,15 @@ export const TOC: Part[] = [
         ],
         additions: [],
         route: "/yield-curve-ois",
-        routeNote: "円TONA OISカーブの構築（単調対数3次スプライン補間）と、市場レート変動による割引係数・ゼロ金利・1暦日フォワードおよび7年OISスワップの評価損益の変化を操作できます",
+        routeNote: "円TONA OISカーブの構築（単調対数3次スプライン補間）と、市場レート変動による割引係数・ゼロ金利・1暦日フォワードおよび7年OISスワップの評価損益の変化を操作できる",
       },
       {
         id: "II-4",
-        title: "ブラックモデル",
+        title: "株式・先物オプション（Black 76・BSM）",
+        menu: "株式・先物オプション",
         source: "part2_quantive_riemann/ch04_black_model.qmd",
         route: "/black-model",
-        routeNote: "Black 76・BSMの価格とグリークス、モンテカルロの収束とパス分布、アメリカン・オプションの早期行使価値（二項ツリー・各種近似・Longstaff–Schwartz法）を操作できます",
+        routeNote: "Black 76・BSMの価格とグリークス、モンテカルロの収束とパス分布、アメリカン・オプションの早期行使価値（二項ツリー・各種近似・Longstaff–Schwartz法）を操作できる",
         operations: [
           "原資産・権利行使価格・ボラティリティ・満期を動かして、Black76 と BSM の価格とグリークスを見る",
           "パス数と乱数（疑似乱数・Sobol）を変えて、モンテカルロの収束と標準誤差、パスと満期分布を見る",
@@ -113,10 +114,11 @@ export const TOC: Part[] = [
       },
       {
         id: "II-5",
-        title: "信用リスクとCDS",
+        title: "クレジット・デフォルト・スワップ（CDS）",
+        menu: "CDS",
         source: "part2_quantive_riemann/ch05_credit_risk_cds.qmd",
         route: "/credit-cds",
-        routeNote: "ハザードレートの推定と感応度、CDSの各レグ・NPV・Fair Spread・Fair Upfrontの算出、MidPoint法とISDA標準モデルの比較を操作できます",
+        routeNote: "ハザードレートの推定と感応度、CDSの各レグ・NPV・Fair Spread・Fair Upfrontの算出、MidPoint法とISDA標準モデルの比較を操作できる",
         operations: [
           "市場 Spread・契約 Coupon・回収率・割引率を動かして、Premium Leg・Protection Leg・Fair Spread・Fair Upfront を見る",
           "ゼロ NPV のハザードレートを推定し、単純近似 s/(1−R) と比べる。Spread と回収率の感応度表を確認する",
@@ -132,27 +134,28 @@ export const TOC: Part[] = [
       {
         id: "II-6",
         menu: "キャリブレーション",
-        title: "金利デリバティブのキャリブレーション",
+        title: "金利モデルキャリブレーション",
         source: "part2_quantive_riemann/ch06_irs_calibration.qmd",
         route: "/irs-calibration",
-        routeNote: "Normal・Blackボラティリティの比較、SABRモデルのスマイル校正、Hull–Whiteモデルのパラメータ推定、BGMモデルの相関推定を操作できます",
+        routeNote: "Normal・Blackボラティリティの比較、SABRモデルのスマイル・キャリブレーション、Hull–Whiteモデルのパラメータ推定、BGMモデルの相関推定を操作できる",
         operations: [
           "SABR の β を変えて市場スマイルへの当てはまりと最適化手法による推定値の違いを見る",
           "Black 型と Normal 型のボラティリティを換算して比べる",
-          "Hull–White の a と σ を校正し、適合点と検証用（面外）債券オプション価格の再現を見る",
+          "Hull–White の a と σ をキャリブレーションし、適合点と検証用（面外）債券オプション価格の再現を見る",
         ],
         rows: [
-          { sections: "6.2〜6.4", topic: "Normal ボラティリティ、SABR スマイル校正、Hull–White パラメータ推定", coverage: "対応", rmql: "Bachelier評価、SABR校正、Hull–White債券オプション評価と校正" },
+          { sections: "6.2〜6.4", topic: "Normal ボラティリティ、SABR スマイル・キャリブレーション、Hull–White パラメータ推定", coverage: "対応", rmql: "Bachelier評価、SABRキャリブレーション、Hull–White債券オプション評価とキャリブレーション" },
           { sections: "6.5", topic: "BGM のキャップレットと相関減衰の推定（Rebonato近似）", coverage: "対応", rmql: "固定ウェイト近似・Rebonato近似によるスワップションボラと相関減衰推定" },
         ],
         additions: [],
       },
       {
         id: "II-7",
-        title: "金利モデル",
+        title: "短期金利・フォワード金利モデル",
+        menu: "金利モデル",
         source: "part2_quantive_riemann/ch07_irs_rate_models.qmd",
         route: "/rate-models",
-        routeNote: "Hull–Whiteモデルの短期金利シミュレーション、LMMキャップレット価格と相関ショック、後決め金利（FMM）の評価を操作できます",
+        routeNote: "Hull–Whiteモデルの短期金利シミュレーション、LMMキャップレット価格と相関ショック、後決め金利（FMM）の評価を操作できる",
         operations: [
           "Hull–White の a と σ を動かして、短期金利の経路・分位点帯と HJM 瞬間フォワード変動係数を描く",
           "LMM のキャップレット価格と満期フォワード分布、相関ショックの散布図を見る",
@@ -166,10 +169,11 @@ export const TOC: Part[] = [
       },
       {
         id: "II-8",
-        title: "早期償還モデル",
+        title: "コーラブル債と住宅ローン担保証券（MBS）",
+        menu: "コーラブル債・MBS",
         source: "part2_quantive_riemann/ch08_early_redemption_models.qmd",
         route: "/early-redemption",
-        routeNote: "コール条項付債券のバックワード・インダクションによる行使判断、MBSのプリペイメント（PSA）とOASを操作できます",
+        routeNote: "コール条項付債券のバックワード・インダクションによる行使判断、MBSのプリペイメント（PSA）とOASを操作できる",
         operations: [
           "Hull–White のパラメータと金利水準を動かして、コール債の価格とコールオプション価値を見る",
           "コール日ごとの行使判断（コールする短期金利の上限）と、ボラティリティによるコール権の価値の変化を見る",
@@ -184,10 +188,10 @@ export const TOC: Part[] = [
       {
         id: "II-9",
         menu: "PRDC",
-        title: "金利為替系デリバティブ（PRDC）",
+        title: "為替連動クーポン債（PRDC）",
         source: "part2_quantive_riemann/ch09_exotic_derivatives_prdc.qmd",
         route: "/prdc",
-        routeNote: "FXスポット・ボラティリティ・金利・クーポンの条件を変え、PRDCの現在価値、FX感応度、期待クーポンや到達確率を操作できます",
+        routeNote: "FXスポット・ボラティリティ・金利・クーポンの条件を変え、PRDCの現在価値、FX感応度、期待クーポンや到達確率を操作できる",
         operations: [
           "FX スポット・ボラティリティ・金利とクーポンの条件を動かして、PRDC の現在価値と FX デルタ・ベガを見る。モンテカルロのパス数で標準誤差を見る",
           "期待クーポンの期間構造、キャップ・フロアへの到達確率、3時点のクーポン分布を横並びで比べる",
@@ -210,7 +214,7 @@ export const TOC: Part[] = [
         menu: "並列計算",
         title: "並列計算",
         route: "/enterprise/parallel-computing",
-        routeNote: "債券の一括評価の測定や、モンテカルロ・シミュレーションのスレッド数を変えて並列計算の効果を測定・操作できます",
+        routeNote: "債券の一括評価の測定や、モンテカルロ・シミュレーションのスレッド数を変えて並列計算の効果を測定・操作できる",
         source: "part3_enterprise_riemann/ch01_computational_evolution_parallel.qmd",
         operations: ["件数とスレッド数を選んで、債券の一括評価やPRDCモンテカルロの並列計算時間をサーバーで測る"],
         rows: [
@@ -224,7 +228,7 @@ export const TOC: Part[] = [
         menu: "分散計算",
         title: "分散計算",
         route: "/enterprise/distributed-jobs",
-        routeNote: "シナリオをジョブに分割して計算サーバーへ送り、集約する分散計算の流れを操作できます",
+        routeNote: "シナリオをジョブに分割して計算サーバーへ送り、集約する分散計算の流れを操作できる",
         source: "part3_enterprise_riemann/ch02_distributed_computing_jobtask.qmd",
         operations: ["1ジョブのシナリオ数と同時送信数を変えて、45シナリオの格子をジョブ分割・非同期実行・集約する"],
         rows: [
@@ -237,7 +241,7 @@ export const TOC: Part[] = [
         menu: "計算アーキテクチャ",
         title: "金融計算アーキテクチャ",
         route: "/enterprise/distributed-jobs",
-        routeNote: "シナリオ格子を一括評価し、PRDCのリスク集計を行う金融計算アーキテクチャを操作できます",
+        routeNote: "シナリオ格子を一括評価し、PRDCのリスク集計を行う金融計算アーキテクチャを操作できる",
         source: "part3_enterprise_riemann/ch03_enterprise_financial_computing.qmd",
         operations: ["シナリオ格子の評価結果をリアルタイムにマトリクス集計する"],
         rows: [
@@ -250,7 +254,7 @@ export const TOC: Part[] = [
         menu: "CNN の基礎と実践",
         title: "CNN の基礎と実践（JGB カーブ予測・ヨーロピアン）",
         route: "/enterprise/cnn-fundamentals",
-        routeNote: "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまで、操作して確かめられます",
+        routeNote: "畳み込みのフォワードとバックワードの式から、国債カーブの翌月予測（1D-CNN とランダムウォーク・リッジ回帰の比較）と、予測したカーブでの債券の損益を rmql で評価するところまで、操作して確かめられる",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: [
           "予測の起点の月と債券の条件（残存年限・クーポン・額面）を選び、1D-CNN・リッジ回帰の予測カーブと翌月の実績のカーブを重ねて見る",
@@ -270,7 +274,7 @@ export const TOC: Part[] = [
         menu: "CNN の金融モデル応用",
         title: "CNN の金融モデル応用（Hull–White・MBS・CLO）",
         route: "/enterprise/cnn-applications",
-        routeNote: "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説します",
+        routeNote: "Hull–White、MBS、CLO・CDO のトランシェを CNN で近似する場合の設計と、自動微分との比較を解説する",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: ["解説のみ（画面での計算はありません）"],
         rows: [
@@ -283,9 +287,9 @@ export const TOC: Part[] = [
       {
         id: "LC-1",
         menu: "ルックバック・転換社債・MSCB",
-        title: "ルックバック・転換社債・MSCB（持ち越す状態と次元の縮約）",
+        title: "株式ルックバックと転換社債（CB・MSCB）",
         route: "/enterprise/lookback-convertible",
-        routeNote: "ルックバックの最小値と、MSCB の転換価額を、持ち越す状態として扱い、次元を縮約して評価します",
+        routeNote: "ルックバックの最小値と、MSCB の転換価額を、持ち越す状態として扱い、次元を縮約して評価する",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: ["ルックバック、転換社債、MSCB を rmql で評価し、グリークスと収束を確かめる（ライブの計算と、事前計算の表）"],
         rows: [
@@ -300,9 +304,9 @@ export const TOC: Part[] = [
       {
         id: "MP-1",
         menu: "MBS・PRDC",
-        title: "MBS・PRDC（縮約できない経路依存）",
+        title: "MBS・目標償還付きPRDC（TARN）",
         route: "/enterprise/mbs-prdc",
-        routeNote: "MBS の元本残高と、PRDC の累積クーポンを、経路ごとに持ち越して評価します（PRDC の評価は 14.1 から操作できます）",
+        routeNote: "MBS の元本残高と、TARN の累積クーポンを、経路ごとに持ち越して評価する（PRDC の評価は 14.1 から操作できる）",
         source: "Carmine-Studio の独自の章（Coral-Book に対応する章はない）",
         operations: ["MBS の残高・CPR・価格・OAS と、PRDC の TARN・ノックアウトを rmql で評価する（ライブの計算と、事前計算の表）"],
         rows: [
@@ -317,7 +321,7 @@ export const TOC: Part[] = [
         menu: "自動微分",
         title: "自動微分計算",
         route: "/enterprise/automatic-differentiation",
-        routeNote: "有限差分（Bump & Revalue）と自動微分の計算速度・精度の違いを比較できます",
+        routeNote: "有限差分（Bump & Revalue）と自動微分の計算速度・精度の違いを比較できる",
         source: "part3_enterprise_riemann/ch04_automatic_differentiation.qmd",
         operations: ["12個のリスクファクターに対する感応度を自動微分（1回）と有限差分（24回）で計算し、速度と精度を比べる"],
         rows: [
@@ -330,7 +334,7 @@ export const TOC: Part[] = [
         menu: "自動微分：オプション",
         title: "自動微分応用：オプション",
         route: "/enterprise/automatic-differentiation",
-        routeNote: "解析解とモンテカルロ＋自動微分によるオプションのGreeks計算を操作できます",
+        routeNote: "解析解とモンテカルロ＋自動微分によるオプションのGreeks計算を操作できる",
         source: "part3_enterprise_riemann/ch05_option_greeks_autodiff.qmd",
         operations: ["パスごとの自動微分（Pathwise AAD）によるモンテカルロ感応度と閉形式の値を比較する"],
         rows: [
@@ -343,7 +347,7 @@ export const TOC: Part[] = [
         menu: "自動微分：金利リスク",
         title: "自動微分応用：金利リスク",
         route: "/enterprise/automatic-differentiation",
-        routeNote: "カーブ節点感応度（バケットDV01）の自動微分計算を操作できます",
+        routeNote: "カーブ節点感応度（バケットDV01）の自動微分計算を操作できる",
         source: "part3_enterprise_riemann/ch06_interest_rate_risk_autodiff.qmd",
         operations: ["円金利・外貨金利カーブの各年節点に対する感応度（DV01）を棒グラフと表で確認する"],
         rows: [
@@ -356,7 +360,7 @@ export const TOC: Part[] = [
         menu: "自動微分：多因子",
         title: "自動微分応用：多因子モデル",
         route: "/enterprise/automatic-differentiation",
-        routeNote: "多因子モデルにおけるPRDCの感応度一括計算を操作できます",
+        routeNote: "多因子モデルにおけるPRDCの感応度一括計算を操作できる",
         source: "part3_enterprise_riemann/ch07_prdc_autodiff.qmd",
         operations: ["FXスポット・ボラティリティ・2通貨カーブ節点の感応度を自動微分で一度に求める"],
         rows: [
