@@ -271,7 +271,7 @@ export function JgbCurveExplorer() {
             ）の各月の最終観測日の利回り（1年〜30年）。
           </li>
           <li>
-            <strong>カーブ構築と時系列表示</strong>：{data.conventions.curve}。左図は選択した月末時点の年限方向のイールドカーブ、右図は1990年1月から選択した月末までの年限別利回りの時間方向の推移を連動して描きます。
+            <strong>カーブ構築と時系列表示</strong>：{data.conventions.curve}。左図は選択した月末時点の年限方向のイールドカーブ、右図は1990年1月から選択した月末までの年限別利回りの時間方向の推移を連動して描く。
           </li>
         </ul>
       </div>

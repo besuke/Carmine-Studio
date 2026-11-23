@@ -317,7 +317,7 @@ export function KernelView() {
       </div>
       <p className="note">
         {summary.kernels.origin_month[summary.kernels.origin_month.length - 1]} 時点で学習した第 1 シードのカーネル（標準化した入力に対する重み。正と負は色を分けて、濃いほど絶対値が大きい）。
-        学習は {summary.settings.retrain_every} か月ごとにやり直し、予測は {summary.settings.seeds} つのシードの平均です。
+        学習は {summary.settings.retrain_every} か月ごとにやり直し、予測は {summary.settings.seeds} つのシードの平均である。
       </p>
     </>
   );

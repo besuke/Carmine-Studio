@@ -191,8 +191,8 @@ export function LineChart({ title, series, origin, xMax, formatY, formatTick, yL
             <path key={s.key} d={path(s.points)} fill="none" stroke={s.color} strokeWidth={s.strokeWidth ?? 2} strokeOpacity={s.opacity}
               strokeDasharray={s.dashed ? "6 4" : undefined} strokeLinejoin="round" />
           ))}
-          {visible.map((s) => s.dots?.map((p) => (
-            <circle key={`${s.key}-${p.date}`} cx={sx(p.x)} cy={sy(p.y)} r="4" fill={s.color} className="dot" />
+          {visible.map((s) => s.dots?.map((p, i) => (
+            <circle key={`${s.key}-${p.date}-${i}`} cx={sx(p.x)} cy={sy(p.y)} r="4" fill={s.color} className="dot" />
           )))}
           {hp && (
             <g>

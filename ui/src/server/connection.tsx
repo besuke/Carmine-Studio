@@ -131,7 +131,7 @@ function StatusPanel() {
       {st === "disconnected" && (
         <div className="banner error" role="alert">
           <strong>rmql Compute Server に接続できません。</strong> {s.last?.error}
-          <div className="banner-cmd">起動のしかた：プロジェクトのフォルダーで <code>npm run api</code>、またはプロジェクトの <code>CarmineStudio.ps1</code>（デスクトップのショートカット「Carmine-Studio」）で「1」。サーバーは <code>127.0.0.1:8787</code> で待ち受けます。</div>
+          <div className="banner-cmd">起動のしかた：プロジェクトのフォルダーで <code>npm run api</code>、またはプロジェクトの <code>CarmineStudio.ps1</code>（デスクトップのショートカット「Carmine-Studio」）で「1」。サーバーは <code>127.0.0.1:8787</code> で待ち受ける。</div>
         </div>
       )}
       <dl className="server-facts">
@@ -157,7 +157,7 @@ function StatusPanel() {
 function HistoryChart() {
   const { history } = useConnection();
   const okChecks = history.filter((c) => c.ok);
-  if (okChecks.length < 2) return <p className="muted">接続の確認が 2 回以上成功すると、時間の推移を描きます。</p>;
+  if (okChecks.length < 2) return <p className="muted">接続の確認が 2 回以上成功すると、時間の推移を描く。</p>;
   const first = history[0].n;
   const pt = (c: Check, y: number): SeriesPoint => ({ x: c.n - first, y, date: `#${c.n} ${time(c.at)}` });
   const rt = okChecks.map((c) => pt(c, c.roundTripMs as number));
@@ -180,7 +180,7 @@ function HistoryChart() {
 
 function ServerFacts() {
   const { info } = useConnection();
-  if (!info) return <p className="muted">サーバーから情報を受け取ると表示します。</p>;
+  if (!info) return <p className="muted">サーバーから情報を受け取ると表示する。</p>;
   const rows: [string, ReactNode][] = [
     ["計算エンジン", `${info.engine.name} ${info.engine.version}`],
     ["R", `${info.runtime.r_version}（${info.runtime.platform}）`],
@@ -245,7 +245,7 @@ function PublicUrls() {
       <table className="data">
         <caption>
           利用者が開くアドレス（{p.source === "config" ? "設定 carmine.config.json の publicHost" : p.source === "env" ? "環境変数 CARMINE_PUBLIC_HOST" : "このサーバーの LAN の IP アドレス"}）
-          {p.serving ? "" : "：社内LANで公開するのは CarmineStudio.ps1 の「2」（npm run lan）で起動したときです"}
+          {p.serving ? "" : "：社内LANで公開するのは CarmineStudio.ps1 の「2」（npm run lan）で起動したときである"}
         </caption>
         <tbody>{p.urls.map((u, i) => (
           <tr key={u}><th scope="row">{i === 0 ? "案内する URL" : "ほかの LAN アドレス"}</th><td><a href={u} data-testid={i === 0 ? "public-url" : undefined}>{u}</a></td></tr>
@@ -264,15 +264,15 @@ export function ServerPage() {
       <PublicUrls />
       <h2>時間の推移</h2>
       <p>
-        往復の時間は、ブラウザが要求を送ってから応答を受け取るまでです。サーバー内の計算時間は、サーバーが rmql の小さな計算を
-        決まった回数くり返した時間で、往復との差はおもに通信と JSON の変換です。
+        往復の時間は、ブラウザが要求を送ってから応答を受け取るまでである。サーバー内の計算時間は、サーバーが rmql の小さな計算を
+        決まった回数くり返した時間で、往復との差はおもに通信と JSON の変換である。
       </p>
       <HistoryChart />
       <CheckLog />
       <h2>サーバーの情報</h2>
       <p>
-        各章の計算は、すべて rmql Compute Server（R の HTTP API、<code>server/server.R</code>）が <strong>rmql</strong> で行います。画面は
-        <code> /api</code> に要求を送り、返ってきた JSON を表とグラフにします。
+        各章の計算は、すべて rmql Compute Server（R の HTTP API、<code>server/server.R</code>）が <strong>rmql</strong> で行う。画面は
+        <code> /api</code> に要求を送り、返ってきた JSON を表とグラフにする。
       </p>
       <ServerFacts />
       <RouteTable />

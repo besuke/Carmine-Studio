@@ -94,7 +94,7 @@ export function NodeEditor() {
   return (
     <div className="table-wrap">
       <table className="data">
-        <caption>ゼロ金利ノード（評価日 2022-08-19、連続複利、<strong>例示値</strong>。値を変えると R API がカーブを作り直します）　{data && <Tag d={data} />}</caption>
+        <caption>ゼロ金利ノード（評価日 2022-08-19、連続複利、<strong>例示値</strong>。値を変えると R API がカーブを作り直す）　{data && <Tag d={data} />}</caption>
         <thead><tr><th scope="col">年限</th><th scope="col">日付</th><th scope="col" className="num">ゼロ金利（%）</th></tr></thead>
         <tbody>
           {tenors.map((t, i) => (
@@ -110,7 +110,7 @@ export function NodeEditor() {
       </table>
       <div className="controls" role="group" aria-label="ノードの操作">
         <button type="button" onClick={reset} disabled={loading}>初期値に戻す</button>
-        <span className="controls-state">{loading ? "再計算中…" : "値を変えると、下の図表が更新されます"}</span>
+        <span className="controls-state">{loading ? "再計算中…" : "値を変えると、下の図表が更新される"}</span>
       </div>
     </div>
   );

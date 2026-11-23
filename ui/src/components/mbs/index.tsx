@@ -84,7 +84,7 @@ export function MbsOasConvergence() {
         <thead><tr><th scope="col" className="num">経路数</th><th scope="col" className="num">種の数</th><th scope="col" className="num">OAS の平均</th><th scope="col" className="num">種による標準偏差</th><th scope="col" className="num">計算時間（秒）</th></tr></thead>
         <tbody>{d.rows.map((r) => <tr key={r.paths}><td className="num">{r.paths.toLocaleString("ja-JP")}</td><td className="num">{r.seeds}</td><td className="num">{f(r.mean_oas_bp, 2)}</td><td className="num">{r.sd_oas_bp === null ? "—" : f(r.sd_oas_bp, 2)}</td><td className="num">{f(r.seconds, 2)}</td></tr>)}</tbody>
       </table>
-      <p className="note">1 本の経路（金利が動かない場合）の静的スプレッドは {f(d.static_oas_bp, 1)} bp です。種の数が少ない行（特に 2〜3 個）の標準偏差は、目安にとどまります。</p>
+      <p className="note">1 本の経路（金利が動かない場合）の静的スプレッドは {f(d.static_oas_bp, 1)} bp である。種の数が少ない行（特に 2〜3 個）の標準偏差は、目安にとどまる。</p>
     </div>
   );
 }

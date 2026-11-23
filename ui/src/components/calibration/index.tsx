@@ -130,8 +130,8 @@ export function NormalPanel() {
                 </table>
               </div>
               <p className="note">{n.forward > 0
-                ? <>アット・ザ・マネーでは σ<sub>N</sub> ≈ σ<sub>B</sub> × F なので、Black {f(n.black_volatility * 100, 1)}% はおよそ Normal {f(n.atm_normal_equivalent_bp, 1)}bp に当たります。</>
-                : <>フォワードが 0 以下なので Black 型の価格は定義されません。Normal 型だけが価格を与えます。</>}</p>
+                ? <>アット・ザ・マネーでは σ<sub>N</sub> ≈ σ<sub>B</sub> × F なので、Black {f(n.black_volatility * 100, 1)}% はおよそ Normal {f(n.atm_normal_equivalent_bp, 1)}bp に当たる。</>
+                : <>フォワードが 0 以下なので Black 型の価格は定義されない。Normal 型だけが価格を与える。</>}</p>
             </div>
             <LineChart title="行使金利とコールの価格：Normal 型は負の行使金利でも定義され、Black 型は正の行使金利だけ" origin="2026-01-01" xMin={-1} xMax={2.5}
               xTicks={pctTicks(-1, 2.5, 0.5)} xLabel="行使金利" yLabel="価格（bp）"

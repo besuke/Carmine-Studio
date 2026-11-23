@@ -303,7 +303,7 @@ export function IsdaSetupPanel() {
                 </tbody>
               </table>
             </div>
-            <p className="note">CDS2015 Schedule（{s.schedule.length} 日付）：{s.schedule.join("、")}。最初の日付は取引日より前の IMM 日（3・6・9・12月の20日）です。</p>
+            <p className="note">CDS2015 Schedule（{s.schedule.length} 日付）：{s.schedule.join("、")}。最初の日付は取引日より前の IMM 日（3・6・9・12月の20日）である。</p>
           </>
         );
       }}

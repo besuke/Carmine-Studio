@@ -195,8 +195,8 @@ export function CtdSwitchChart() {
               markers={[{ x: 6, label: "標準物 6%" }, ...switches.map((s) => ({ x: s.yield_pct, label: `→${s.ctd_issue}回債` }))]}
               formatY={(y) => t3(y)} formatTick={(y) => y.toFixed(1)} footer={<Tag d={d} />} />
             <p className="note">
-              {switches.length ? <>利回り {switches.map((s) => `${s.yield_pct}%`).join("・")} で CTD が入れ替わります（0.25% 刻み）。</> : "この Funding Rate では、1〜10% の範囲で CTD は入れ替わりません。"}
-              Funding Rate を変えると、入れ替わる水準も動きます。
+              {switches.length ? <>利回り {switches.map((s) => `${s.yield_pct}%`).join("・")} で CTD が入れ替わる（0.25% 刻み）。</> : "この Funding Rate では、1〜10% の範囲で CTD は入れ替わらない。"}
+              Funding Rate を変えると、入れ替わる水準も動く。
             </p>
           </>
         );

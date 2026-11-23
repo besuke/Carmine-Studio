@@ -205,7 +205,7 @@ export function CapletPanel() {
                 </table>
               </div>
               <p className="note">同じ条件の<strong>後決め</strong>キャップレット（金利期間 {c.expiry}〜{c.expiry + c.accrual} 年の翌日物の複利。期間中もボラが減衰しながら効く）は {f(1e4 * c.backward_price, 6)} bp で、
-                前決めの {f(1e4 * c.black_price, 6)} bp より {c.backward_price > c.black_price ? "高く" : "低く"}なります。</p>
+                前決めの {f(1e4 * c.black_price, 6)} bp より {c.backward_price > c.black_price ? "高く" : "低く"}なる。</p>
             </div>
             <FlowChart title={`満期のフォワード金利 L(T) の分布（行使金利 ${pct(c.strike, 2)} を超える割合 ${pct(c.in_the_money, 1)}、平均 ${pct(c.terminal_mean, 4)} ≈ L(0)）`}
               origin="2026-01-01" xMin={lo} xMax={hi} xTicks={xt} barWidth={w} yLabel="本数" legend

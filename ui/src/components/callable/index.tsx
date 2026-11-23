@@ -139,7 +139,7 @@ export function PricePanel() {
               <div className="tile"><div className="tile-label">発行体のコール権の価値</div><div className="tile-value" data-testid="call-value">{f(b.issuer_call_value, 6)}</div>
                 <div className="tile-note">= Bullet − Callable（額面100あたり）</div></div>
             </div>
-            <p className="note">格子で評価した Bullet と初期曲線から直接求めた Bullet の差は {f(b.bullet - b.bullet_from_curve, 6)} で、格子と求積の数値誤差の大きさを示します。　<Tag d={d} /></p>
+            <p className="note">格子で評価した Bullet と初期曲線から直接求めた Bullet の差は {f(b.bullet - b.bullet_from_curve, 6)} で、格子と求積の数値誤差の大きさを示す。　<Tag d={d} /></p>
           </>
         );
       }}

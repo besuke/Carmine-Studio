@@ -68,9 +68,9 @@ export function AswListPage() {
     <article className="prose wide">
       <h1>OISアセットスワップ・オファーシート</h1>
       <p>
-        債券のオファー（クリーン価格）から、発行通貨の OIS に対するアセットスワップ・スプレッド（ASW）を計算します。行を選ぶと、使ったカーブ、価格の換算、
-        債券とスワップのキャッシュフロー、ASW の計算条件を確かめられます。仕様は Coral-Book の <code>docs/asw_offer_sheet_spec.qmd</code>、
-        データと規約は Curie の A1 オファーシートのデモ（<strong>架空のデータ</strong>）です。
+        債券のオファー（クリーン価格）から、発行通貨の OIS に対するアセットスワップ・スプレッド（ASW）を計算する。行を選ぶと、使ったカーブ、価格の換算、
+        債券とスワップのキャッシュフロー、ASW の計算条件を確かめられる。仕様は Coral-Book の <code>docs/asw_offer_sheet_spec.qmd</code>、
+        データと規約は Curie の A1 オファーシートのデモ（<strong>架空のデータ</strong>）である。
       </p>
       {error && <ApiProblem error={error} retry={retry} />}
       {loading && !data && <p className="muted">R APIで計算中…</p>}
@@ -127,9 +127,9 @@ export function AswListPage() {
             </table>
           </div>
           <p className="note">
-            ASW は発行通貨の OIS（JPY は TONA、USD は SOFR、EUR は €STR）に対するスプレッドで、正の値は翌日物レグに上乗せして受け取る金利です。
-            円債の「JGB対比」は（複利利回り − 同じ償還日に補間したJGB複利利回り）× 100 bp。円換算 ASW は、外貨建て債券を円担保の通貨スワップで円にヘッジしたときの、円TONAR に対するスプレッドです（円担保・元本一定、満期のベーシス1点で校正した簡易モデル）。
-            発行通貨の ASW とベーシスの単純な和とは一致しません。数量は額面金額（各通貨の単位）です。
+            ASW は発行通貨の OIS（JPY は TONA、USD は SOFR、EUR は €STR）に対するスプレッドで、正の値は翌日物レグに上乗せして受け取る金利である。
+            円債の「JGB対比」は（複利利回り − 同じ償還日に補間したJGB複利利回り）× 100 bp。円換算 ASW は、外貨建て債券を円担保の通貨スワップで円にヘッジしたときの、円TONAR に対するスプレッドである（円担保・元本一定、満期のベーシス1点で校正した簡易モデル）。
+            発行通貨の ASW とベーシスの単純な和とは一致しない。数量は額面金額（各通貨の単位）である。
           </p>
         </>
       )}
@@ -224,8 +224,8 @@ function YenSection({ d }: { d: AswDetailResponse }) {
     <>
       <h2>6. 円換算ASW（通貨ベーシスを反映）</h2>
       <p>
-        {ccy} 建ての債券を、円担保の通貨スワップで円にヘッジしたときの、円TONAR に対するフェア・スプレッドです。通貨スワップは「{x.basis.terms.pay_leg} を支払い、
-        {x.basis.terms.receive_leg} を受け取る」形で、元本は一定、開始日と満期日に交換します。満期に対応するベーシス1点で、外貨割引の一定スプレッド z を校正します。
+        {ccy} 建ての債券を、円担保の通貨スワップで円にヘッジしたときの、円TONAR に対するフェア・スプレッドである。通貨スワップは「{x.basis.terms.pay_leg} を支払い、
+        {x.basis.terms.receive_leg} を受け取る」形で、元本は一定、開始日と満期日に交換する。満期に対応するベーシス1点で、外貨割引の一定スプレッド z を校正する。
         CCS の期間構造全体を校正したモデルではありません。
       </p>
       <table className="kv">
@@ -279,7 +279,7 @@ function YenSection({ d }: { d: AswDetailResponse }) {
       </div>
 
       <h3>z の校正と円換算ASW</h3>
-      <p>z は、ベーシス b の通貨スワップが満期でちょうど等価になるように決めます：Q_f(z) − Q_j − b·A_j = 0。そのうえで、</p>
+      <p>z は、ベーシス b の通貨スワップが満期でちょうど等価になるように決める：Q_f(z) − Q_j − b·A_j = 0。そのうえで、</p>
       <p className="formula">s_j* = ( B_j − Q_j − U_j ) / A_j</p>
       <div className="table-wrap">
         <table className="data">
@@ -367,7 +367,7 @@ function JgbSection({ d }: { d: AswDetailResponse }) {
       <h2>6. JGBスプレッド（円建て債券）</h2>
       <p>
         JGBスプレッド ＝（対象債の複利利回り − 同じ償還日に補間したJGB複利利回り）× 100 bp（Curie と同じ定義）。複利利回りは日本式（利払・複利とも年2回、
-        残存年数は満年数＋端数ACT/365、小数第7位未満を切り捨て）で、JGB 利回りは同じ受渡日の JGB を償還日ごとに平均し、自然3次スプラインで補間します（外挿なし）。
+        残存年数は満年数＋端数ACT/365、小数第7位未満を切り捨て）で、JGB 利回りは同じ受渡日の JGB を償還日ごとに平均し、自然3次スプラインで補間する（外挿なし）。
       </p>
       {j.status !== "computed" ? (
         <div className="banner" role="status"><strong>計算できない</strong>　{j.reason}</div>
@@ -382,8 +382,8 @@ function JgbSection({ d }: { d: AswDetailResponse }) {
         </table>
       )}
       <p className="note">
-        オファーは単価で提示されています。JGB対比スプレッドで提示された場合の単価への換算は、<a href={href("/asw/poc")}>A1 オファーシート作成 POC</a> の 3.3 で試せます
-        （Curie にはない機能で、Curie のJGBスプレッドの定義を逆に解きます）。JGB の利回りと補間の明細は同じページの 5.2 にあります。
+        オファーは単価で提示されている。JGB対比スプレッドで提示された場合の単価への換算は、<a href={href("/asw/poc")}>A1 オファーシート作成 POC</a> の 3.3 で試せる
+        （Curie にはない機能で、Curie のJGBスプレッドの定義を逆に解く）。JGB の利回りと補間の明細は同じページの 5.2 にある。
       </p>
     </>
   );
@@ -425,7 +425,7 @@ function Computed({ d }: { d: AswDetailResponse }) {
       <p>
         {x.curve.currency} の {x.curve.index} OIS カーブ。市場日 {x.curve.marketdate}（取得時刻 {x.curve.quote_time}）、受渡日数 {x.curve.settlement_days}、
         OIS 年{x.curve.payment_frequency}回払い・支払ラグ{x.curve.payment_lag}、カーブの時間軸 {x.curve.day_count}、割引係数の単調対数3次補間、外挿なし。
-        翌日物レグの予測と、すべてのキャッシュフローの割引に同じカーブを使います。出所：{x.curve.source}
+        翌日物レグの予測と、すべてのキャッシュフローの割引に同じカーブを使う。出所：{x.curve.source}
       </p>
       <div className="table-wrap">
         <table className="data">
@@ -458,7 +458,7 @@ function Computed({ d }: { d: AswDetailResponse }) {
           <tr><th scope="row">価格調整の現在価値 U·D(t,S)</th><td className="num-cell">{per100(x.price.upfront_pv, 10)}</td></tr>
         </tbody>
       </table>
-      <p className="note">オファーは価格で提示されています（スプレッド提示ではない）ので、価格からスプレッドへの換算だけを行います。他の条件を固定すると、価格が1上がるごとに ASW は {x.checks.price_sensitivity_bp_per_price.toFixed(4)} bp 動きます。</p>
+      <p className="note">オファーは価格で提示されている（スプレッド提示ではない）ので、価格からスプレッドへの換算だけを行う。他の条件を固定すると、価格が1上がるごとに ASW は {x.checks.price_sensitivity_bp_per_price.toFixed(4)} bp 動く。</p>
 
       <h2>4. 債券とスワップのキャッシュフロー</h2>
       <div className="range" role="group" aria-label="表示する金額">
@@ -498,7 +498,7 @@ function Computed({ d }: { d: AswDetailResponse }) {
 
       <h2>5. ASWスプレッドの計算</h2>
       <p>
-        債券のキャッシュフローを支払い、翌日物レグ＋スプレッド s と満期の元本を受け取り、受渡日にダーティ価格と100の差を授受します。NPV がゼロになるスプレッドが ASW です。
+        債券のキャッシュフローを支払い、翌日物レグ＋スプレッド s と満期の元本を受け取り、受渡日にダーティ価格と100の差を授受する。NPV がゼロになるスプレッドが ASW である。
       </p>
       <p className="formula">s* = ( B − L − R − U·D(t,S) ) / A</p>
       <div className="table-wrap">

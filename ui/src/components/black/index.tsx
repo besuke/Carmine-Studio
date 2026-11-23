@@ -381,7 +381,7 @@ export function SobolPathChart() {
         <>
           <PathChart title="Black-Scholes-Merton Sobol paths（64 本、12 ステップ）" rows={d.lsm.shown_paths} yLabel="Stock price"
             origin={d.bsm.trade_date} footer={<Tag d={d} />} />
-          <p className="note">64 本 × 13 点の価格の合計：{f(d.lsm.first_paths_sum, 6)}（Sobol 列は乱数の種を使わないので、何度計算しても同じパスになります）</p>
+          <p className="note">64 本 × 13 点の価格の合計：{f(d.lsm.first_paths_sum, 6)}（Sobol 列は乱数の種を使わないので、何度計算しても同じパスになる）</p>
         </>
       )}
     </Need>

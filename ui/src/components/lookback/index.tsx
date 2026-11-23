@@ -56,7 +56,7 @@ export function LookbackLive() {
           <div className="tiles">
             <Tile emphasis label="連続監視の価値（閉じた式）" value={f(d.continuous.value, 4)} testId="lookback-continuous" note={d.conventions.continuous} />
             <Tile label={`離散監視の価値（${d.inputs.monitoringCount} 回、木 ${d.inputs.steps} 段）`} value={d.discrete ? f(d.discrete.value, 4) : "—"} testId="lookback-discrete"
-              note={d.discrete ? `連続との差 ${sign(d.discrete.value - d.continuous.value, 4)}。監視が少ないほど最小値（最大値）の更新が減り、価値は小さい` : "監視の回数を 1 以上にすると求めます"} />
+              note={d.discrete ? `連続との差 ${sign(d.discrete.value - d.continuous.value, 4)}。監視が少ないほど最小値（最大値）の更新が減り、価値は小さい` : "監視の回数を 1 以上にすると求める"} />
           </div>
           <div className="table-wrap">
             <table className="data">
@@ -69,7 +69,7 @@ export function LookbackLive() {
               </tbody>
             </table>
           </div>
-          <p className="note">{d.conventions.discrete}。段数が監視回数の倍数のとき、監視日が段の上に正確に乗ります（既定は 360 段、12 回）。</p>
+          <p className="note">{d.conventions.discrete}。段数が監視回数の倍数のとき、監視日が段の上に正確に乗る（既定は 360 段、12 回）。</p>
         </>
       ) : null}
     </>
@@ -93,7 +93,7 @@ export function LookbackConvergence() {
       />
       <div className="table-wrap">
         <table className="data">
-          <caption>誤差 × √段数 はほぼ一定です（誤差は 1/√段数 で減る）。1/√段数 の外挿では、誤差が約 1/50 になります</caption>
+          <caption>誤差 × √段数 はほぼ一定である（誤差は 1/√段数 で減る）。1/√段数 の外挿では、誤差が約 1/50 になる</caption>
           <thead><tr><th scope="col">段数</th>{kinds.map(([, label]) => <th key={label} scope="col" className="num">{label}の誤差 × √段数</th>)}</tr></thead>
           <tbody>{steps.map((n, i) => <tr key={n}><th scope="row">{n}</th>{kinds.map(([k]) => <td key={k} className="num">{f(d.every_step[k].error_times_sqrt_steps[i], 3)}</td>)}</tr>)}</tbody>
         </table>
@@ -109,7 +109,7 @@ export function LookbackConvergence() {
           })}</tbody>
         </table>
       </div>
-      <p className="note">差は、外挿の誤差とモンテカルロの誤差の両方を含みます（連続監視の閉じた式は {f(d.every_step.call.continuous, 4)}（コール）、{f(d.every_step.put.continuous, 4)}（プット））。</p>
+      <p className="note">差は、外挿の誤差とモンテカルロの誤差の両方を含む（連続監視の閉じた式は {f(d.every_step.call.continuous, 4)}（コール）、{f(d.every_step.put.continuous, 4)}（プット））。</p>
     </>
   );
 }

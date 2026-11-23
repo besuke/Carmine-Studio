@@ -104,11 +104,11 @@ export function FlowChart({ title, origin, xMax, bars, series, yLabel, formatY, 
             <text key={t.label} className="tick" x={sx(t.x)} y={height - MARGIN.bottom + 17} textAnchor="middle">{t.label}</text>
           ))}
           <line className="axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={sy(0)} y2={sy(0)} />
-          {bars.map((b) => {
+          {bars.map((b, bi) => {
             const y0 = sy(0);
             const y1 = sy(b.value);
             return (
-              <rect key={`${b.series}-${b.date}-${b.label}`} x={sx(b.x) - barW / 2} y={Math.min(y0, y1)} width={barW}
+              <rect key={`${b.series}-${b.date}-${b.label}-${bi}`} x={sx(b.x) - barW / 2} y={Math.min(y0, y1)} width={barW}
                 height={Math.max(1, Math.abs(y1 - y0))} rx="2" fill={color(b.series)} className="bar"
                 onPointerEnter={() => setHover(b)} onPointerLeave={() => setHover(null)}>
                 <title>{`${b.date} ${b.label}：${formatY(b.value)}`}</title>

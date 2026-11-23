@@ -51,7 +51,7 @@ export function ResetShape() {
             series={[{ key: "cv", label: "転換価値", color: "var(--series-1)", points: d.conversion_value.spots.map((x, i) => ({ x, y: d.conversion_value.values[i], date: "2026-11-02" })) }]}
             formatY={(y) => y.toFixed(2)} formatTick={(y) => y.toFixed(0)} footer={<Tag id={d.response.request_id} />}
           />
-          <p className="note">転換価値は F·max(S/上限, min(S/下限, 1/α)) です。株価が下限/α までは S/下限 に比例して増え、そこで F/α に頭打ちになります（上限があれば、上限/α を超えると S/上限 で再び増えます）。α が 1 未満のとき、株価が 下限/α 以上なら、アメリカン型の保有者は、いつでも F/α で転換できます。その価値は、満期までの待つ価値ではなく F/α そのものになります。</p>
+          <p className="note">転換価値は F·max(S/上限, min(S/下限, 1/α)) である。株価が下限/α までは S/下限 に比例して増え、そこで F/α に頭打ちになる（上限があれば、上限/α を超えると S/上限 で再び増える）。α が 1 未満のとき、株価が 下限/α 以上なら、アメリカン型の保有者は、いつでも F/α で転換できる。その価値は、満期までの待つ価値ではなく F/α そのものになる。</p>
         </>
       ) : null}
     </>
@@ -132,8 +132,8 @@ export function CarriedLive() {
               ]}
               formatY={(y) => y.toFixed(2)} formatTick={(y) => y.toFixed(0)} footer={<Tag id={d.response.request_id} />}
             />
-          ) : <p className="muted">リセットがないので、転換価額は 100 のままです（固定比率の転換社債と同じ値になります）。</p>}
-          <p className="note">{d.conventions.reset}。シナリオは、株価が一定の率で動いたとして、各リセット日の転換価額を規則の式で求めた教育用の例です（価値の計算には使っていません）。</p>
+          ) : <p className="muted">リセットがないので、転換価額は 100 のままである（固定比率の転換社債と同じ値になる）。</p>}
+          <p className="note">{d.conventions.reset}。シナリオは、株価が一定の率で動いたとして、各リセット日の転換価額を規則の式で求めた教育用の例である（価値の計算には使っていない）。</p>
         </>
       ) : null}
     </>
@@ -187,7 +187,7 @@ export function CarriedGrid() {
           </thead>
           <tbody>{g.vega_convergence.map((r, i) => <tr key={i}><th scope="row">{r.method === "scaled" ? "縮約" : "格子"}</th><td className="num">{r.steps}</td><td className="num">{r.method === "scaled" ? "—" : r.price_nodes}</td><td className="num">{f(r.vega_ad, 2)}</td><td className="num">{f(r.fd_micro, 2)}</td><td className="num">{f(r.fd_wide_0_01, 2)}</td><td className="num">{f(r.fd_wide_0_02, 2)}</td></tr>)}</tbody>
         </table>
-        <p className="note">ベガは、離散木の局所の傾きで、段数で動きます（縮約の 200〜3200 段で 53、91、78、76、75）。幅の広い差分は約 82〜85 に落ち着きます。格子の自動微分は転換価額の格子を固定して微分するので、格子を作り直す差分とは一致しません。</p>
+        <p className="note">ベガは、離散木の局所の傾きで、段数で動く（縮約の 200〜3200 段で 53、91、78、76、75）。幅の広い差分は約 82〜85 に落ち着く。格子の自動微分は転換価額の格子を固定して微分するので、格子を作り直す差分とは一致しない。</p>
       </div>
     </>
   );

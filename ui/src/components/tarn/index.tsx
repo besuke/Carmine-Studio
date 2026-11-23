@@ -76,7 +76,7 @@ export function TarnLive() {
                 <tbody>{d.endings.times.map((t, i) => <tr key={t}><td className="num">{t}</td><td className="num">{f(100 * d.endings!.target_probability[i], 2)}%</td><td className="num">{f(100 * d.endings!.knock_out_probability[i], 2)}%</td><td className="num">{f(100 * d.endings!.alive[i], 2)}%</td></tr>)}</tbody>
               </table>
             </div>
-          ) : <p className="muted">目標償還もノックアウトもないので、状態は持ちません（通常の PRDC と同じ評価です）。</p>}
+          ) : <p className="muted">目標償還もノックアウトもないので、状態は持たない（通常の PRDC と同じ評価である）。</p>}
           <p className="note">{d.conventions.target}。{d.conventions.model}。</p>
         </>
       ) : null}
