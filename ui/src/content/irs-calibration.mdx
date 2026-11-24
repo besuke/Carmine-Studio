@@ -60,13 +60,4 @@ import { UsageGuide } from "../components/UsageGuide";
 
 <BgmPanel />
 
-## II-6.6 キャリブレーションサマリー
-
-| 確認項目 | SABR | Hull–White | BGM |
-|---|---|---|---|
-| 主な入力 | 行使金利別のオプション・ボラティリティ | 満期・スワップ年限別のオプション価格 | Caplet、Swaption、相関の情報 |
-| 主な推定対象 | α, ν, ρ（必要なら β） | a, σ | フォワード・ボラティリティと相関構造 |
-| よくある不足 | β を含むパラメータの識別 | 少数市場点からの同時推定 | Caplet だけでは相関を識別できない |
-| 検証 | スマイルと市場点外の形 | 複数満期の価格と未使用商品 | Cap と Swaption の同時再評価 |
-
 </CalibrationProvider>

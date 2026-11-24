@@ -35,7 +35,7 @@ import { UsageGuide } from "../components/UsageGuide";
 
 ## II-7.3 HJM：瞬間フォワードモデル
 
-1因子 Hull–White に対応するフォワードの変動係数。入力は上の Hull–White の欄を共用する。
+入力は上の Hull–White の欄を共用する。
 
 <HjmLoadingChart />
 
@@ -73,14 +73,5 @@ import { UsageGuide } from "../components/UsageGuide";
 <RateModelsControls which="fixings" />
 
 <FixingsPanel />
-
-## II-7.6 各種モデルサマリー
-
-| 枠組み | 主に動かす量 | 自然な用途 | 注意点 |
-|---|---|---|---|
-| Hull–White 1因子 | 短期金利 $r_t$ | 割引、債券オプション、行使判断 | 単一因子では曲線変動の形に制約がある |
-| HJM | 瞬間フォワード曲線 $f(t,T)$ | 曲線全体の整合的な記述 | ボラティリティに応じたドリフト制約が必要 |
-| BGM/LMM | 期間別フォワード $L_i(t)$ | Caplet、Swaption と複数金利の共変動 | 古典的な定義は期間開始時に確定するフォワード金利を想定する |
-| RFR 向け FMM | 後決め複利金利に対応する市場フォワード | 翌日物金利の複利支払を含む契約 | 金利期間中の確定済み部分と未確定部分を分ける |
 
 </RateModelsProvider>
