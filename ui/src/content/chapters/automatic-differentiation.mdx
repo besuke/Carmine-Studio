@@ -1,5 +1,5 @@
 import { PrdcRiskProvider, PrdcRiskStatus, RiskControls, NotePanel, AdPanel, McPanel } from "../../components/prdcRisk";
-import { ThreeFactorProvider, ThreeFactorControls, ThreeFactorValue, ThreeFactorTables, ThreeFactorCharts, ThreeFactorScenarioControls, ThreeFactorScenario, CrossTermExample } from "../../components/prdcThreeFactor";
+import { ThreeFactorProvider, ThreeFactorControls, ThreeFactorValue, ThreeFactorTables, ThreeFactorCharts, ThreeFactorScenarioControls, ThreeFactorScenario, ThreeFactorScenarioCurve, CrossTermExample } from "../../components/prdcThreeFactor";
 import { UsageGuide } from "../../components/UsageGuide";
 
 <PrdcRiskProvider>
@@ -16,7 +16,7 @@ import { UsageGuide } from "../../components/UsageGuide";
     { text: <><b>FX スポット（円）</b> 150、<b>FX ボラ（%）</b> 12 から、<b>FX スポット（円）</b> を 140 に変える。</>, to: "ad-vs-bump" },
     { text: <><b>パス数</b> 20,000、<b>seed</b> 1234 から、<b>パス数</b> を 200,000 に増やす。</>, to: "prdc-mc" },
     { text: <>3因子 PRDC の <b>ρ（円金利, FX）</b> 0.3 から、<b>ρ（円金利, FX）</b> を 0.5 に変える。</>, to: "three-factor" },
-    { text: <>外債の例の <b>ドル円の変化（%）</b> を変え、PRDC の <b>FX スポットの変化（円）</b>・<b>円金利のシフト（bp）</b> を入れて、3つの損益と寄与の棒グラフを見る。</>, to: "scenario" },
+    { text: <>外債の例の <b>ドル円の変化（%）</b> を変え、PRDC の <b>FX ボラの変化（ポイント）</b>・<b>円金利のシフト（bp）</b> を入れ、損益と FX スポットのグラフの縦線をドラッグして、3つの損益と交差項のバブルを見る。</>, to: "scenario" },
   ]}
 />
 
@@ -71,6 +71,12 @@ import { UsageGuide } from "../../components/UsageGuide";
 - **円金利のシフト（bp）**、**外貨金利のシフト（bp）**：−200〜200。
 
 <ThreeFactorScenarioControls />
+
+<h4 id="scenario-curve">スポットの変化と損益（縦線をドラッグ）</h4>
+
+<ThreeFactorScenarioCurve />
+
+<h4 id="scenario-detail">入力した変化幅での内訳</h4>
 
 <ThreeFactorScenario />
 

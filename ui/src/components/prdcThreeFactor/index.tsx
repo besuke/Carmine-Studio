@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { ApiError } from "../../api/client";
-import { fetchCrossTermExample, fetchPrdcThreeFactor, fetchPrdcThreeFactorScan, fetchPrdcThreeFactorScenario, type CrossTermExampleResponse, type ThreeFactorInputs, type ThreeFactorResponse, type ThreeFactorScanResponse, type ThreeFactorScenarioResponse, type ThreeFactorShock } from "../../api/prdcThreeFactor";
+import { fetchCrossTermExample, fetchPrdcThreeFactor, fetchPrdcThreeFactorScan, fetchPrdcThreeFactorScenario, fetchPrdcThreeFactorScenarioCurve, type CrossTermExampleResponse, type ThreeFactorInputs, type ThreeFactorResponse, type ThreeFactorScanResponse, type ThreeFactorScenarioResponse, type ThreeFactorScenarioCurveResponse, type ThreeFactorShock } from "../../api/prdcThreeFactor";
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 import { WaterfallChart } from "../WaterfallChart";
+import { DragLineChart } from "../DragLineChart";
+import { BubbleChart } from "../BubbleChart";
 
 // Chapter 15's three-factor PRDC: the three correlations are the inputs; the value, the delta and the vega, the correlation
 // sensitivities, the cross-gammas and the Vanna come back by automatic differentiation and by finite differences.
@@ -21,6 +23,7 @@ interface TState {
   scan: ThreeFactorScanResponse | null; scanning: boolean;
   shock: ThreeFactorShock; setShock: (p: Partial<ThreeFactorShock>) => void; resetShock: () => void;
   scenario: ThreeFactorScenarioResponse | null; scenarioError: string | null; scenarioLoading: boolean;
+  curve: ThreeFactorScenarioCurveResponse | null; curveLoading: boolean;
   set: (p: Partial<ThreeFactorInputs["correlation"]>) => void; reset: () => void;
 }
 const Ctx = createContext<TState | null>(null);
@@ -36,6 +39,19 @@ export function ThreeFactorProvider({ children }: { children: ReactNode }) {
   const [scenario, setScenario] = useState<ThreeFactorScenarioResponse | null>(null);
   const [scenarioError, setScenarioError] = useState<string | null>(null);
   const [scenarioLoading, setScenarioLoading] = useState(true);
+  const [curve, setCurve] = useState<ThreeFactorScenarioCurveResponse | null>(null);
+  const [curveLoading, setCurveLoading] = useState(true);
+  // the scenario against the spot: the spot of the shock is the x-axis, so it is not a dependency; the points are valued beforehand
+  useEffect(() => {
+    const c = new AbortController();
+    const id = window.setTimeout(() => {
+      setCurveLoading(true);
+      fetchPrdcThreeFactorScenarioCurve({ ...req, shock }, { signal: c.signal })
+        .then((d) => { setCurve(d); setCurveLoading(false); })
+        .catch((e: unknown) => { if (!(e instanceof DOMException && e.name === "AbortError")) { setCurve(null); setCurveLoading(false); } });
+    }, 400);
+    return () => { c.abort(); window.clearTimeout(id); };
+  }, [req, shock.volPoints, shock.domesticBp, shock.foreignBp]);
   useEffect(() => {
     const c = new AbortController();
     const id = window.setTimeout(() => {
@@ -77,7 +93,7 @@ export function ThreeFactorProvider({ children }: { children: ReactNode }) {
     }, 300);
     return () => { c.abort(); window.clearTimeout(timer.current); };
   }, [req]);
-  const value: TState = { data, loading, error, req, scan, scanning, shock, setShock: (p) => setShockState((x) => ({ ...x, ...p })), resetShock: () => setShockState(DEFAULT_SHOCK), scenario, scenarioError, scenarioLoading, set: (p) => setReq((x) => ({ correlation: { ...x.correlation, ...p } })), reset: () => setReq(DEFAULT) };
+  const value: TState = { data, loading, error, req, scan, scanning, shock, setShock: (p) => setShockState((x) => ({ ...x, ...p })), resetShock: () => setShockState(DEFAULT_SHOCK), scenario, scenarioError, scenarioLoading, curve, curveLoading, set: (p) => setReq((x) => ({ correlation: { ...x.correlation, ...p } })), reset: () => setReq(DEFAULT) };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 function useT(): TState {
@@ -341,6 +357,49 @@ export function CrossTermExample() {
           footer={<span data-testid="cross-total">円建てリターン {pt(data.total_pct)}%</span>} />
       )}
       {data && <details><summary>定義</summary><p className="note">{data.conventions.return}</p></details>}
+    </div>
+  );
+}
+
+/** The profit and loss against the spot change, with a line to drag: the numbers of the selected point on the right and, beside them,
+ *  the contributions of the cross-gammas and the Vanna as bubbles. Every point was valued beforehand. */
+export function ThreeFactorScenarioCurve() {
+  const { curve, curveLoading, shock } = useT();
+  const [selected, setSelected] = useState<number | null>(null); // the index of the selected spot change; null follows the input
+  const xs = curve?.points.map((q) => q.spotYen) ?? [];
+  const nearest = (x: number) => xs.reduce((best, v, i) => (Math.abs(v - x) < Math.abs(xs[best] - x) ? i : best), 0);
+  useEffect(() => { setSelected(null); }, [shock.spotYen]); // moving the input puts the line back on its value
+  if (!curve) return <p className="muted">{curveLoading ? "損益の曲線を計算中…" : "損益の曲線を描けませんでした"}</p>;
+  const index = selected ?? nearest(shock.spotYen);
+  const q = curve.points[index];
+  const fmt = (v: number) => `${v >= 0 ? "+" : "−"}${Math.abs(Math.round(v)).toLocaleString("ja-JP")}`;
+  const million = (y: number) => (y / 1e6).toFixed(1);
+  const spot = (x: number) => (x === 0 ? "0 円" : `${x > 0 ? "+" : "−"}${Math.abs(x)} 円`);
+  return (
+    <div className="scenario-curve" data-testid="tf-curve" aria-busy={curveLoading}>
+      <DragLineChart title="損益と FX スポットの変化" xs={xs} selected={index} onSelect={setSelected}
+        xTicks={[-40, -20, 0, 20, 40].map((x) => ({ x, label: String(x) }))} xLabel="FX スポットの変化（円）" yLabel="損益（百万円）"
+        formatY={(y) => `${million(y)} 百万円`} formatTick={million} valueText={spot}
+        series={[
+          { key: "full", label: "フル再評価", color: "var(--series-1)", values: curve.points.map((r) => r.full) },
+          { key: "first", label: "一次近似", color: "var(--text-muted)", dashed: true, values: curve.points.map((r) => r.first_order) },
+          { key: "cross", label: "一次＋交差項", color: "var(--series-2)", dashed: true, values: curve.points.map((r) => r.first_plus_cross) },
+        ]} />
+      <div className="table-wrap">
+        <table className="data" data-testid="tf-curve-table">
+          <caption>FX スポット <span data-testid="tf-curve-spot">{spot(q.spotYen)}</span>（円）</caption>
+          <thead><tr><th scope="col">損益</th><th scope="col" className="num">円</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">フル再評価</th><td className="num" data-testid="tf-curve-full">{fmt(q.full)}</td></tr>
+            <tr><th scope="row">一次近似</th><td className="num" data-testid="tf-curve-first">{fmt(q.first_order)}</td></tr>
+            <tr><th scope="row">一次＋交差項</th><td className="num" data-testid="tf-curve-cross">{fmt(q.first_plus_cross)}</td></tr>
+            <tr><th scope="row">差：フル − 一次</th><td className="num" data-testid="tf-curve-diff-first">{fmt(q.difference_first_order)}</td></tr>
+            <tr><th scope="row">差：フル − 一次＋交差項</th><td className="num" data-testid="tf-curve-diff-cross">{fmt(q.difference_first_plus_cross)}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <BubbleChart title="交差項の寄与（円）" scale={curve.bubble_scale} formatValue={(v) => `${fmt(v)} 円`}
+        items={[{ label: "Γ×円金利", value: q.cross.domestic }, { label: "Γ×外貨金利", value: q.cross.foreign }, { label: "Vanna", value: q.cross.vanna }]} />
     </div>
   );
 }

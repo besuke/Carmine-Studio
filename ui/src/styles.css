@@ -570,3 +570,8 @@ table, .tile-value, .tooltip, .server-facts dd, .num, td, th { font-variant-nume
 .usage-guide ol { margin: 0; padding-left: 1.4rem; }
 .usage-guide li { margin: 0.25rem 0; }
 .usage-guide button.usage-jump { padding: 0.05rem 0.5rem; font-size: 0.82rem; border-color: var(--grid); color: var(--accent); }
+
+/* the scenario against the spot: the chart with a line to drag, the numbers of the point, the bubbles */
+.scenario-curve { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr); gap: 1rem; align-items: start; margin: 0.5rem 0 1rem; }
+.scenario-curve > * { min-width: 0; }
+@media (max-width: 1100px) { .scenario-curve { grid-template-columns: minmax(0, 1fr); } }

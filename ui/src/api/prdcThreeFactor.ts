@@ -137,3 +137,38 @@ export async function fetchCrossTermExample(request: { bondPct?: number; fxPct?:
   if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
   return data;
 }
+
+/** The scenario against the spot (POST /api/prdc-three-factor/scenario-curve): every point valued beforehand. */
+export interface ScenarioCurvePoint {
+  spotYen: number; full: number; first_order: number; first_plus_cross: number;
+  difference_first_order: number; difference_first_plus_cross: number;
+  cross: { domestic: number; foreign: number; vanna: number };
+}
+export interface ThreeFactorScenarioCurveResponse {
+  inputs: { correlation: ThreeFactorInputs["correlation"]; shock: ThreeFactorShock };
+  points: ScenarioCurvePoint[];
+  bubble_scale: number;
+  conventions: Record<"curve" | "bubble" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchPrdcThreeFactorScenarioCurve(request: { correlation?: Partial<ThreeFactorInputs["correlation"]>; shock?: Partial<ThreeFactorShock> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<ThreeFactorScenarioCurveResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc-three-factor/scenario-curve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const data = (await res.json().catch(() => null)) as (ThreeFactorScenarioCurveResponse & { error?: string }) | null;
+  if (!res.ok || !data) throw new ApiError(data?.error ?? `HTTP ${res.status}`, res.status);
+  if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return data;
+}
