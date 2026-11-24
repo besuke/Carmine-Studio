@@ -9,8 +9,6 @@ import { UsageGuide } from "../../components/UsageGuide";
 
 # PRDCグリークス計算（自動微分・有限差分）
 
-計算の仕様と導出は Coral-Book 第III部第4章〜第7章と補論B に従う。ここでは、PRDC の感応度を自動微分と有限差分で求めて比べる。
-
 <PrdcRiskStatus />
 
 <UsageGuide
@@ -18,10 +16,10 @@ import { UsageGuide } from "../../components/UsageGuide";
   steps={[
     { text: <><b>FX スポット（円）</b> 150、<b>FX ボラ（%）</b> 12 から、<b>FX スポット（円）</b> を 140 に変える。</>, to: "ad-vs-bump" },
     { text: <><b>パス数</b> 20,000、<b>seed</b> 1234 から、<b>パス数</b> を 200,000 に増やす。</>, to: "prdc-mc" },
-    { text: <>3因子 PRDC の <b>ρ（円金利, FX）</b> 0.3 から、<b>ρ（円金利, FX）</b> を 0.5 に変える。</>, to: "three-factor" },
-    { text: <>有限差分のバンプ幅の図で <b>感応度</b> を切り替え、幅を大きくしても小さくしても誤差が増える谷を、自動微分と比べて見る。</>, to: "bump-width" },
-    { text: <>2階の10項目を求める <b>再評価の回数と実測時間</b> を、自動微分と有限差分で比べる。</>, to: "derivative-cost" },
-    { text: <>外債の例の <b>ドル円の変化（%）</b> を変え、PRDC の <b>FX ボラの変化（ポイント）</b>・<b>円金利のシフト（bp）</b> を入れ、損益と FX スポットのグラフの縦線をドラッグし、ヒートマップのセルを選んで、3つの損益と交差項のバブルを見る。</>, to: "scenario" },
+    { text: <>3因子 PRDC の <b>ρ（円金利, FX）</b> を −0.2 から 0.5 に変える。</>, to: "three-factor" },
+    { text: <><b>感応度</b> を切り替え、バンプ幅ごとに自動微分と有限差分の差を見る。</>, to: "bump-width" },
+    { text: <><b>計測する</b> を押して、2階感応度10項目の評価回数と計算時間を比べる。</>, to: "derivative-cost" },
+    { text: <>外債の例の <b>ドル円の変化（%）</b> を変える。PRDC の <b>FX ボラの変化（ポイント）</b> と <b>円金利のシフト（bp）</b> を入力し、グラフの縦線やヒートマップで損益を見る。</>, to: "scenario" },
   ]}
 />
 
@@ -44,7 +42,7 @@ import { UsageGuide } from "../../components/UsageGuide";
 
 <McPanel />
 
-<h2 id="three-factor">3因子 PRDC の相関感応度・クロスガンマ・Vanna</h2>
+<h2 id="three-factor">3因子 PRDC の相関感応度と2階感応度</h2>
 
 コールなしの3因子 PRDC（FX と、円・外貨の短期金利）。相関の3項目を入れる。
 
@@ -62,13 +60,9 @@ import { UsageGuide } from "../../components/UsageGuide";
 
 <h3 id="bump-width">有限差分のバンプ幅と誤差</h3>
 
-感応度を選ぶと、バンプ幅を 1000 分の 1 から 1000 倍まで動かしたときの有限差分の相対誤差が出る。自動微分は幅を持たず、誤差は 0。
-
 <BumpStudy />
 
 <h3 id="derivative-cost">10項目の2階微分：再評価の回数と実測時間</h3>
-
-ボタンを押すと、ガンマ・Vanna・クロスガンマなど2階の10項目を、自動微分（1回の呼び出し）と有限差分で求める回数と時間を測る。
 
 <DerivativeCost />
 
