@@ -172,3 +172,40 @@ export async function fetchPrdcThreeFactorScenarioCurve(request: { correlation?:
   if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
   return data;
 }
+
+/** The heat maps (POST /api/prdc-three-factor/heatmap): a coarse grid, every cell valued beforehand. */
+export interface HeatCell {
+  spotYen: number; y: number; full: number; first_order: number; first_plus_cross: number;
+  difference_first_order: number; difference_first_plus_cross: number;
+  cross: { domestic: number; foreign: number; vanna: number };
+}
+export type HeatMapKey = "vol" | "rate_domestic" | "rate_foreign";
+export interface ThreeFactorHeatmapResponse {
+  inputs: { correlation: ThreeFactorInputs["correlation"]; shock: ThreeFactorShock };
+  spot_values: number[];
+  maps: Record<HeatMapKey, { y_values: number[]; y_label: string; fixed: Record<string, number>; cells: HeatCell[] }>;
+  bubble_scale: number;
+  conventions: Record<"heatmap" | "cross" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchPrdcThreeFactorHeatmap(request: { correlation?: Partial<ThreeFactorInputs["correlation"]>; shock?: Partial<ThreeFactorShock> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<ThreeFactorHeatmapResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc-three-factor/heatmap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const data = (await res.json().catch(() => null)) as (ThreeFactorHeatmapResponse & { error?: string }) | null;
+  if (!res.ok || !data) throw new ApiError(data?.error ?? `HTTP ${res.status}`, res.status);
+  if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return data;
+}

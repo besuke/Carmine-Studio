@@ -258,6 +258,43 @@ prdc_three_factor_scenario_curve <- function(body = list()) {
       engine = paste("rmql", as.character(utils::packageVersion("rmql")))))
 }
 
+# The heat maps: the profit and loss over a coarse grid of the spot change and the volatility change (rates as given), and over the spot
+# change and a parallel shift of the domestic or of the foreign curve (the volatility and the other rate as given). Every cell is the
+# scenario valuation of p3_scenario_point (full revaluation, first order, first order plus the cross terms, and the three cross terms),
+# so the page can show the table and the bubbles of a selected cell at once.
+#
+# POST /api/prdc-three-factor/heatmap  {"correlation": {...}, "shock": {"volPoints": 2, "domesticBp": 20, "foreignBp": -20}}
+P3_HEAT <- list(spot = seq(-30, 30, by = 10), vol = c(-8, -4, 0, 4, 8, 12), rate = c(-100, -50, 0, 50, 100))
+prdc_three_factor_heatmap <- function(body = list()) {
+  r0 <- p3_read_correlation(body); rho <- r0$rho
+  sh <- p3_read_shock(body)
+  g <- p3_greeks(rho)
+  cell <- function(dS, dv_points, bd, bf, y) {
+    pt <- p3_scenario_point(g, rho, dS, dv_points * 0.01, bd, bf)
+    list(spotYen = dS, y = y, full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross,
+         difference_first_order = pt$difference_first_order, difference_first_plus_cross = pt$difference_first_plus_cross,
+         cross = list(domestic = pt$value[5], foreign = pt$value[6], vanna = pt$value[7]))
+  }
+  grid <- function(ys, make) unlist(lapply(P3_HEAT$spot, function(dS) lapply(ys, function(y) make(dS, y))), recursive = FALSE)
+  maps <- list(
+    vol = list(y_values = P3_HEAT$vol, y_label = "FX ボラの変化（ポイント）", fixed = list(domesticBp = sh$domesticBp, foreignBp = sh$foreignBp),
+               cells = grid(P3_HEAT$vol, function(dS, y) cell(dS, y, sh$domesticBp, sh$foreignBp, y))),
+    rate_domestic = list(y_values = P3_HEAT$rate, y_label = "円金利のシフト（bp）", fixed = list(volPoints = sh$volPoints, foreignBp = sh$foreignBp),
+               cells = grid(P3_HEAT$rate, function(dS, y) cell(dS, sh$volPoints, y, sh$foreignBp, y))),
+    rate_foreign = list(y_values = P3_HEAT$rate, y_label = "外貨金利のシフト（bp）", fixed = list(volPoints = sh$volPoints, domesticBp = sh$domesticBp),
+               cells = grid(P3_HEAT$rate, function(dS, y) cell(dS, sh$volPoints, sh$domesticBp, y, y))))
+  cross_abs <- unlist(lapply(maps, function(m) lapply(m$cells, function(c) abs(unlist(c$cross)))))
+  list(
+    inputs = list(correlation = r0$inputs, shock = sh),
+    spot_values = P3_HEAT$spot,
+    maps = maps,
+    bubble_scale = max(cross_abs),
+    conventions = list(
+      heatmap = "各セルは、横軸のスポットの変化と縦軸の変化を同時に与え、残りの入力（ボラ・円金利・外貨金利）は上の入力のまま再評価した損益。色はゼロを中心に、プラスが緑、マイナスが赤。",
+      cross = "交差項の寄与：スポット × ボラの図は Vanna、スポット × 金利の図は選んだ側のクロスガンマ。",
+      engine = paste("rmql", as.character(utils::packageVersion("rmql")))))
+}
+
 # The small example at the top of the scenario section: an unhedged foreign bond. The yen return is (1 + bond return) (1 + FX return) - 1,
 # the sum of the bond, the FX and the cross term. No rmql call (the arithmetic of the return, not a valuation).
 #
