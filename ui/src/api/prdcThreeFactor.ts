@@ -209,3 +209,67 @@ export async function fetchPrdcThreeFactorHeatmap(request: { correlation?: Parti
   if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
   return data;
 }
+
+/** The finite difference against the bump width (POST /api/prdc-three-factor/bump-study). Automatic differentiation has no bump. */
+export interface BumpStudyResponse {
+  inputs: ThreeFactorInputs;
+  studies: { key: string; label: string; unit: string; automatic_differentiation: number; chosen_width: number;
+    points: { multiplier: number; width: number; finite_difference: number; relative_error: number }[] }[];
+  conventions: Record<"note" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchBumpStudy(request: { correlation?: Partial<ThreeFactorInputs["correlation"]> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<BumpStudyResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc-three-factor/bump-study`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const data = (await res.json().catch(() => null)) as (BumpStudyResponse & { error?: string }) | null;
+  if (!res.ok || !data) throw new ApiError(data?.error ?? `HTTP ${res.status}`, res.status);
+  if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return data;
+}
+
+/** What the ten second derivatives cost (POST /api/prdc-three-factor/derivative-cost): valuations and measured milliseconds. */
+export interface DerivativeCostResponse {
+  inputs: ThreeFactorInputs;
+  items: { item: string; finite_difference_valuations: number }[];
+  automatic_differentiation: { calls: number; valuations: number; milliseconds: number };
+  finite_difference: { valuations: number; milliseconds: number };
+  single_valuation_ms: number;
+  ratio: { valuations: number; time: number };
+  reps: number;
+  conventions: Record<"note" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchDerivativeCost(request: { correlation?: Partial<ThreeFactorInputs["correlation"]> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<DerivativeCostResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc-three-factor/derivative-cost`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const data = (await res.json().catch(() => null)) as (DerivativeCostResponse & { error?: string }) | null;
+  if (!res.ok || !data) throw new ApiError(data?.error ?? `HTTP ${res.status}`, res.status);
+  if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return data;
+}

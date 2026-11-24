@@ -63,6 +63,7 @@ source(file.path(script_dir, "R", "parallel_model.R"))
 source(file.path(script_dir, "R", "prdc_risk_model.R"))
 source(file.path(script_dir, "R", "prdc_three_factor_model.R"))
 source(file.path(script_dir, "R", "prdc_scenario_model.R"))
+source(file.path(script_dir, "R", "prdc_bump_study.R"))
 source(file.path(script_dir, "R", "server_info.R"))
 source(file.path(script_dir, "R", "jgb_curve_model.R"))
 source(file.path(script_dir, "R", "cnn_model.R"))
@@ -438,6 +439,38 @@ handle <- function(req) {
     body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
     if (!is.list(body)) return(json_response(400, list(error = "The body must be a JSON object.")))
     result <- tryCatch(cross_term_example(body),
+                       tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
+                       error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+    if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  # Chapter 15: the finite difference against the bump width (automatic differentiation has no bump)
+  if (identical(path, "/api/prdc-three-factor/bump-study")) {
+    if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body such as {\"correlation\":{\"domesticFx\":-0.2}}.")))
+    body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
+    if (!is.list(body)) return(json_response(400, list(error = "The body must be a JSON object.")))
+    unknown <- setdiff(names(body), c("correlation"))
+    if (length(unknown)) return(json_response(400, list(error = paste("Unknown fields:", paste(unknown, collapse = ", ")))))
+    result <- tryCatch(prdc_bump_study(body),
+                       tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
+                       error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+    if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
+  # Chapter 15: what the ten second derivatives cost (valuations and measured time)
+  if (identical(path, "/api/prdc-three-factor/derivative-cost")) {
+    if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body such as {\"correlation\":{\"domesticFx\":-0.2}}.")))
+    body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
+    if (!is.list(body)) return(json_response(400, list(error = "The body must be a JSON object.")))
+    unknown <- setdiff(names(body), c("correlation"))
+    if (length(unknown)) return(json_response(400, list(error = paste("Unknown fields:", paste(unknown, collapse = ", ")))))
+    result <- tryCatch(prdc_derivative_cost(body),
                        tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
                        error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
     if (inherits(result, "bad")) return(json_response(400, unclass(result)))

@@ -1,6 +1,8 @@
 import { PrdcRiskProvider, PrdcRiskStatus, RiskControls, NotePanel, AdPanel, McPanel } from "../../components/prdcRisk";
 import { ThreeFactorHeatmaps } from "../../components/prdcThreeFactor/Heatmaps";
 import { ThreeFactorProvider, ThreeFactorControls, ThreeFactorValue, ThreeFactorTables, ThreeFactorCharts, ThreeFactorScenarioControls, ThreeFactorScenario, ThreeFactorScenarioCurve, CrossTermExample } from "../../components/prdcThreeFactor";
+import { BumpStudy } from "../../components/prdcThreeFactor/BumpStudy";
+import { DerivativeCost } from "../../components/prdcThreeFactor/DerivativeCost";
 import { UsageGuide } from "../../components/UsageGuide";
 
 <PrdcRiskProvider>
@@ -17,6 +19,8 @@ import { UsageGuide } from "../../components/UsageGuide";
     { text: <><b>FX スポット（円）</b> 150、<b>FX ボラ（%）</b> 12 から、<b>FX スポット（円）</b> を 140 に変える。</>, to: "ad-vs-bump" },
     { text: <><b>パス数</b> 20,000、<b>seed</b> 1234 から、<b>パス数</b> を 200,000 に増やす。</>, to: "prdc-mc" },
     { text: <>3因子 PRDC の <b>ρ（円金利, FX）</b> 0.3 から、<b>ρ（円金利, FX）</b> を 0.5 に変える。</>, to: "three-factor" },
+    { text: <>有限差分のバンプ幅の図で <b>感応度</b> を切り替え、幅を大きくしても小さくしても誤差が増える谷を、自動微分と比べて見る。</>, to: "bump-width" },
+    { text: <>2階の10項目を求める <b>再評価の回数と実測時間</b> を、自動微分と有限差分で比べる。</>, to: "derivative-cost" },
     { text: <>外債の例の <b>ドル円の変化（%）</b> を変え、PRDC の <b>FX ボラの変化（ポイント）</b>・<b>円金利のシフト（bp）</b> を入れ、損益と FX スポットのグラフの縦線をドラッグし、ヒートマップのセルを選んで、3つの損益と交差項のバブルを見る。</>, to: "scenario" },
   ]}
 />
@@ -55,6 +59,18 @@ import { UsageGuide } from "../../components/UsageGuide";
 <ThreeFactorTables />
 
 <ThreeFactorCharts />
+
+<h3 id="bump-width">有限差分のバンプ幅と誤差</h3>
+
+感応度を選ぶと、バンプ幅を 1000 分の 1 から 1000 倍まで動かしたときの有限差分の相対誤差が出る。自動微分は幅を持たず、誤差は 0。
+
+<BumpStudy />
+
+<h3 id="derivative-cost">10項目の2階微分：再評価の回数と実測時間</h3>
+
+ボタンを押すと、ガンマ・Vanna・クロスガンマなど2階の10項目を、自動微分（1回の呼び出し）と有限差分で求める回数と時間を測る。
+
+<DerivativeCost />
 
 <h2 id="scenario">シナリオ損益：交差項</h2>
 
