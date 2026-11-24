@@ -272,6 +272,7 @@ export function App() {
           <span className="brand-text">
             <span className="brand-name">Carmine-Studio</span>
             <span className="brand-sub">エンタープライズ金融モデル</span>
+            <span className="brand-tag">クオンツモデル計算サーバー</span>
           </span>
         </a>
         <ServerIndicator />

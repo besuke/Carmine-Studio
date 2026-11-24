@@ -53,10 +53,13 @@ code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-siz
 .site-header .brand-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
 .site-header .brand-name { font-weight: 700; font-size: 2rem; letter-spacing: -0.015em; color: var(--brand); white-space: nowrap; }
 .site-header .brand-sub { font-size: 0.875rem; letter-spacing: 0.06em; color: var(--text-secondary); white-space: nowrap; }
+/* 0.4 times the title (2rem) */
+.site-header .brand-tag { font-size: 0.8rem; letter-spacing: 0.04em; color: var(--text-secondary); white-space: nowrap; }
 @media (max-width: 520px) {
   .site-header { padding: 0.35rem 12px; }
   .site-header .brand-name { font-size: 1.4rem; }
   .site-header .brand-sub { font-size: 0.69rem; }
+  .site-header .brand-tag { font-size: 0.56rem; }
 }
 .muted { color: var(--text-muted); }
 .page { width: 100%; max-width: none; margin: 0; padding: 1rem 24px 3.5rem; }
