@@ -65,3 +65,9 @@ PV 103,789,643.907、FX デルタ 486,851.586、FX ベガ 44,938,625.074（円�
 ## 6. rmql の `CLAUDE.md`「要望と未対応」表に貼る1行（案）
 
 > | Carmine-Studio | コールなし3因子 PRDC の2階感応度：クロスガンマ（スポット × 円／外貨ゼロ金利カーブの平行シフト）と Vanna（スポット × FX ボラ）の2階自動微分 | Carmine-Studio `docs/rmql_request_prdc_second_order.md` | 未対応 |
+
+## 7. 状況
+
+- 2026-11-24：rmql 側が実装済み（RiemannQL `b64b5e8`、`docs/spec_prdc.md` 15 章）。この PC の rmql を差し替えた。
+- 2026-11-24：Studio の `server/R/prdc_three_factor_model.R` の「自動微分」の列を、`second_order = TRUE` の2階自動微分に差し替えた。表の見出しは「2階自動微分」。初期値で 272.0197、−396.7976、−31,126.07（PV の4点差分は 272.0157、−396.7929、−31,125.47）。
+- 未了：バンプ幅（有限差分の列）と許容誤差の調整、照合記録（`server/tests/reconciliation/prdc_risk/`）、回帰テスト。

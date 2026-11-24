@@ -102,7 +102,7 @@ export function ThreeFactorTables() {
       <div className="table-wrap">
         <table className="data">
           <caption>クロスガンマと Vanna（円）　<Tag d={data} /></caption>
-          <thead><tr><th scope="col">感応度</th><th scope="col">単位</th><th scope="col" className="num">自動微分のデルタの差分</th><th scope="col" className="num">PV の4点差分</th><th scope="col" className="num">差</th></tr></thead>
+          <thead><tr><th scope="col">感応度</th><th scope="col">単位</th><th scope="col" className="num">2階自動微分</th><th scope="col" className="num">PV の4点差分</th><th scope="col" className="num">差</th></tr></thead>
           <tbody>{data.second_order.map((r, i) => (
             <tr key={r.item}><th scope="row">{r.item}</th><td>{r.unit}</td><td className="num" data-testid={`tf-2nd-ad-${i}`}>{num(r.automatic_differentiation, 3)}</td>
               <td className="num" data-testid={`tf-2nd-fd-${i}`}>{num(r.finite_difference, 3)}</td><td className="num">{sci(r.difference)}</td></tr>
