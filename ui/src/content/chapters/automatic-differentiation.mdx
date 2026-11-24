@@ -1,4 +1,5 @@
 import { PrdcRiskProvider, PrdcRiskStatus, RiskControls, NotePanel, AdPanel, McPanel } from "../../components/prdcRisk";
+import { ThreeFactorProvider, ThreeFactorControls, ThreeFactorValue, ThreeFactorTables } from "../../components/prdcThreeFactor";
 import { UsageGuide } from "../../components/UsageGuide";
 
 <PrdcRiskProvider>
@@ -14,6 +15,7 @@ import { UsageGuide } from "../../components/UsageGuide";
   steps={[
     { text: <><b>FX スポット（円）</b> 150、<b>FX ボラ（%）</b> 12 から、<b>FX スポット（円）</b> を 140 に変える。</>, to: "ad-vs-bump" },
     { text: <><b>パス数</b> 20,000、<b>seed</b> 1234 から、<b>パス数</b> を 200,000 に増やす。</>, to: "prdc-mc" },
+    { text: <>3因子 PRDC の <b>ρ（円金利, FX）</b> 0.3 から、<b>ρ（円金利, FX）</b> を 0.5 に変える。</>, to: "three-factor" },
   ]}
 />
 
@@ -35,6 +37,22 @@ import { UsageGuide } from "../../components/UsageGuide";
 <RiskControls which="mc" />
 
 <McPanel />
+
+<h2 id="three-factor">3因子 PRDC の相関感応度・クロスガンマ・Vanna</h2>
+
+コールなしの3因子 PRDC（FX と、円・外貨の短期金利）。相関の3項目を入れる。
+
+- **ρ（円金利, 外貨金利）**、**ρ（円金利, FX）**、**ρ（外貨金利, FX）**：−0.99〜0.99。初期値は 0.3、−0.2、0.4。三つが相関行列にならない組み合わせは、画面にメッセージが出る。
+
+<ThreeFactorProvider>
+
+<ThreeFactorControls />
+
+<ThreeFactorValue />
+
+<ThreeFactorTables />
+
+</ThreeFactorProvider>
 
 <p className="ref">理論・導出：Coral-Book 補論B</p>
 
