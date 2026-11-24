@@ -1,7 +1,7 @@
 # rmql への依頼：コールなし3因子 PRDC の2階感応度（クロスガンマ・Vanna）
 
 - 依頼元：Carmine-Studio 第15章「PRDCグリークス計算（自動微分・有限差分）」（`ui/src/content/chapters/automatic-differentiation.mdx` の節「3因子 PRDC の相関感応度・クロスガンマ・Vanna」）
-- 依頼日：2026-11-25
+- 依頼日：2026-11-24
 - 宛先：RiemannQL（rmql）の会話。Studio は計算を自分で書かず、rmql を呼ぶ（Studio の `CLAUDE.md`）。
 
 ## 1. 依頼
@@ -41,7 +41,7 @@
 
 ## 4. Studio 側の条件と暫定の値（参照用、最終値ではない）
 
-Studio の `server/R/prdc_three_factor_model.R` が使う条件で、次の暫定値が出ている（rmql 0.5.0、2026-11-25）。
+Studio の `server/R/prdc_three_factor_model.R` が使う条件で、次の暫定値が出ている（rmql 0.5.0、2026-11-24）。
 
 - ノート：想定元本 1億円、5年、年1回のクーポン `min(8%, max(0, 2% + 80% × (S / 150 − 1)))`、満期に元本を償還
 - カーブ：円 1.0%〜1.8%、外貨 4.0%〜3.2%（各年の金利が1年間一定、`server/R/prdc_risk_model.R` の `PR_NOTE`）。評価日 2026-11-02

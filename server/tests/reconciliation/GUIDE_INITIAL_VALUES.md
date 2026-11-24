@@ -1,6 +1,6 @@
 # 各章の初期値と Coral-Book の R 実行例の対応
 
-- 確認日：2026-11-25（rmql 0.5.0、`ui/src/content/*.mdx` と `ui/tests/guides.test.ts` の時点）
+- 確認日：2026-11-24（rmql 0.5.0、`ui/src/content/*.mdx` と `ui/tests/guides.test.ts` の時点）
 - 目的：各章の「この章の使い方」と画面の初期値が、Coral-Book の R 実行チャンクの入力に由来するかを一覧にする。
 - 方法：原稿（`Coral-Book/part2_quantive_riemann/ch0N_*.qmd`、`part3_enterprise_riemann/`）の R チャンクを読み、入力の行とチャンク名を記録した。API の既定値は `ui/tests/guides.test.ts` が毎回、使い方の文章と照合する。数値の一致は、各章の照合記録（`*/RECONCILIATION_*.md`）と `server/tests/golden/` の基準値で確かめている。
 
