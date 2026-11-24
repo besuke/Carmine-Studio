@@ -38,3 +38,38 @@ export async function fetchPrdcThreeFactor(request: { correlation?: Partial<Thre
   if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
   return data;
 }
+
+/** The graphs of the page (POST /api/prdc-three-factor/scan): every point is one valuation; the tangents come from automatic differentiation. */
+export interface ThreeFactorScanResponse {
+  inputs: ThreeFactorInputs;
+  npv: number;
+  correlation: { pair: string; current: number; npv: number; slope: number; points: { rho: number; npv: number; tangent: number }[] }[];
+  cross_gamma: Record<"domestic" | "foreign", { delta: number; slope_per_bp: number; points: { shift_bp: number; delta: number; tangent: number }[] }>;
+  vanna: {
+    delta_by_vol: { delta: number; current: number; slope_per_point: number; points: { vol_pct: number; delta: number; tangent: number }[] };
+    vega_by_spot: { vega: number; current: number; slope_per_yen: number; points: { spot: number; vega: number; tangent: number }[] };
+  };
+  conventions: Record<"correlation" | "cross_gamma" | "vanna" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchPrdcThreeFactorScan(request: { correlation?: Partial<ThreeFactorInputs["correlation"]> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<ThreeFactorScanResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc-three-factor/scan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const data = (await res.json().catch(() => null)) as (ThreeFactorScanResponse & { error?: string }) | null;
+  if (!res.ok || !data) throw new ApiError(data?.error ?? `HTTP ${res.status}`, res.status);
+  if (data.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return data;
+}

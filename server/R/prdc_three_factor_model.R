@@ -31,21 +31,27 @@ p3_value <- function(spot, vol, rho, domestic_shift = 0, foreign_shift = 0, seco
 }
 p3_npv <- function(...) p3_value(...)$summary$value
 
-prdc_three_factor_compute <- function(body = list()) {
-  bad <- function(msg) stop(structure(class = c("tona_bad_request", "error", "condition"), list(message = msg, call = NULL)))
+p3_bad <- function(msg) stop(structure(class = c("tona_bad_request", "error", "condition"), list(message = msg, call = NULL)))
+p3_is_correlation <- function(rho) det(matrix(c(1, rho[1], rho[2], rho[1], 1, rho[3], rho[2], rho[3], 1), 3)) > 1e-9
+
+# The three correlations of a request: the list as given (with the defaults) and the vector (domestic-foreign, domestic-FX, foreign-FX).
+p3_read_correlation <- function(body) {
   given <- body$correlation
-  if (!is.null(given) && !is.list(given)) bad("correlation must be an object")
+  if (!is.null(given) && !is.list(given)) p3_bad("correlation must be an object")
   unknown <- setdiff(names(given), names(P3_DEFAULTS$correlation))
-  if (length(unknown)) bad(sprintf("unknown field correlation.%s", unknown[1]))
+  if (length(unknown)) p3_bad(sprintf("unknown field correlation.%s", unknown[1]))
   c0 <- utils::modifyList(P3_DEFAULTS$correlation, if (is.null(given)) list() else given)
   for (k in names(c0)) {
     x <- c0[[k]]
-    if (!(is.numeric(x) && length(x) == 1L && is.finite(x) && x >= -0.99 && x <= 0.99)) bad(sprintf("correlation.%s は -0.99〜0.99 にしてください", k))
+    if (!(is.numeric(x) && length(x) == 1L && is.finite(x) && x >= -0.99 && x <= 0.99)) p3_bad(sprintf("correlation.%s は -0.99〜0.99 にしてください", k))
   }
   rho <- unlist(c0[c("domesticForeign", "domesticFx", "foreignFx")], use.names = FALSE)
-  # the three correlations must make a correlation matrix
-  if (det(matrix(c(1, rho[1], rho[2], rho[1], 1, rho[3], rho[2], rho[3], 1), 3)) <= 1e-9)
-    bad("三つの相関が相関行列になっていません（組み合わせを変えてください）")
+  if (!p3_is_correlation(rho)) p3_bad("三つの相関が相関行列になっていません（組み合わせを変えてください）")
+  list(inputs = c0, rho = rho)
+}
+
+prdc_three_factor_compute <- function(body = list()) {
+  r0 <- p3_read_correlation(body); c0 <- r0$inputs; rho <- r0$rho
   m <- P3_MODEL; b <- P3_BUMP; S <- m$spot; sig <- m$fx_volatility
 
   # the second derivatives are rmql's (second_order = TRUE); an older rmql does not have the argument
@@ -97,4 +103,58 @@ prdc_three_factor_compute <- function(body = list()) {
       bump = "有限差分のバンプ幅：相関 0.001、スポット 0.15 円、ボラ 0.05%（絶対）、金利 1bp。調整の対象。2階自動微分にバンプ幅はない。",
       engine = paste("rmql", as.character(utils::packageVersion("rmql"))))
   )
+}
+
+# The graphs of the page: how the value moves with each correlation, and how the delta and the vega move with the rates and the
+# volatility. Every point is one valuation of rmql's closed form. The tangents are drawn from rmql's automatic-differentiation
+# derivatives at the current inputs: the first derivative for the correlations, and the cross second derivatives of
+# second_order = TRUE for the delta against a parallel shift of each curve and the FX volatility, and for the vega against the spot
+# (the two Vanna slopes are the same mixed derivative).
+prdc_three_factor_scan <- function(body = list()) {
+  if (!"second_order" %in% names(formals(rmql::compute_prdc_three_factor_value))) stop("rmql の second_order（2階自動微分）が必要です。rmql を更新してください")
+  r0 <- p3_read_correlation(body); rho <- r0$rho
+  m <- P3_MODEL; S <- m$spot; sig <- m$fx_volatility
+  base <- p3_value(S, sig, rho, second_order = TRUE)
+  first <- setNames(base$sensitivity$d_npv, base$sensitivity$parameter)
+  d2 <- setNames(base$second_order$d2_npv, base$second_order$parameter_2)
+  npv0 <- base$summary$value; delta0 <- first[["spot"]]; vega0 <- first[["fx_volatility"]]
+  spot_delta <- function(...) { s <- p3_value(...)$sensitivity; s$d_npv[s$parameter == "spot"] }
+  spot_vega <- function(...) { s <- p3_value(...)$sensitivity; s$d_npv[s$parameter == "fx_volatility"] }
+
+  names_rho <- c("rho_domestic_foreign", "rho_domestic_fx", "rho_foreign_fx")
+  labels_rho <- c("円金利 × 外貨金利", "円金利 × FX", "外貨金利 × FX")
+  grid <- round(seq(-0.9, 0.9, by = 0.1), 2)
+  correlation <- lapply(1:3, function(i) {
+    ok <- vapply(grid, function(x) { rr <- rho; rr[i] <- x; p3_is_correlation(rr) }, TRUE)
+    xs <- grid[ok]
+    npv <- vapply(xs, function(x) { rr <- rho; rr[i] <- x; p3_npv(S, sig, rr) }, 0)
+    list(pair = labels_rho[i], current = rho[i], npv = npv0, slope = first[[names_rho[i]]],
+         points = data.frame(rho = xs, npv = npv, tangent = npv0 + first[[names_rho[i]]] * (xs - rho[i])))
+  })
+
+  shifts <- seq(-100, 100, by = 20)
+  rate_scan <- function(side) {
+    delta <- vapply(shifts, function(bp) if (side == "domestic") spot_delta(S, sig, rho, domestic_shift = bp * 1e-4) else spot_delta(S, sig, rho, foreign_shift = bp * 1e-4), 0)
+    slope <- d2[[paste0(side, "_curve_shift")]] * 1e-4
+    list(delta = delta0, slope_per_bp = slope, points = data.frame(shift_bp = shifts, delta = delta, tangent = delta0 + slope * shifts))
+  }
+  vols <- seq(4, 24, by = 2)
+  vol_slope <- d2[["fx_volatility"]] * 0.01
+  delta_by_vol <- list(delta = delta0, current = sig * 100, slope_per_point = vol_slope,
+    points = data.frame(vol_pct = vols, delta = vapply(vols, function(v) spot_delta(S, v / 100, rho), 0),
+                        tangent = delta0 + vol_slope * (vols - sig * 100)))
+  spots <- seq(110, 190, by = 8)
+  vega_by_spot <- list(vega = vega0 * 0.01, current = S, slope_per_yen = vol_slope,
+    points = data.frame(spot = spots, vega = vapply(spots, function(s) spot_vega(s, sig, rho) * 0.01, 0),
+                        tangent = vega0 * 0.01 + vol_slope * (spots - S)))
+  list(
+    inputs = r0$inputs, npv = npv0,
+    correlation = correlation,
+    cross_gamma = list(domestic = rate_scan("domestic"), foreign = rate_scan("foreign")),
+    vanna = list(delta_by_vol = delta_by_vol, vega_by_spot = vega_by_spot),
+    conventions = list(
+      correlation = "各点は、その相関だけを動かして（ほかは入力のまま）閉じた式で評価した現在価値。点線は自動微分の1階微分による接線。三つが相関行列にならない相関の値は描かない。",
+      cross_gamma = "各点は、円（外貨）カーブのゼロ金利を平行にシフトして評価した FX デルタ（自動微分）。点線は、シフトなしのデルタを通り、傾きが2階自動微分のクロスガンマ。",
+      vanna = "左は FX ボラを動かして評価した FX デルタ、右はスポットを動かして評価した FX ベガ（ボラ 1 ポイントあたり）。どちらの点線も、傾きが2階自動微分の Vanna（同じ交差微分）。",
+      engine = paste("rmql", as.character(utils::packageVersion("rmql")))))
 }
