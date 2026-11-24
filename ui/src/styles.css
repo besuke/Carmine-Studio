@@ -12,6 +12,7 @@
   --series-1: #4ea8ff; /* cyan blue */
   --series-2: #ff9f1c; /* amber */
   --series-3: #00d26a; /* terminal green */
+  --series-4: #c58bff; /* violet */
   --accent: #ff5c7a; /* carmine, lightened for a black ground */
   --brand: #ff9f1c;
   --changed-bg: #2a2110;
@@ -35,6 +36,7 @@
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
+  --series-4: #8e5bd6;
   --accent: #b3123b;
   --brand: #b3123b;
   --changed-bg: #fdf0ea;

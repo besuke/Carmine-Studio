@@ -5,10 +5,11 @@
 #
 # POST /api/prdc-three-factor   {"correlation": {"domesticForeign": 0.3, "domesticFx": -0.2, "foreignFx": 0.4}}
 #
-# Automatic differentiation (rmql, one valuation with second_order = TRUE): the value, the spot delta, the FX vega, the three
-# correlations, and the cross second derivatives with the spot (the cross-gammas with a parallel shift of each curve, the Vanna).
-# The finite-difference columns are central differences (correlations) and four-point differences (cross second derivatives) of
-# the value alone. Bump widths are in P3_BUMP and apply to the finite differences: they are inside the range where the finite
+# Automatic differentiation (rmql, one valuation with second_order = "full"): the value, the spot delta, the FX vega, the three
+# correlations, and the ten second derivatives among the spot, the FX volatility and a parallel shift of each curve (the cross-gammas,
+# the Vanna, the gamma, the volga, the second derivative of each rate and the crosses between the rates and with the volatility).
+# The finite-difference columns are central differences (correlations), three-point differences (the second derivative of one variable)
+# and four-point differences (the crosses) of the value alone. Bump widths are in P3_BUMP and apply to the finite differences: they are inside the range where the finite
 # differences are stable (server/tests/reconciliation/prdc_three_factor/RECONCILIATION_PRDC_THREE_FACTOR.md).
 #
 # Needs prdc_risk_model.R (PR_NOTE, PR_TIMES, PR_REF, PR_DATES), loaded before this file.
@@ -17,7 +18,7 @@ P3_DEFAULTS <- list(correlation = list(domesticForeign = 0.3, domesticFx = -0.2,
 P3_MODEL <- list(spot = 150, fx_volatility = 0.12, domestic = c(mean_reversion = 0.03, volatility = 0.01),
                  foreign = c(mean_reversion = 0.05, volatility = 0.012))
 # relative or absolute widths of the finite differences
-P3_BUMP <- list(correlation = 1e-3, spot = 1e-4 * 150, volatility = 1e-4, rate = 1e-5)
+P3_BUMP <- list(correlation = 1e-3, spot = 1e-4 * 150, volatility = 1e-4, rate = 1e-5, rate2 = 3e-5) # rate2: the three-point difference of a rate
 
 p3_curve <- function(rates, index, shift = 0) {
   df <- exp(-cumsum(rates)) * exp(-shift * PR_TIMES) # a parallel shift of the continuous zero rates
@@ -31,6 +32,10 @@ p3_value <- function(spot, vol, rho, domestic_shift = 0, foreign_shift = 0, seco
                                         n$leverage - n$fixed_coupon, n$floor, n$cap, notional = n$notional, second_order = second_order)
 }
 p3_npv <- function(...) p3_value(...)$summary$value
+
+# rmql's table of second derivatives by the pair of names: each pair is one row (the table is symmetric), so a pair is looked up in either order
+p3_pairs <- function(second) setNames(second$d2_npv, paste(second$parameter_1, second$parameter_2, sep = "|"))
+p3_h <- function(d2, a, b) { v <- d2[paste(a, b, sep = "|")]; if (is.na(v)) v <- d2[paste(b, a, sep = "|")]; unname(v) }
 
 p3_bad <- function(msg) stop(structure(class = c("tona_bad_request", "error", "condition"), list(message = msg, call = NULL)))
 p3_is_correlation <- function(rho) det(matrix(c(1, rho[1], rho[2], rho[1], 1, rho[3], rho[2], rho[3], 1), 3)) > 1e-9
@@ -55,9 +60,9 @@ prdc_three_factor_compute <- function(body = list()) {
   r0 <- p3_read_correlation(body); c0 <- r0$inputs; rho <- r0$rho
   m <- P3_MODEL; b <- P3_BUMP; S <- m$spot; sig <- m$fx_volatility
 
-  # the second derivatives are rmql's (second_order = TRUE); an older rmql does not have the argument
+  # the second derivatives are rmql's (second_order = "full"); an older rmql does not have the argument
   if (!"second_order" %in% names(formals(rmql::compute_prdc_three_factor_value))) stop("rmql の second_order（2階自動微分）が必要です。rmql を更新してください")
-  base <- p3_value(S, sig, rho, second_order = TRUE)
+  base <- p3_value(S, sig, rho, second_order = "full")
   s <- base$sensitivity; at <- function(p) s$d_npv[s$parameter == p]
   cs <- base$curve_sensitivity
 
@@ -72,20 +77,31 @@ prdc_three_factor_compute <- function(body = list()) {
   correlation <- data.frame(pair = labels_rho, automatic_differentiation = ad_rho * 0.01, finite_difference = fd_rho * 0.01,
                             difference = (ad_rho - fd_rho) * 0.01)
 
-  # Cross-gammas and Vanna. "automatic_differentiation": rmql's second-order automatic differentiation. "finite_difference":
-  # four-point difference of the value alone.
-  four_point <- function(f) { hs <- b$spot; (f(hs, 1) - f(hs, -1) - f(-hs, 1) + f(-hs, -1)) }
-  d2 <- setNames(base$second_order$d2_npv, base$second_order$parameter_2)
-  rate_fd <- function(side) {
-    h <- b$rate
-    four_point(\(ds, dr) if (side == "domestic") p3_npv(S + ds, sig, rho, domestic_shift = dr * h) else p3_npv(S + ds, sig, rho, foreign_shift = dr * h)) / (4 * b$spot * h)
-  }
-  vanna_fd <- four_point(\(ds, dv) p3_npv(S + ds, sig + dv * b$volatility, rho)) / (4 * b$spot * b$volatility)
+  # The second derivatives. "automatic_differentiation": rmql's second-order automatic differentiation. "finite_difference": the value alone,
+  # three-point differences for the second derivative of one variable and four-point differences for the crosses. x = (spot in yen,
+  # volatility, the domestic shift, the foreign shift): 1 to 4.
+  d2 <- p3_pairs(base$second_order)
+  v0 <- p3_npv(S, sig, rho)
+  value_at <- function(x) p3_npv(S + x[1], sig + x[2], rho, domestic_shift = x[3], foreign_shift = x[4])
+  e <- function(i, h) { x <- c(0, 0, 0, 0); x[i] <- h; x }
+  three <- function(i, h) (value_at(e(i, h)) - 2 * v0 + value_at(e(i, -h))) / h^2
+  four <- function(i, hi, j, hj) (value_at(e(i, hi) + e(j, hj)) - value_at(e(i, hi) - e(j, hj)) - value_at(-e(i, hi) + e(j, hj)) + value_at(-e(i, hi) - e(j, hj))) / (4 * hi * hj)
+  names_h <- c("spot", "fx_volatility", "domestic_curve_shift", "foreign_curve_shift")
+  rows <- list(
+    list("クロスガンマ：FXスポット × 円金利", "円／（FX 1円 × 1bp）", 1e-4, c(1, 3), four(1, b$spot, 3, b$rate)),
+    list("クロスガンマ：FXスポット × 外貨金利", "円／（FX 1円 × 1bp）", 1e-4, c(1, 4), four(1, b$spot, 4, b$rate)),
+    list("Vanna：FXスポット × FXボラティリティ", "円／（FX 1円 × ボラ 1%）", 0.01, c(1, 2), four(1, b$spot, 2, b$volatility)),
+    list("ガンマ：FXスポット × FXスポット", "円／（FX 1円）²", 1, c(1, 1), three(1, b$spot)),
+    list("ボルガ：FXボラティリティ × FXボラティリティ", "円／（ボラ 1%）²", 1e-4, c(2, 2), three(2, b$volatility)),
+    list("円金利の2階（コンベクシティ）", "円／（1bp）²", 1e-8, c(3, 3), three(3, b$rate2)),
+    list("外貨金利の2階", "円／（1bp）²", 1e-8, c(4, 4), three(4, b$rate2)),
+    list("円金利 × 外貨金利", "円／（1bp × 1bp）", 1e-8, c(3, 4), four(3, b$rate, 4, b$rate)),
+    list("円金利 × FXボラティリティ", "円／（1bp × ボラ 1%）", 1e-6, c(3, 2), four(3, b$rate, 2, b$volatility)),
+    list("外貨金利 × FXボラティリティ", "円／（1bp × ボラ 1%）", 1e-6, c(4, 2), four(4, b$rate, 2, b$volatility)))
   second <- data.frame(
-    item = c("クロスガンマ：FXスポット × 円金利", "クロスガンマ：FXスポット × 外貨金利", "Vanna：FXスポット × FXボラティリティ"),
-    unit = c("円／（FX 1円 × 1bp）", "円／（FX 1円 × 1bp）", "円／（FX 1円 × ボラ 1%）"),
-    automatic_differentiation = c(d2[["domestic_curve_shift"]] * 1e-4, d2[["foreign_curve_shift"]] * 1e-4, d2[["fx_volatility"]] * 0.01),
-    finite_difference = c(rate_fd("domestic") * 1e-4, rate_fd("foreign") * 1e-4, vanna_fd * 0.01))
+    item = vapply(rows, function(r) r[[1]], ""), unit = vapply(rows, function(r) r[[2]], ""),
+    automatic_differentiation = vapply(rows, function(r) p3_h(d2, names_h[r[[4]][1]], names_h[r[[4]][2]]) * r[[3]], 0),
+    finite_difference = vapply(rows, function(r) r[[5]] * r[[3]], 0))
   second$difference <- second$automatic_differentiation - second$finite_difference
 
   list(
@@ -100,8 +116,8 @@ prdc_three_factor_compute <- function(body = list()) {
     conventions = list(
       model = "3因子モデル（コールなし）：FX は対数正規、円と外貨の短期金利は Hull–White（平均回帰 3%・5%、ボラ 1%・1.2%）、相関は入力の三つ。閉じた式で評価する。想定元本 1億円、5年、年1回のクーポンは第15章の PRDC と同じ。",
       automatic_differentiation = "自動微分は rmql の1回の評価で、PV・デルタ・ベガ・三つの相関の微分を返す。相関は +0.01 あたりの円。",
-      second_order = "クロスガンマと Vanna の「2階自動微分」は rmql の second_order = TRUE（デルタの微分を記録して、もう一度微分する）。「有限差分」は PV だけの4点差分である。金利は円（外貨）カーブのゼロ金利の平行シフト。",
-      bump = "有限差分のバンプ幅：相関 0.001、スポット 0.015 円、ボラ 0.01%（絶対）、金利 0.1bp（安定する範囲の中で選んだ値）。2階自動微分にバンプ幅はない。",
+      second_order = "2階微分は、スポット・FXボラ・円カーブ・外貨カーブの4変数の10要素。「2階自動微分」は rmql の second_order = 'full'（1階微分を記録して、もう一度微分する）。「有限差分」は PV だけの差分で、同じ変数の2階は3点、交差は4点。金利は円（外貨）カーブのゼロ金利の平行シフト。",
+      bump = "有限差分のバンプ幅：相関 0.001、スポット 0.015 円、ボラ 0.01%（絶対）、金利 0.1bp（金利の2階だけ 0.3bp）。安定する範囲の中で選んだ値。2階自動微分にバンプ幅はない。",
       engine = paste("rmql", as.character(utils::packageVersion("rmql"))))
   )
 }
@@ -183,33 +199,44 @@ p3_read_shock <- function(body) {
   s
 }
 
-# The Greeks at the base point: the value, the first derivatives and the DV01s (automatic differentiation), and the cross second
-# derivatives with the spot (second_order = TRUE). They are asked of rmql once for a scenario or for a curve of scenarios.
+# The Greeks at the base point: the value, the first derivatives and the DV01s (automatic differentiation), and the ten second
+# derivatives (second_order = "full"). They are asked of rmql once for a scenario or for a curve of scenarios.
 p3_greeks <- function(rho) {
   if (!"second_order" %in% names(formals(rmql::compute_prdc_three_factor_value))) stop("rmql の second_order（2階自動微分）が必要です。rmql を更新してください")
   m <- P3_MODEL
-  base <- p3_value(m$spot, m$fx_volatility, rho, second_order = TRUE)
+  base <- p3_value(m$spot, m$fx_volatility, rho, second_order = "full")
   first <- setNames(base$sensitivity$d_npv, base$sensitivity$parameter)
   cs <- base$curve_sensitivity
   list(npv = base$summary$value, delta = first[["spot"]], vega = first[["fx_volatility"]],
        dv01 = c(domestic = sum(cs$npv_per_bp[cs$curve == "domestic"]), foreign = sum(cs$npv_per_bp[cs$curve == "foreign"])), # per +1bp of the parallel shift
-       d2 = setNames(base$second_order$d2_npv, base$second_order$parameter_2))
+       d2 = p3_pairs(base$second_order))
 }
 
-# The profit and loss of one move: by full revaluation, by the first order, and by the first order plus the three cross terms.
+# The profit and loss of one move: by full revaluation, by the first order, by the first order plus the three cross terms of the spot,
+# and by the second-order expansion (the first order plus all ten second-order terms, 1/2 H_ii x_i^2 and H_ij x_i x_j). What the
+# second-order expansion leaves from the full revaluation is the third order and above.
 p3_scenario_point <- function(g, rho, dS, dv, bd, bf) {
   m <- P3_MODEL
-  moved <- p3_npv(m$spot + dS, m$fx_volatility + dv, rho, domestic_shift = bd * 1e-4, foreign_shift = bf * 1e-4)
+  dd <- bd * 1e-4; df <- bf * 1e-4 # the shifts as decimals
+  moved <- p3_npv(m$spot + dS, m$fx_volatility + dv, rho, domestic_shift = dd, foreign_shift = df)
+  h <- function(a, b) p3_h(g$d2, a, b)
   value <- c(g$delta * dS, g$vega * dv, g$dv01[["domestic"]] * bd, g$dv01[["foreign"]] * bf,
-             g$d2[["domestic_curve_shift"]] * dS * bd * 1e-4, g$d2[["foreign_curve_shift"]] * dS * bf * 1e-4, g$d2[["fx_volatility"]] * dS * dv)
-  full <- moved - g$npv; first_order <- sum(value[1:4]); with_cross <- sum(value)
-  list(moved = moved, value = value, full = full, first_order = first_order, first_plus_cross = with_cross,
-       difference_first_order = full - first_order, difference_first_plus_cross = full - with_cross)
+             # the cross terms with the spot
+             h("spot", "domestic_curve_shift") * dS * dd, h("spot", "foreign_curve_shift") * dS * df, h("spot", "fx_volatility") * dS * dv,
+             # the other second-order terms
+             0.5 * h("spot", "spot") * dS^2, 0.5 * h("fx_volatility", "fx_volatility") * dv^2,
+             0.5 * h("domestic_curve_shift", "domestic_curve_shift") * dd^2, 0.5 * h("foreign_curve_shift", "foreign_curve_shift") * df^2,
+             h("domestic_curve_shift", "foreign_curve_shift") * dd * df, h("domestic_curve_shift", "fx_volatility") * dd * dv,
+             h("foreign_curve_shift", "fx_volatility") * df * dv)
+  full <- moved - g$npv; first_order <- sum(value[1:4]); with_cross <- sum(value[1:7]); second_order <- sum(value)
+  list(moved = moved, value = value, full = full, first_order = first_order, first_plus_cross = with_cross, second_order = second_order,
+       difference_first_order = full - first_order, difference_first_plus_cross = full - with_cross, difference_second_order = full - second_order)
 }
 P3_CONTRIBUTION_ITEMS <- data.frame(
-  item = c("FX デルタ", "FX ベガ", "円金利 DV01", "外貨金利 DV01", "クロスガンマ（スポット × 円金利）", "クロスガンマ（スポット × 外貨金利）", "Vanna（スポット × ボラ）"),
-  short = c("デルタ", "ベガ", "円DV01", "外貨DV01", "Γ×円金利", "Γ×外貨金利", "Vanna"),
-  kind = c(rep("first", 4), rep("cross", 3)))
+  item = c("FX デルタ", "FX ベガ", "円金利 DV01", "外貨金利 DV01", "クロスガンマ（スポット × 円金利）", "クロスガンマ（スポット × 外貨金利）", "Vanna（スポット × ボラ）",
+           "ガンマ（スポット × スポット）", "ボルガ（ボラ × ボラ）", "円金利の2階", "外貨金利の2階", "円金利 × 外貨金利", "円金利 × ボラ", "外貨金利 × ボラ"),
+  short = c("デルタ", "ベガ", "円DV01", "外貨DV01", "Γ×円金利", "Γ×外貨金利", "Vanna", "ガンマ", "ボルガ", "円2階", "外貨2階", "円×外貨", "円×ボラ", "外貨×ボラ"),
+  kind = c(rep("first", 4), rep("cross", 3), rep("second", 7)))
 
 prdc_three_factor_scenario <- function(body = list()) {
   r0 <- p3_read_correlation(body); rho <- r0$rho
@@ -221,14 +248,16 @@ prdc_three_factor_scenario <- function(body = list()) {
     inputs = list(correlation = r0$inputs, shock = sh),
     base = list(spot = S, fx_volatility_pct = sig * 100, npv = g$npv),
     moved = list(spot = S + sh$spotYen, fx_volatility_pct = (sig + sh$volPoints * 0.01) * 100, domestic_shift_bp = sh$domesticBp, foreign_shift_bp = sh$foreignBp, npv = pt$moved),
-    pnl = list(full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross,
-               difference_first_order = pt$difference_first_order, difference_first_plus_cross = pt$difference_first_plus_cross),
+    pnl = list(full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross, second_order = pt$second_order,
+               difference_first_order = pt$difference_first_order, difference_first_plus_cross = pt$difference_first_plus_cross,
+               difference_second_order = pt$difference_second_order),
     contribution = cbind(P3_CONTRIBUTION_ITEMS, value = pt$value),
     conventions = list(
       full = "フル再評価：動かした入力（スポット、ボラ、両カーブのゼロ金利の平行シフト）で rmql の閉じた式をもう一度評価し、元の現在価値との差をとる。",
       first_order = "一次近似：FX デルタ × スポットの変化 ＋ FX ベガ × ボラの変化 ＋ 円・外貨の DV01 × 各金利のシフト（すべて rmql の自動微分）。",
       cross = "交差項：クロスガンマ（スポット × 円／外貨金利）× スポットの変化 × 金利のシフトと、Vanna × スポットの変化 × ボラの変化（rmql の second_order = TRUE）。",
-      rest = "近似との差には、交差項に入れていない2階の項（スポットのガンマ、ボラの二階、金利どうし・金利とボラの交差、3次以上）が入る。",
+      second = "2階のその他の項：ガンマ、ボルガ、円・外貨金利の2階、円×外貨、円・外貨×ボラの交差の寄与（2階微分 × 変化の積、同じ変数は 1/2 × 2階微分 × 変化の2乗）。一次近似＋交差項3つ＋これら7つが2次近似。",
+      rest = "2次近似とフル再評価の差は、3次以上の項。",
       engine = paste("rmql", as.character(utils::packageVersion("rmql")))))
 }
 
@@ -243,8 +272,9 @@ prdc_three_factor_scenario_curve <- function(body = list()) {
   g <- p3_greeks(rho)
   rows <- lapply(P3_SPOT_GRID, function(dS) {
     pt <- p3_scenario_point(g, rho, dS, sh$volPoints * 0.01, sh$domesticBp, sh$foreignBp)
-    list(spotYen = dS, full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross,
+    list(spotYen = dS, full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross, second_order = pt$second_order,
          difference_first_order = pt$difference_first_order, difference_first_plus_cross = pt$difference_first_plus_cross,
+         difference_second_order = pt$difference_second_order,
          cross = list(domestic = pt$value[5], foreign = pt$value[6], vanna = pt$value[7]))
   })
   cross_abs <- vapply(rows, function(r) max(abs(unlist(r$cross))), 0)
@@ -271,8 +301,9 @@ prdc_three_factor_heatmap <- function(body = list()) {
   g <- p3_greeks(rho)
   cell <- function(dS, dv_points, bd, bf, y) {
     pt <- p3_scenario_point(g, rho, dS, dv_points * 0.01, bd, bf)
-    list(spotYen = dS, y = y, full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross,
+    list(spotYen = dS, y = y, full = pt$full, first_order = pt$first_order, first_plus_cross = pt$first_plus_cross, second_order = pt$second_order,
          difference_first_order = pt$difference_first_order, difference_first_plus_cross = pt$difference_first_plus_cross,
+         difference_second_order = pt$difference_second_order,
          cross = list(domestic = pt$value[5], foreign = pt$value[6], vanna = pt$value[7]))
   }
   grid <- function(ys, make) unlist(lapply(P3_HEAT$spot, function(dS) lapply(ys, function(y) make(dS, y))), recursive = FALSE)

@@ -10,6 +10,7 @@ import { describe, expect, inject, it } from "vitest";
 //   POST /api/prdc-three-factor/scenario-curve   the scenario over the spot change (the line to drag)
 //   POST /api/prdc-three-factor/heatmap    the scenario over a coarse grid
 //   POST /api/cross-term-example           the unhedged foreign bond
+// The second derivatives are rmql's ten (second_order = "full"); the scenario has the second-order expansion besides the first order and the cross terms.
 // The tolerances come from the study of the bump widths (server/tests/reconciliation/prdc_three_factor/RECONCILIATION_PRDC_THREE_FACTOR.md).
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -46,7 +47,7 @@ const ok = async (endpoint: string, body: unknown = {}): Promise<Json> => {
 };
 const rel = (a: number, b: number) => Math.abs(a - b) / Math.max(Math.abs(b), 1e-300);
 const same = (a: number, b: number, tol = TOL.same, name = "") => expect(Math.abs(a - b), `${name}: ${a} against ${b}`).toBeLessThanOrEqual(tol * Math.max(Math.abs(b), 1) + 1e-6);
-const PNL_KEYS = ["full", "first_order", "first_plus_cross", "difference_first_order", "difference_first_plus_cross"] as const;
+const PNL_KEYS = ["full", "first_order", "first_plus_cross", "second_order", "difference_first_order", "difference_first_plus_cross", "difference_second_order"] as const;
 
 describe("1. zero moves and the spot alone", () => {
   it("every move zero: the profit and loss and every contribution are zero", async () => {
@@ -68,10 +69,17 @@ describe("1. zero moves and the spot alone", () => {
     expect(s.pnl.first_plus_cross === s.pnl.first_order, `${s.pnl.first_plus_cross} against ${s.pnl.first_order}`).toBe(true);
     expect(Math.abs(s.pnl.full)).toBeGreaterThan(1e5); // the move itself is not zero
     expect(s.contribution.find((c: Json) => c.short === "デルタ").value).toBeCloseTo(s.pnl.first_order, 6);
+    // the other second-order terms need a second move; the gamma of the spot alone remains, so the second order is the first order plus the gamma term
+    const rest = s.contribution.filter((c: Json) => c.kind === "second");
+    expect(rest.length).toBe(7);
+    for (const c of rest) if (c.short === "ガンマ") expect(c.value, c.item).toBeGreaterThan(0); else expect(c.value === 0, `${c.item}: ${c.value}`).toBe(true);
+    expect(s.pnl.second_order).toBeCloseTo(s.pnl.first_order + rest.find((c: Json) => c.short === "ガンマ").value, 6);
     const curve = await ok("prdc-three-factor/scenario-curve", { shock: ZERO });
     for (const p of curve.points) {
       for (const v of Object.values(p.cross) as number[]) expect(v === 0, `spot ${p.spotYen}: ${v}`).toBe(true);
       expect(p.first_plus_cross === p.first_order, `spot ${p.spotYen}`).toBe(true);
+      if (p.spotYen !== 0) expect(p.second_order, `spot ${p.spotYen}`).toBeGreaterThan(p.first_order); // the gamma is positive
+      else expect(p.second_order === p.first_order).toBe(true);
     }
   });
 
@@ -156,8 +164,10 @@ describe("3. the slopes of the tangents are the values of the sensitivity table,
 });
 
 describe("4. automatic differentiation against finite differences, at the widths of the page", () => {
-  it("the correlations and the second derivatives", async () => {
+  it("the correlations and the ten second derivatives", async () => {
     const main = await ok("prdc-three-factor");
+    expect(main.second_order.length).toBe(10);
+    expect(main.second_order.map((r: Json) => r.item.split("：")[0])).toEqual(["クロスガンマ", "クロスガンマ", "Vanna", "ガンマ", "ボルガ", "円金利の2階（コンベクシティ）", "外貨金利の2階", "円金利 × 外貨金利", "円金利 × FXボラティリティ", "外貨金利 × FXボラティリティ"]);
     for (const c of main.correlation) expect(rel(c.finite_difference, c.automatic_differentiation), c.pair).toBeLessThan(TOL.correlationFd);
     for (const r of main.second_order) expect(rel(r.finite_difference, r.automatic_differentiation), r.item).toBeLessThan(TOL.secondOrderFd);
   });
@@ -196,6 +206,41 @@ describe("5. the page's numbers against the golden values", () => {
     expect(x.total_pct).toBeCloseTo(x.steps.reduce((a: number, r: Json) => a + r.value_pt, 0), 12);
     const z = await ok("cross-term-example", { bondPct: 0, fxPct: 0 });
     expect(z.total_pct).toBe(0);
+  });
+});
+
+describe("7. the second-order expansion", () => {
+  it("the contributions add up to the first order (4), the first order plus the cross terms (7) and the second order (14)", async () => {
+    const s = await ok("prdc-three-factor/scenario");
+    const c = s.contribution as Json[];
+    expect(c.length).toBe(14);
+    expect(c.map((r) => r.kind)).toEqual(["first", "first", "first", "first", "cross", "cross", "cross", ...Array(7).fill("second")]);
+    const sum = (a: number, b: number) => c.slice(a, b).reduce((x, r) => x + r.value, 0);
+    same(sum(0, 4), s.pnl.first_order, TOL.same, "first order");
+    same(sum(0, 7), s.pnl.first_plus_cross, TOL.same, "first plus cross");
+    same(sum(0, 14), s.pnl.second_order, TOL.same, "second order");
+    same(s.pnl.full - s.pnl.second_order, s.pnl.difference_second_order, TOL.same, "what the second order leaves");
+  });
+
+  it("each step is closer to the full revaluation: first order, plus the cross terms, second order (the default move)", async () => {
+    const s = await ok("prdc-three-factor/scenario");
+    const d = [s.pnl.difference_first_order, s.pnl.difference_first_plus_cross, s.pnl.difference_second_order].map(Math.abs);
+    expect(d[1], `${d}`).toBeLessThan(d[0]);
+    expect(d[2], `${d}`).toBeLessThan(d[1]);
+    expect(d[2]).toBeLessThan(0.05 * Math.abs(s.pnl.full)); // the second order is within 5% of the full revaluation here
+  });
+
+  it("the first order leaves a second-order error (it falls by about 4 when the move is halved) and the second order a third-order error (about 8 for small moves)", async () => {
+    const at = async (k: number) => (await ok("prdc-three-factor/scenario", { shock: { spotYen: 4 * k, volPoints: 2 * k, domesticBp: 20 * k, foreignBp: -20 * k } })).pnl;
+    const [a, b, c, d] = [await at(0.25), await at(0.125), await at(0.0625), await at(0.03125)];
+    expect(Math.abs(a.difference_first_order / b.difference_first_order), "first order").toBeGreaterThan(3.5);
+    expect(Math.abs(a.difference_first_order / b.difference_first_order), "first order").toBeLessThan(4.5);
+    // the second-order error is of third order in the move: the ratio comes to 8 as the move gets smaller
+    const ratio = (x: Json, y: Json) => Math.abs(x.difference_second_order / y.difference_second_order);
+    expect(ratio(b, c), "second order, 0.125 to 0.0625").toBeGreaterThan(7);
+    expect(ratio(b, c)).toBeLessThan(8.5);
+    expect(ratio(c, d), "second order, 0.0625 to 0.03125").toBeGreaterThan(7.3);
+    expect(ratio(c, d)).toBeLessThan(8.3);
   });
 });
 

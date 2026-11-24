@@ -81,9 +81,9 @@ export interface ThreeFactorScenarioResponse {
   inputs: { correlation: ThreeFactorInputs["correlation"]; shock: ThreeFactorShock };
   base: { spot: number; fx_volatility_pct: number; npv: number };
   moved: { spot: number; fx_volatility_pct: number; domestic_shift_bp: number; foreign_shift_bp: number; npv: number };
-  pnl: { full: number; first_order: number; first_plus_cross: number; difference_first_order: number; difference_first_plus_cross: number };
-  contribution: { item: string; short: string; kind: "first" | "cross"; value: number }[];
-  conventions: Record<"full" | "first_order" | "cross" | "rest" | "engine", string>;
+  pnl: { full: number; first_order: number; first_plus_cross: number; second_order: number; difference_first_order: number; difference_first_plus_cross: number; difference_second_order: number };
+  contribution: { item: string; short: string; kind: "first" | "cross" | "second"; value: number }[];
+  conventions: Record<"full" | "first_order" | "cross" | "second" | "rest" | "engine", string>;
   response: ResponseStamp;
 }
 
@@ -140,8 +140,8 @@ export async function fetchCrossTermExample(request: { bondPct?: number; fxPct?:
 
 /** The scenario against the spot (POST /api/prdc-three-factor/scenario-curve): every point valued beforehand. */
 export interface ScenarioCurvePoint {
-  spotYen: number; full: number; first_order: number; first_plus_cross: number;
-  difference_first_order: number; difference_first_plus_cross: number;
+  spotYen: number; full: number; first_order: number; first_plus_cross: number; second_order: number;
+  difference_first_order: number; difference_first_plus_cross: number; difference_second_order: number;
   cross: { domestic: number; foreign: number; vanna: number };
 }
 export interface ThreeFactorScenarioCurveResponse {
@@ -175,8 +175,8 @@ export async function fetchPrdcThreeFactorScenarioCurve(request: { correlation?:
 
 /** The heat maps (POST /api/prdc-three-factor/heatmap): a coarse grid, every cell valued beforehand. */
 export interface HeatCell {
-  spotYen: number; y: number; full: number; first_order: number; first_plus_cross: number;
-  difference_first_order: number; difference_first_plus_cross: number;
+  spotYen: number; y: number; full: number; first_order: number; first_plus_cross: number; second_order: number;
+  difference_first_order: number; difference_first_plus_cross: number; difference_second_order: number;
   cross: { domestic: number; foreign: number; vanna: number };
 }
 export type HeatMapKey = "vol" | "rate_domestic" | "rate_foreign";

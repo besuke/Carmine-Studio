@@ -4,4 +4,11 @@
 "correlation","rho_foreign_fx",4.29294544734258e-11,NA,1e-05,6,5,4
 "cross_gamma","spot_domestic_curve_shift",4.67868898854085e-08,0.0015,1e-05,20,9,6
 "cross_gamma","spot_foreign_curve_shift",2.96728162472366e-08,0.015,1e-06,20,9,6
+"gamma","spot_spot",9.03141615332088e-08,0.015,NA,8,6,5
+"rate_cross","domestic_foreign",6.33814991523664e-08,NA,1e-05,6,5,4
+"rate_second","domestic_domestic",4.14835519514575e-08,NA,3e-05,6,6,4
+"rate_second","foreign_foreign",7.5037559748095e-08,NA,3e-05,6,6,4
+"rate_vol","domestic_fx_volatility",6.4105329372388e-08,1e-05,1e-04,30,20,13
+"rate_vol","foreign_fx_volatility",1.23833709417896e-07,1e-06,1e-04,30,18,10
 "vanna","spot_fx_volatility",4.70492840699926e-08,0.0015,1e-04,24,15,10
+"volga","fx_volatility_fx_volatility",3.15918597352944e-07,NA,1e-04,5,3,2

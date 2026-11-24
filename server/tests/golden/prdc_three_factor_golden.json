@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-11-24T23:10:12+0900",
+  "run_at": "2026-11-25T00:24:57+0900",
   "rmql": "0.5.0",
   "npv": 103789643.906728,
   "greeks": {
@@ -43,6 +43,41 @@
       "item": "Vanna：FXスポット × FXボラティリティ",
       "automatic_differentiation": -31126.0704936316,
       "finite_difference": -31126.0632425547
+    },
+    {
+      "item": "ガンマ：FXスポット × FXスポット",
+      "automatic_differentiation": 8030.50862095025,
+      "finite_difference": 8030.50789568159
+    },
+    {
+      "item": "ボルガ：FXボラティリティ × FXボラティリティ",
+      "automatic_differentiation": -81653.4313391246,
+      "finite_difference": -81653.4571349621
+    },
+    {
+      "item": "円金利の2階（コンベクシティ）",
+      "automatic_differentiation": 30.6360520713747,
+      "finite_difference": 30.6360508004824
+    },
+    {
+      "item": "外貨金利の2階",
+      "automatic_differentiation": 18.7288089739142,
+      "finite_difference": 18.7288075685501
+    },
+    {
+      "item": "円金利 × 外貨金利",
+      "automatic_differentiation": -12.4866027848612,
+      "finite_difference": -12.4866019934416
+    },
+    {
+      "item": "円金利 × FXボラティリティ",
+      "automatic_differentiation": -1321.64369800327,
+      "finite_difference": -1321.64361327887
+    },
+    {
+      "item": "外貨金利 × FXボラティリティ",
+      "automatic_differentiation": 1186.60919161328,
+      "finite_difference": 1186.60904094577
     }
   ],
   "scan_slopes": {
@@ -61,10 +96,12 @@
       "full": 2660141.15341377,
       "first_order": 3088717.32395665,
       "first_plus_cross": 2844338.35504463,
+      "second_order": 2695950.3478666,
       "difference_first_order": -428576.170542873,
-      "difference_first_plus_cross": -184197.20163086
+      "difference_first_plus_cross": -184197.20163086,
+      "difference_second_order": -35809.1944528292
     },
-    "contribution": [2434257.92822247, 898772.501487498, -618646.888734885, 374333.782981559, 27201.9716291255, 39679.7643951774, -311260.704936316]
+    "contribution": [2434257.92822247, 898772.501487498, -618646.888734885, 374333.782981559, 27201.9716291255, 39679.7643951774, -311260.704936316, 100381.357761878, -163306.862678249, 6127.21041427494, 3745.76179478285, 4994.64111394447, -52865.7479201308, -47464.3676645311]
   },
   "curve_at_5": {
     "full": 2660141.15341377,

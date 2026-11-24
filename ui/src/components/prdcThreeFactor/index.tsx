@@ -276,19 +276,22 @@ export function ThreeFactorScenarioControls() {
 
 const sgn = (x: number) => `${x >= 0 ? "+" : "−"}${Math.abs(Math.round(x)).toLocaleString("ja-JP")}`;
 
-/** The profit and loss three ways, the Greeks' contributions and the differences from the full revaluation. */
+/** The profit and loss four ways (full revaluation, first order, first order plus the cross terms, second order), the Greeks' contributions and
+ *  the differences from the full revaluation. */
 export function ThreeFactorScenario() {
   const { scenario: s, scenarioError } = useT();
   if (!s) return <p className="muted">{scenarioError ? "（直前の入力では計算できません。値を戻してください）" : "計算中…"}</p>;
-  const first = "var(--series-1)", cross = "var(--series-2)", gap = "var(--series-3)", total = "var(--text-muted)";
+  const first = "var(--series-1)", cross = "var(--series-2)", gap = "var(--series-3)", second = "var(--series-4)", total = "var(--text-muted)";
   const c = s.contribution;
   const contributionBars = c.map((r, i) => ({ date: r.item, x: i + 1, value: r.value, series: r.kind, label: r.item }));
   const comparison = [
     { short: "フル再評価", value: s.pnl.full, series: "total", label: "フル再評価による損益" },
     { short: "一次近似", value: s.pnl.first_order, series: "first", label: "一次近似の損益" },
     { short: "一次＋交差項", value: s.pnl.first_plus_cross, series: "cross", label: "一次近似にクロスガンマ2種と Vanna を加えた損益" },
+    { short: "2次近似", value: s.pnl.second_order, series: "second", label: "2次近似（一次近似に全部の2階の項を加えた）の損益" },
     { short: "フル − 一次", value: s.pnl.difference_first_order, series: "gap", label: "フル再評価と一次近似の差" },
     { short: "フル − 一次＋交差項", value: s.pnl.difference_first_plus_cross, series: "gap", label: "フル再評価と（一次近似＋交差項）の差" },
+    { short: "フル − 2次近似", value: s.pnl.difference_second_order, series: "gap", label: "フル再評価と2次近似の差（3次以上）" },
   ];
   const comparisonBars = comparison.map((r, i) => ({ date: r.label, x: i + 1, value: r.value, series: r.series, label: r.label }));
   const million = (y: number) => `${(y / 1e6).toFixed(2)}`;
@@ -301,15 +304,17 @@ export function ThreeFactorScenario() {
           <div className="tile-note">フル再評価との差 <span data-testid="tf-diff-first">{sgn(s.pnl.difference_first_order)}</span> 円</div></div>
         <div className="tile"><div className="tile-label">一次近似＋クロスガンマ2種＋Vanna</div><div className="tile-value" data-testid="tf-pnl-cross">{sgn(s.pnl.first_plus_cross)} 円</div>
           <div className="tile-note">フル再評価との差 <span data-testid="tf-diff-cross">{sgn(s.pnl.difference_first_plus_cross)}</span> 円</div></div>
+        <div className="tile"><div className="tile-label">2次近似（全部の2階の項）</div><div className="tile-value" data-testid="tf-pnl-second">{sgn(s.pnl.second_order)} 円</div>
+          <div className="tile-note">フル再評価との差 <span data-testid="tf-diff-second">{sgn(s.pnl.difference_second_order)}</span> 円</div></div>
       </div>
-      <div className="two-col">
+      <div>
         <FlowChart title="各グリークスの損益への寄与" origin="2026-01-01" xMin={0.4} xMax={c.length + 0.6} barWidth={0.6}
           xTicks={c.map((r, i) => ({ x: i + 1, label: r.short }))} yLabel="損益への寄与（百万円）" legend
-          series={[{ key: "first", label: "一次（デルタ・ベガ・DV01）", color: first }, { key: "cross", label: "交差項（クロスガンマ・Vanna）", color: cross }]}
+          series={[{ key: "first", label: "一次（デルタ・ベガ・DV01）", color: first }, { key: "cross", label: "交差項（クロスガンマ・Vanna）", color: cross }, { key: "second", label: "2階のその他（ガンマ・ボルガ・金利）", color: second }]}
           bars={contributionBars} formatY={(y) => `${million(y)} 百万円`} />
         <FlowChart title="損益の比較とフル再評価との差" origin="2026-01-01" xMin={0.4} xMax={comparison.length + 0.6} barWidth={0.6}
           xTicks={comparison.map((r, i) => ({ x: i + 1, label: r.short }))} yLabel="損益（百万円）" legend
-          series={[{ key: "total", label: "フル再評価", color: total }, { key: "first", label: "一次近似", color: first }, { key: "cross", label: "一次近似＋交差項", color: cross }, { key: "gap", label: "フル再評価との差", color: gap }]}
+          series={[{ key: "total", label: "フル再評価", color: total }, { key: "first", label: "一次近似", color: first }, { key: "cross", label: "一次近似＋交差項", color: cross }, { key: "second", label: "2次近似", color: second }, { key: "gap", label: "フル再評価との差", color: gap }]}
           bars={comparisonBars} formatY={(y) => `${million(y)} 百万円`} />
       </div>
       <div className="table-wrap">
@@ -318,13 +323,15 @@ export function ThreeFactorScenario() {
           <thead><tr><th scope="col">項目</th><th scope="col" className="num">寄与</th></tr></thead>
           <tbody>
             {c.map((r) => <tr key={r.item}><th scope="row">{r.item}</th><td className="num">{sgn(r.value)}</td></tr>)}
-            <tr><th scope="row">一次近似（上の4行の和）</th><td className="num">{sgn(s.pnl.first_order)}</td></tr>
-            <tr><th scope="row">一次近似＋交差項（7行の和）</th><td className="num">{sgn(s.pnl.first_plus_cross)}</td></tr>
+            <tr><th scope="row">一次近似（デルタ・ベガ・DV01 の和）</th><td className="num">{sgn(s.pnl.first_order)}</td></tr>
+            <tr><th scope="row">一次近似＋交差項（上の7行の和）</th><td className="num">{sgn(s.pnl.first_plus_cross)}</td></tr>
+            <tr><th scope="row">2次近似（14行の和）</th><td className="num">{sgn(s.pnl.second_order)}</td></tr>
             <tr><th scope="row">フル再評価</th><td className="num">{sgn(s.pnl.full)}</td></tr>
+            <tr><th scope="row">差：フル − 2次近似（3次以上）</th><td className="num">{sgn(s.pnl.difference_second_order)}</td></tr>
           </tbody>
         </table>
       </div>
-      <details><summary>損益の定義</summary><p className="note">{s.conventions.full}　{s.conventions.first_order}　{s.conventions.cross}　{s.conventions.rest}</p></details>
+      <details><summary>損益の定義</summary><p className="note">{s.conventions.full}　{s.conventions.first_order}　{s.conventions.cross}　{s.conventions.second}　{s.conventions.rest}</p></details>
     </div>
   );
 }
@@ -397,6 +404,7 @@ export function ThreeFactorScenarioCurve() {
           { key: "full", label: "フル再評価", color: "var(--series-1)", values: curve.points.map((r) => r.full) },
           { key: "first", label: "一次近似", color: "var(--text-muted)", dashed: true, values: curve.points.map((r) => r.first_order) },
           { key: "cross", label: "一次＋交差項", color: "var(--series-2)", dashed: true, values: curve.points.map((r) => r.first_plus_cross) },
+          { key: "second", label: "2次近似", color: "var(--series-4)", dashed: true, values: curve.points.map((r) => r.second_order) },
         ]} />
       <PointPanel q={q} scale={curve.bubble_scale} caption={<>FX スポット <span data-testid="tf-curve-spot">{spot(q.spotYen)}</span>（円）</>} testPrefix="tf-curve" />
     </div>
@@ -404,7 +412,8 @@ export function ThreeFactorScenarioCurve() {
 }
 
 export interface PointValues {
-  full: number; first_order: number; first_plus_cross: number; difference_first_order: number; difference_first_plus_cross: number;
+  full: number; first_order: number; first_plus_cross: number; second_order: number; difference_first_order: number; difference_first_plus_cross: number;
+  difference_second_order: number;
   cross: { domestic: number; foreign: number; vanna: number };
 }
 const signed = (v: number) => `${v >= 0 ? "+" : "−"}${Math.abs(Math.round(v)).toLocaleString("ja-JP")}`;
@@ -422,8 +431,10 @@ export function PointPanel({ q, scale, caption, testPrefix }: { q: PointValues; 
             <tr><th scope="row">フル再評価</th><td className="num" data-testid={`${testPrefix}-full`}>{signed(q.full)}</td></tr>
             <tr><th scope="row">一次近似</th><td className="num" data-testid={`${testPrefix}-first`}>{signed(q.first_order)}</td></tr>
             <tr><th scope="row">一次＋交差項</th><td className="num" data-testid={`${testPrefix}-cross`}>{signed(q.first_plus_cross)}</td></tr>
+            <tr><th scope="row">2次近似</th><td className="num" data-testid={`${testPrefix}-second`}>{signed(q.second_order)}</td></tr>
             <tr><th scope="row">差：フル − 一次</th><td className="num" data-testid={`${testPrefix}-diff-first`}>{signed(q.difference_first_order)}</td></tr>
             <tr><th scope="row">差：フル − 一次＋交差項</th><td className="num" data-testid={`${testPrefix}-diff-cross`}>{signed(q.difference_first_plus_cross)}</td></tr>
+            <tr><th scope="row">差：フル − 2次近似</th><td className="num" data-testid={`${testPrefix}-diff-second`}>{signed(q.difference_second_order)}</td></tr>
           </tbody>
         </table>
       </div>
