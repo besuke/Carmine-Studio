@@ -8,7 +8,8 @@
 # Automatic differentiation (rmql, one valuation with second_order = TRUE): the value, the spot delta, the FX vega, the three
 # correlations, and the cross second derivatives with the spot (the cross-gammas with a parallel shift of each curve, the Vanna).
 # The finite-difference columns are central differences (correlations) and four-point differences (cross second derivatives) of
-# the value alone. Bump widths are in P3_BUMP and apply to the finite differences; they are meant to be tuned.
+# the value alone. Bump widths are in P3_BUMP and apply to the finite differences: they are inside the range where the finite
+# differences are stable (server/tests/reconciliation/prdc_three_factor/RECONCILIATION_PRDC_THREE_FACTOR.md).
 #
 # Needs prdc_risk_model.R (PR_NOTE, PR_TIMES, PR_REF, PR_DATES), loaded before this file.
 
@@ -16,7 +17,7 @@ P3_DEFAULTS <- list(correlation = list(domesticForeign = 0.3, domesticFx = -0.2,
 P3_MODEL <- list(spot = 150, fx_volatility = 0.12, domestic = c(mean_reversion = 0.03, volatility = 0.01),
                  foreign = c(mean_reversion = 0.05, volatility = 0.012))
 # relative or absolute widths of the finite differences
-P3_BUMP <- list(correlation = 1e-3, spot = 1e-3 * 150, volatility = 5e-4, rate = 1e-4)
+P3_BUMP <- list(correlation = 1e-3, spot = 1e-4 * 150, volatility = 1e-4, rate = 1e-5)
 
 p3_curve <- function(rates, index, shift = 0) {
   df <- exp(-cumsum(rates)) * exp(-shift * PR_TIMES) # a parallel shift of the continuous zero rates
@@ -100,7 +101,7 @@ prdc_three_factor_compute <- function(body = list()) {
       model = "3因子モデル（コールなし）：FX は対数正規、円と外貨の短期金利は Hull–White（平均回帰 3%・5%、ボラ 1%・1.2%）、相関は入力の三つ。閉じた式で評価する。想定元本 1億円、5年、年1回のクーポンは第15章の PRDC と同じ。",
       automatic_differentiation = "自動微分は rmql の1回の評価で、PV・デルタ・ベガ・三つの相関の微分を返す。相関は +0.01 あたりの円。",
       second_order = "クロスガンマと Vanna の「2階自動微分」は rmql の second_order = TRUE（デルタの微分を記録して、もう一度微分する）。「有限差分」は PV だけの4点差分である。金利は円（外貨）カーブのゼロ金利の平行シフト。",
-      bump = "有限差分のバンプ幅：相関 0.001、スポット 0.15 円、ボラ 0.05%（絶対）、金利 1bp。調整の対象。2階自動微分にバンプ幅はない。",
+      bump = "有限差分のバンプ幅：相関 0.001、スポット 0.015 円、ボラ 0.01%（絶対）、金利 0.1bp（安定する範囲の中で選んだ値）。2階自動微分にバンプ幅はない。",
       engine = paste("rmql", as.character(utils::packageVersion("rmql"))))
   )
 }

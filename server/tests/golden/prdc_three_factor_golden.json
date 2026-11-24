@@ -1,0 +1,76 @@
+{
+  "run_at": "2026-11-24T23:10:12+0900",
+  "rmql": "0.5.0",
+  "npv": 103789643.906728,
+  "greeks": {
+    "fx_delta": 486851.585644495,
+    "fx_vega": 44938625.0743749,
+    "domestic_dv01": -30932.3444367443,
+    "foreign_dv01": -18716.689149078
+  },
+  "correlation": [
+    {
+      "pair": "円金利 × 外貨金利",
+      "automatic_differentiation": -1637.87246395204,
+      "finite_difference": -1637.87247665226,
+      "_row": "rho_domestic_foreign"
+    },
+    {
+      "pair": "円金利 × FX",
+      "automatic_differentiation": 7223.0880372692,
+      "finite_difference": 7223.08864600956,
+      "_row": "rho_domestic_fx"
+    },
+    {
+      "pair": "外貨金利 × FX",
+      "automatic_differentiation": -8463.22755551908,
+      "finite_difference": -8463.22852149606,
+      "_row": "rho_foreign_fx"
+    }
+  ],
+  "second_order": [
+    {
+      "item": "クロスガンマ：FXスポット × 円金利",
+      "automatic_differentiation": 272.019716291255,
+      "finite_difference": 272.01967438062
+    },
+    {
+      "item": "クロスガンマ：FXスポット × 外貨金利",
+      "automatic_differentiation": -396.797643951774,
+      "finite_difference": -396.797597408295
+    },
+    {
+      "item": "Vanna：FXスポット × FXボラティリティ",
+      "automatic_differentiation": -31126.0704936316,
+      "finite_difference": -31126.0632425547
+    }
+  ],
+  "scan_slopes": {
+    "correlation": [-163787.246395204, 722308.80372692, -846322.755551907],
+    "cross_gamma": [272.019716291255, -396.797643951774],
+    "vanna": [-31126.0704936316, -31126.0704936316]
+  },
+  "scenario": {
+    "shock": {
+      "spotYen": 5,
+      "volPoints": 2,
+      "domesticBp": 20,
+      "foreignBp": -20
+    },
+    "pnl": {
+      "full": 2660141.15341377,
+      "first_order": 3088717.32395665,
+      "first_plus_cross": 2844338.35504463,
+      "difference_first_order": -428576.170542873,
+      "difference_first_plus_cross": -184197.20163086
+    },
+    "contribution": [2434257.92822247, 898772.501487498, -618646.888734885, 374333.782981559, 27201.9716291255, 39679.7643951774, -311260.704936316]
+  },
+  "curve_at_5": {
+    "full": 2660141.15341377,
+    "first_order": 3088717.32395665,
+    "first_plus_cross": 2844338.35504463,
+    "cross": [27201.9716291255, 39679.7643951774, -311260.704936316]
+  },
+  "bubble_scale": 2490085.63949053
+}

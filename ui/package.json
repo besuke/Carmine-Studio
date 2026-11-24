@@ -15,6 +15,7 @@
     "reconcile": "node scripts/run-r.mjs ../server/tests/reconciliation/reconcile_tona_ois.R",
     "lan": "npm run build && node scripts/check-port.mjs 8081 0.0.0.0 && node scripts/run-r.mjs ../server/server.R --host 0.0.0.0 --port 8081 --static dist",
     "reconcile:prdc-risk": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc_risk/reconcile_prdc_risk.R",
+    "reconcile:prdc-three-factor": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc_three_factor/reconcile_prdc_three_factor.R",
     "reconcile:parallel": "node scripts/run-r.mjs ../server/tests/reconciliation/parallel/reconcile_parallel.R",
     "reconcile:prdc": "node scripts/run-r.mjs ../server/tests/reconciliation/prdc/reconcile_prdc.R",
     "reconcile:p16": "node scripts/run-r.mjs ../server/tests/reconciliation/p16/reconcile_p16.R",

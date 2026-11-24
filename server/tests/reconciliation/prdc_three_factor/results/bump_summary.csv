@@ -1,0 +1,7 @@
+"family","quantity","best","best_spot_width","best_width","n","below_1e4","below_1e5"
+"correlation","rho_domestic_foreign",1.57369095040656e-10,NA,1e-04,6,6,5
+"correlation","rho_domestic_fx",1.02504689858568e-09,NA,1e-04,6,5,5
+"correlation","rho_foreign_fx",4.29294544734258e-11,NA,1e-05,6,5,4
+"cross_gamma","spot_domestic_curve_shift",4.67868898854085e-08,0.0015,1e-05,20,9,6
+"cross_gamma","spot_foreign_curve_shift",2.96728162472366e-08,0.015,1e-06,20,9,6
+"vanna","spot_fx_volatility",4.70492840699926e-08,0.0015,1e-04,24,15,10
