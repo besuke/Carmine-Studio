@@ -126,11 +126,13 @@ prdc_mc <- function(p, m) prdc_memo("mc", c(p, m), function() {
   list(paths = m$paths, seed = m$seed, npv = v$npv, standard_error = v$standard_error, fx_delta = v$fx_delta, fx_vega = v$fx_vega, by_paths = by_paths)
 })
 
+PRDC_NOTE_RANGES <- list(spot = c(50, 250), volPct = c(1, 50), domesticPct = c(-2, 10), foreignPct = c(-2, 15), discountPct = c(-2, 10),
+                         fxBase = c(50, 250), leveragePct = c(0.1, 50), subtractionPct = c(0, 50), floorPct = c(0, 10), capPct = c(0, 20))
+
 prdc_compute <- function(body = list()) {
   bad <- function(msg) stop(structure(class = c("tona_bad_request", "error", "condition"), list(message = msg, call = NULL)))
   ranges <- list(
-    note = list(spot = c(50, 250), volPct = c(1, 50), domesticPct = c(-2, 10), foreignPct = c(-2, 15), discountPct = c(-2, 10),
-                fxBase = c(50, 250), leveragePct = c(0.1, 50), subtractionPct = c(0, 50), floorPct = c(0, 10), capPct = c(0, 20)),
+    note = PRDC_NOTE_RANGES,
     mc = list(paths = c(100, 100000), seed = c(1, 1e9))
   )
   read <- function(section) {

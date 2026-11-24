@@ -55,3 +55,37 @@ export async function fetchPrdc(request: PrdcRequest, options: { baseUrl?: strin
   if (body.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
   return body;
 }
+
+/** The scenario of the note (POST /api/prdc/scenario): the cross terms and the second-order approximation. */
+export interface PrdcShock { spotYen: number; volPoints: number; domesticBp: number; foreignBp: number; discountBp: number }
+
+export interface PrdcScenarioResponse {
+  inputs: { note: NoteInputs; shock: PrdcShock };
+  base: { spot: number; fx_volatility_pct: number; npv: number };
+  moved: { spot: number; fx_volatility_pct: number; domestic_shift_bp: number; foreign_shift_bp: number; discount_shift_bp: number; npv: number };
+  pnl: { full: number; first_order: number; first_plus_cross: number; second_order: number; difference_first_order: number; difference_first_plus_cross: number; difference_second_order: number };
+  contribution: { item: string; short: string; kind: "first" | "cross" | "second"; value: number }[];
+  conventions: Record<"model" | "full" | "first_order" | "cross" | "second" | "rest" | "engine", string>;
+  response: ResponseStamp;
+}
+
+export async function fetchPrdcScenario(request: { note?: Partial<NoteInputs>; shock?: Partial<PrdcShock> },
+  options: { baseUrl?: string; signal?: AbortSignal; requestId?: string } = {}): Promise<PrdcScenarioResponse> {
+  const requestId = options.requestId ?? newRequestId();
+  let res: Response;
+  try {
+    res = await fetch(`${options.baseUrl ?? ""}/api/prdc/scenario`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Request-Id": requestId },
+      body: JSON.stringify(request),
+      signal: options.signal,
+    });
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "AbortError") throw e;
+    throw new ApiError("R APIに接続できません。npm run api で起動してください。", null);
+  }
+  const body = (await res.json().catch(() => null)) as (PrdcScenarioResponse & { error?: string }) | null;
+  if (!res.ok || !body) throw new ApiError(body?.error ?? `HTTP ${res.status}`, res.status);
+  if (body.response?.request_id !== requestId) throw new ApiError("APIの応答が要求と対応していません", res.status);
+  return body;
+}

@@ -1,4 +1,4 @@
-import { PrdcProvider, PrdcStatus, PrdcControls, TermsPanel, PayoffChart, SamplePathsChart, ValuePanel, CouponTermPanel, DistributionCharts, SensitivityPanel } from "../components/prdc";
+import { PrdcProvider, PrdcStatus, PrdcControls, TermsPanel, PayoffChart, SamplePathsChart, ValuePanel, CouponTermPanel, DistributionCharts, SensitivityPanel, PrdcScenarioControls, PrdcScenario } from "../components/prdc";
 import { UsageGuide } from "../components/UsageGuide";
 
 <PrdcProvider>
@@ -15,6 +15,7 @@ import { UsageGuide } from "../components/UsageGuide";
     { text: <>市場の前提の <b>FX スポット（円）</b> 133.2681、<b>FX ボラ（%）</b> 10、<b>円金利（%）</b> 1、<b>外貨金利（%）</b> 3、<b>割引金利（%）</b> 0.5 から、<b>FX スポット（円）</b> を 120 に変える。</>, to: "II-9.1" },
     { text: <>クーポンの <b>基準 FX</b> 120、<b>レバレッジ a（%）</b> 12.2、<b>控除 b（%）</b> 10、<b>フロア（%）</b> 0、<b>キャップ（%）</b> 2.2 から、<b>キャップ（%）</b> を 3 に変える。</>, to: "II-9.2" },
     { text: <><b>パス数</b> を 3,000 から 100,000 に増やし、<b>seed</b> を変える（初期値は 123）。</>, to: "II-9.3" },
+    { text: <>シナリオ損益の <b>FX スポットの変化（円）</b>・<b>割引金利の変化（bp）</b> などを入れ、フル再評価・一次近似・一次＋交差項・2次近似の損益と、各グリークスの寄与の棒グラフを見る。</>, to: "scenario" },
   ]}
 />
 
@@ -71,5 +72,17 @@ import { UsageGuide } from "../components/UsageGuide";
 ## II-9.5 FX感応度とモンテカルロ誤差
 
 <SensitivityPanel />
+
+<h3 id="scenario">シナリオ損益：交差項と2次近似</h3>
+
+動かす量の5項目を入れる。国内金利と外貨金利は FX のドリフト（国内 − 外貨）に、割引金利は現在価値の割引に効く。
+
+- **FX スポットの変化（円）**：−40〜40。
+- **FX ボラの変化（ポイント）**：−8〜12。
+- **国内金利の変化（bp）**、**外貨金利の変化（bp）**、**割引金利の変化（bp）**：−200〜200。
+
+<PrdcScenarioControls />
+
+<PrdcScenario />
 
 </PrdcProvider>

@@ -279,7 +279,15 @@ const sgn = (x: number) => `${x >= 0 ? "+" : "−"}${Math.abs(Math.round(x)).toL
 /** The profit and loss four ways (full revaluation, first order, first order plus the cross terms, second order), the Greeks' contributions and
  *  the differences from the full revaluation. */
 export function ThreeFactorScenario() {
-  const { scenario: s, scenarioError } = useT();
+  const { scenario, scenarioError } = useT();
+  return <ScenarioView s={scenario} scenarioError={scenarioError} />;
+}
+
+/** What the view of a scenario needs of the response (the chapter 15 and the II-9 scenarios have it). */
+export type ScenarioShape = Omit<ThreeFactorScenarioResponse, "inputs" | "response" | "moved"> & { moved: { spot: number; fx_volatility_pct: number } };
+
+/** The tiles, the two bar charts and the table of a scenario. */
+export function ScenarioView({ s, scenarioError }: { s: ScenarioShape | null; scenarioError: string | null }) {
   if (!s) return <p className="muted">{scenarioError ? "（直前の入力では計算できません。値を戻してください）" : "計算中…"}</p>;
   const first = "var(--series-1)", cross = "var(--series-2)", gap = "var(--series-3)", second = "var(--series-4)", total = "var(--text-muted)";
   const c = s.contribution;
@@ -311,11 +319,11 @@ export function ThreeFactorScenario() {
         <FlowChart title="各グリークスの損益への寄与" origin="2026-01-01" xMin={0.4} xMax={c.length + 0.6} barWidth={0.6}
           xTicks={c.map((r, i) => ({ x: i + 1, label: r.short }))} yLabel="損益への寄与（百万円）" legend
           series={[{ key: "first", label: "一次（デルタ・ベガ・DV01）", color: first }, { key: "cross", label: "交差項（クロスガンマ・Vanna）", color: cross }, { key: "second", label: "2階のその他（ガンマ・ボルガ・金利）", color: second }]}
-          bars={contributionBars} formatY={(y) => `${million(y)} 百万円`} />
+          bars={contributionBars} formatY={million} />
         <FlowChart title="損益の比較とフル再評価との差" origin="2026-01-01" xMin={0.4} xMax={comparison.length + 0.6} barWidth={0.6}
           xTicks={comparison.map((r, i) => ({ x: i + 1, label: r.short }))} yLabel="損益（百万円）" legend
           series={[{ key: "total", label: "フル再評価", color: total }, { key: "first", label: "一次近似", color: first }, { key: "cross", label: "一次近似＋交差項", color: cross }, { key: "second", label: "2次近似", color: second }, { key: "gap", label: "フル再評価との差", color: gap }]}
-          bars={comparisonBars} formatY={(y) => `${million(y)} 百万円`} />
+          bars={comparisonBars} formatY={million} />
       </div>
       <div className="table-wrap">
         <table className="data">

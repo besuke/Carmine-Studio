@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { ApiError } from "../../api/client";
-import { fetchPrdc, type McInputs, type NoteInputs, type PrdcResponse } from "../../api/prdc";
+import { fetchPrdc, fetchPrdcScenario, type McInputs, type NoteInputs, type PrdcResponse, type PrdcScenarioResponse, type PrdcShock } from "../../api/prdc";
+import { ScenarioView } from "../prdcThreeFactor";
 import { LineChart } from "../LineChart";
 import { FlowChart } from "../FlowChart";
 
@@ -14,8 +15,12 @@ const DEFAULT: Req = {
   mc: { paths: 3000, seed: 123 },
 };
 
+const DEFAULT_SHOCK: PrdcShock = { spotYen: 5, volPoints: 2, domesticBp: 20, foreignBp: -20, discountBp: 20 };
+
 interface PState {
   data: PrdcResponse | null; loading: boolean; error: string | null; req: Req;
+  shock: PrdcShock; setShock: (p: Partial<PrdcShock>) => void; resetShock: () => void;
+  scenario: PrdcScenarioResponse | null; scenarioError: string | null; scenarioLoading: boolean;
   set: <S extends Section>(s: S, p: Partial<Req[S]>) => void; reset: (s: Section) => void;
 }
 const Ctx = createContext<PState | null>(null);
@@ -26,6 +31,25 @@ export function PrdcProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<number | undefined>(undefined);
+  const [shock, setShockState] = useState(DEFAULT_SHOCK);
+  const [scenario, setScenario] = useState<PrdcScenarioResponse | null>(null);
+  const [scenarioError, setScenarioError] = useState<string | null>(null);
+  const [scenarioLoading, setScenarioLoading] = useState(true);
+  // the scenario: the note's inputs and the five moves; the cross terms and the second-order approximation are rmql's
+  useEffect(() => {
+    const ctl = new AbortController();
+    const id = window.setTimeout(() => {
+      setScenarioLoading(true);
+      fetchPrdcScenario({ note: req.note, shock }, { signal: ctl.signal })
+        .then((d) => { setScenario(d); setScenarioError(null); setScenarioLoading(false); })
+        .catch((e: unknown) => {
+          if (e instanceof DOMException && e.name === "AbortError") return;
+          setScenarioError(e instanceof ApiError ? e.message : String(e));
+          setScenarioLoading(false);
+        });
+    }, 300);
+    return () => { ctl.abort(); window.clearTimeout(id); };
+  }, [req.note, shock]);
   useEffect(() => {
     const c = new AbortController();
     window.clearTimeout(timer.current);
@@ -43,6 +67,7 @@ export function PrdcProvider({ children }: { children: ReactNode }) {
   }, [req]);
   const value: PState = {
     data, loading, error, req,
+    shock, setShock: (p) => setShockState((x) => ({ ...x, ...p })), resetShock: () => setShockState(DEFAULT_SHOCK), scenario, scenarioError, scenarioLoading,
     set: (s, p) => setReq((x) => ({ ...x, [s]: { ...x[s], ...p } })),
     reset: (s) => setReq((x) => ({ ...x, [s]: DEFAULT[s] })),
   };
@@ -352,5 +377,41 @@ export function SensitivityPanel() {
         );
       }}
     </Need>
+  );
+}
+
+const SHOCK_FIELDS: { key: keyof PrdcShock; label: string; min: number; max: number; step: number }[] = [
+  { key: "spotYen", label: "FX スポットの変化（円）", min: -40, max: 40, step: 1 },
+  { key: "volPoints", label: "FX ボラの変化（ポイント）", min: -8, max: 12, step: 0.5 },
+  { key: "domesticBp", label: "国内金利の変化（bp）", min: -200, max: 200, step: 5 },
+  { key: "foreignBp", label: "外貨金利の変化（bp）", min: -200, max: 200, step: 5 },
+  { key: "discountBp", label: "割引金利の変化（bp）", min: -200, max: 200, step: 5 },
+];
+
+/** The five moves of the scenario. */
+export function PrdcScenarioControls() {
+  const { shock, setShock, resetShock, scenarioLoading, scenarioError, scenario } = useP();
+  return (
+    <div className="controls" role="group" aria-label="シナリオ（同時に動かす）" data-section="prdc-scenario">
+      {SHOCK_FIELDS.map((fd) => (
+        <label key={fd.key}>{fd.label}{" "}
+          <input type="number" step={fd.step} min={fd.min} max={fd.max} className="rate-input" aria-label={`シナリオ：${fd.label}`} value={shock[fd.key]}
+            onChange={(e) => { const v = Number(e.target.value); if (e.target.value !== "" && Number.isFinite(v)) setShock({ [fd.key]: v }); }} />
+        </label>
+      ))}
+      <button type="button" onClick={resetShock}>初期値に戻す</button>
+      <span className="controls-state">{scenarioLoading ? "再計算中…" : scenarioError ? <span className="error-text" role="alert">{scenarioError}</span> : scenario ? <span className="response-tag" data-request-id={scenario.response.request_id}>API応答 <code>{scenario.response.request_id}</code></span> : null}</span>
+    </div>
+  );
+}
+
+/** The scenario: the full revaluation, the first order, the first order plus the cross terms and the second-order approximation. */
+export function PrdcScenario() {
+  const { scenario, scenarioError } = useP();
+  return (
+    <div data-testid="prdc-scenario">
+      <ScenarioView s={scenario} scenarioError={scenarioError} />
+      {scenario && <details><summary>モデル</summary><p className="note">{scenario.conventions.model}</p></details>}
+    </div>
   );
 }

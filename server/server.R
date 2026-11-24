@@ -62,6 +62,7 @@ source(file.path(script_dir, "R", "prdc_model.R"))
 source(file.path(script_dir, "R", "parallel_model.R"))
 source(file.path(script_dir, "R", "prdc_risk_model.R"))
 source(file.path(script_dir, "R", "prdc_three_factor_model.R"))
+source(file.path(script_dir, "R", "prdc_scenario_model.R"))
 source(file.path(script_dir, "R", "server_info.R"))
 source(file.path(script_dir, "R", "jgb_curve_model.R"))
 source(file.path(script_dir, "R", "cnn_model.R"))
@@ -383,6 +384,22 @@ handle <- function(req) {
   }
   # PRDC risk by automatic differentiation, in parallel and distributed (Part III)
   # Chapter 15: correlation sensitivities, cross-gammas and Vanna of the three-factor PRDC (automatic differentiation and finite differences)
+  # Chapter II-9: the scenario of the PRDC with the cross terms and the second-order approximation
+  if (identical(path, "/api/prdc/scenario")) {
+    if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body such as {\"shock\":{\"spotYen\":5}}.")))
+    body <- tryCatch(jsonlite::fromJSON(read_body(req), simplifyVector = TRUE), error = function(e) NULL)
+    if (!is.list(body)) return(json_response(400, list(error = "The body must be a JSON object.")))
+    unknown <- setdiff(names(body), c("note", "shock"))
+    if (length(unknown)) return(json_response(400, list(error = paste("Unknown fields:", paste(unknown, collapse = ", ")))))
+    result <- tryCatch(prdc_scenario(body),
+                       tona_bad_request = function(e) structure(list(error = conditionMessage(e)), class = "bad"),
+                       error = function(e) structure(list(error = paste("Calculation failed:", conditionMessage(e))), class = "failed"))
+    if (inherits(result, "bad")) return(json_response(400, unclass(result)))
+    if (inherits(result, "failed")) return(json_response(500, unclass(result)))
+    id <- request_id(req)
+    result$response <- list(request_id = id, computed_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%OS3%z"))
+    return(json_response(200, result, request_id = id))
+  }
   # Chapter 15: the heat maps of the scenario (spot x volatility, spot x a rate), every cell valued first
   if (identical(path, "/api/prdc-three-factor/heatmap")) {
     if (method != "POST") return(json_response(405, list(error = "Use POST with a JSON body such as {\"shock\":{\"volPoints\":2}}.")))
