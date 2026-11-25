@@ -1,0 +1,27 @@
+<section id="coins-why" class="paper" data-transition="fade">
+<p class="eyebrow">3　13枚のコイン</p>
+<h2>初回の天秤で、仮説を分けきれない</h2>
+<div class="split">
+<div class="col">
+<ul class="list">
+<li>k枚対k枚を量る</li>
+<li>傾いたとき、各傾きに 2k 通りが残る</li>
+<li>釣り合ったとき、2(13−2k) 通りが残る</li>
+<li>残り2回で区別できるのは、各分岐で最大9通り</li>
+</ul>
+<p class="body">傾きの側は k ≤ 4、釣り合いの側は k ≥ 5 が必要で、両立しない。</p>
+</div>
+<div class="col">
+<table class="tbl32">
+<tr class="thead"><th style="width:14%">k</th><th style="width:26%">傾き（各）</th><th style="width:30%">釣り合い</th><th style="width:30%">9を超える側</th></tr>
+<tr><td>1</td><td>2</td><td>22</td><td>釣り合い</td></tr>
+<tr class="alt"><td>2</td><td>4</td><td>18</td><td>釣り合い</td></tr>
+<tr><td>3</td><td>6</td><td>14</td><td>釣り合い</td></tr>
+<tr class="alt"><td>4</td><td>8</td><td>10</td><td>釣り合い</td></tr>
+<tr><td>5</td><td>10</td><td>6</td><td>傾き</td></tr>
+<tr class="alt"><td>6</td><td>12</td><td>2</td><td>傾き</td></tr>
+</table>
+</div>
+</div>
+<aside>どの k を選んでも、10通り以上が残る分岐がある。これが「13枚は3回で判定できない」ことの理由。Lean で証明するなら、この「どんな初回の量り方でも10通り以上残る分岐がある」を示す。</aside>
+</section>
