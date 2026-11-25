@@ -1,0 +1,15 @@
+<section id="entropy-def" class="paper" data-transition="fade">
+<p class="eyebrow">4　確率の問いとエントロピー</p>
+<h2>エントロピー：不確かさをビットで測る</h2>
+<p class="body" style="margin-bottom:32px">H ＝ −Σ p × log2 p　（事象ごとの確率 p について足し合わせる）</p>
+<table class="tbl32">
+<tr class="thead"><th style="width:64%">分布</th><th style="width:36%">エントロピー（ビット）</th></tr>
+<tr><td>公正なコイン（1/2, 1/2）</td><td>1.000</td></tr>
+<tr class="alt"><td>偏ったコイン（0.9, 0.1）</td><td>0.469</td></tr>
+<tr><td>株価の予想（0.6, 0.4）</td><td>0.971</td></tr>
+<tr class="alt"><td>あみだくじの出発 1（1/2, 1/2, 0）</td><td>1.000</td></tr>
+<tr><td>等確率の 3 通り</td><td>1.585</td></tr>
+</table>
+<p class="note">等確率のとき最大になり、偏るほど小さくなる。</p>
+<aside>公正さは、結果の分布のエントロピーが最大になること、と言い換えられる。3 通りなら、最大は log2 3 ＝ 1.585 ビット。上の例では、あみだくじの出発 1 は 1 ビットしかない。</aside>
+</section>
