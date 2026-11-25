@@ -56,5 +56,7 @@ h3 { font-size: 40px; font-weight: 700; line-height: 1.35; margin: 0 0 16px 0; }
 .pn { box-sizing: border-box; flex: none; width: 72px; height: 72px; line-height: 72px; text-align: center; font-size: 32px; font-weight: 700; border-radius: 36px; margin: 0; background: #16213A; color: #F5F2EA; }
 .stext { flex: 1; font-size: 32px; line-height: 1.6; margin: 0; color: #16213A; }
 
+.code { font-family: 'Courier New', monospace; font-size: 32px; line-height: 1.6; padding: 40px; border-radius: 24px; margin: 0 0 40px 0; background: #0E1730; color: #F5F2EA; }
+
 .note { font-size: 32px; line-height: 1.6; margin: 40px 0 0 0; color: #16213A; }
 .ink .note { color: #F5F2EA; }

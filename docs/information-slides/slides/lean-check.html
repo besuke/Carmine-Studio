@@ -1,0 +1,11 @@
+<section id="lean-check" class="ink" data-transition="fade">
+<p class="eyebrow">6　カリー＝ハワード → Lean</p>
+<h2>Lean が検査するのは、項が型に合っているか</h2>
+<p class="code">theorem my_and_swap (p q : Prop) (h : p ∧ q) : q ∧ p := ⟨h.2, h.1⟩</p>
+<ul class="list">
+<li>命題：p かつ q ならば、q かつ p</li>
+<li>証明：h の二つの成分を、逆の順に組にした項</li>
+<li>Lean が、この項の型が命題と一致するかを検査する</li>
+</ul>
+<aside>一致していれば、証明は検査済み。13枚のコインの証明でも、検査されるのはこの形の対象になる。</aside>
+</section>
